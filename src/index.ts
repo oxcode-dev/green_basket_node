@@ -18,6 +18,9 @@ app.use(cookieParser());
 
 const PORT: number | string = 2000;
 
+// import crypto from 'crypto';
+// console.log(crypto.randomBytes(32).toString('hex'))
+
 app.listen(PORT, () =>
   console.log(
     `🟢 Server running in development mode on port ${PORT}`
