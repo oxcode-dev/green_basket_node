@@ -2,6 +2,7 @@ import express, { type Application } from "express";
 import dotenv from 'dotenv'
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import { prisma } from "./lib/prisma";
 
 dotenv.config();
 
@@ -20,6 +21,12 @@ const PORT: number | string = 2000;
 
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
+
+app.get('/test', async(req, res) => {
+    const user = await prisma.user.findFirst();
+
+    return res.status(200).json(user);
+});
 
 app.listen(PORT, () =>
   console.log(
