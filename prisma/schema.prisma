@@ -12,7 +12,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model User { 
+model users { 
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email String  @unique
   first_name  String?
@@ -22,9 +22,15 @@ model User {
   password String
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  products products[]
+  orders orders[]
+  reviews reviews[]
+  addresses addresses[]
+  wishlists wishlists[]
 } 
 
-model product {
+model products {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id String? @db.Uuid
   category_id String? @db.Uuid
@@ -38,6 +44,12 @@ model product {
   image String?
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  user users? @relation(fields: [user_id], references: [id])
+  category categories? @relation(fields: [category_id], references: [id])
+  order_items order_items[]
+  reviews reviews[]
+  wishlists wishlists[]
 }
 
 model orders {
@@ -51,6 +63,10 @@ model orders {
   payment_status String @default("unpaid") //@db.Enum(['unpaid', 'paid', 'refunded'])
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  user users? @relation(fields: [user_id], references: [id])
+  address addresses? @relation(fields: [address_id], references: [id])
+  order_items order_items[] 
 }
 
 model order_items {
@@ -61,6 +77,9 @@ model order_items {
   unit_price Decimal @db.Decimal(10,2) @default(0.00)
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  order orders? @relation(fields: [order_id], references: [id])
+  product products? @relation(fields: [product_id], references: [id])
 }
 
 model categories {
@@ -70,17 +89,22 @@ model categories {
   description String?
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now()) @updatedAt()
+
+  products products[]
 }
 
-model wishlist {
+model wishlists {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id String? @db.Uuid
   product_id String? @db.Uuid
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  user users? @relation(fields: [user_id], references: [id])
+  product products? @relation(fields: [product_id], references: [id])
 }
 
-model address {
+model addresses {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id String? @db.Uuid
   street String? @db.Text
@@ -91,6 +115,9 @@ model address {
   is_default Boolean @default(false)
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  user users? @relation(fields: [user_id], references: [id])
+  orders orders[]
 }
 
 model reviews {
@@ -101,6 +128,9 @@ model reviews {
   comment String? @db.Text
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
+
+  product products? @relation(fields: [product_id], references: [id])
+  user users? @relation(fields: [user_id], references: [id])
 }
 
 model otp_codes {
