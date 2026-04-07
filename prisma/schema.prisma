@@ -13,8 +13,29 @@ datasource db {
 }
 
 model User { 
-  id    Int     @id @default(autoincrement()) 
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email String  @unique
-  name  String?
-  // posts Post[]
+  first_name  String?
+  last_name String?
+  phone String? @unique
+  role String @default("CUSTOMER") //@db.Enum(['CUSTOMER', 'VENDOR', 'ADMIN'])
+  password String
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
 } 
+
+model product {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id String? @db.Uuid
+  category_id String? @db.Uuid
+  title String
+  slug String
+  summary String?
+  description String?
+  price Decimal @db.Decimal(10,2) @default(0.00)
+  stock Int @default(0)
+  is_active Boolean @default(true)
+  image String?
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
