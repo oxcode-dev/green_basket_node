@@ -39,3 +39,75 @@ model product {
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
 }
+
+model orders {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id String? @db.Uuid
+  address_id String? @db.Uuid
+  total_amount Decimal @db.Decimal(10,2) @default(0.00)
+  delivery_cost Decimal @db.Decimal(10,2) @default(0.00)
+  status String @default("pending") //@db.Enum(['pending', 'paid', 'shipped', 'delivered', 'cancelled'])
+  payment_method String? //@db.Enum(['cash', 'bank transfer', 'online payment'])
+  payment_status String @default("unpaid") //@db.Enum(['unpaid', 'paid', 'refunded'])
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
+
+model order_items {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_id String? @db.Uuid
+  product_id String? @db.Uuid
+  quantity Int @default(0)
+  unit_price Decimal @db.Decimal(10,2) @default(0.00)
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
+
+model categories {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+  slug String
+  description String?
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now()) @updatedAt()
+}
+
+model wishlist {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id String? @db.Uuid
+  product_id String? @db.Uuid
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
+
+model address {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id String? @db.Uuid
+  street String? @db.Text
+  city String
+  state String? //@db.Varchar(255)
+  country String? //@db.Varchar(255)
+  postal_code String? //@db.Varchar(255)
+  is_default Boolean @default(false)
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
+
+model reviews {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  product_id String? @db.Uuid
+  user_id String? @db.Uuid
+  rating Int @default(1)
+  comment String? @db.Text
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
+
+model otp_codes {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email String
+  code String?
+  expires_at DateTime?
+  created_at DateTime @db.Timestamp(6) @default(now())
+  updated_at DateTime @db.Timestamp(6) @default(now())
+}
