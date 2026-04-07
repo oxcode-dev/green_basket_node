@@ -23,9 +23,11 @@ const PORT: number | string = 2000;
 // console.log(crypto.randomBytes(32).toString('hex'))
 
 app.get('/test', async(req, res) => {
-    const user = await prisma.users.findFirst();
+    // const user = await prisma.users.findFirst();
 
-    return res.status(200).json(user);
+    // return res.status(200).json(user);
+
+    return res.status(200).json({message: 'New Endpoint'})
 });
 
 app.listen(PORT, () =>
