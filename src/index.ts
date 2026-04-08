@@ -31,7 +31,7 @@ app.get('/test', async(req, res) => {
     // return res.status(200).json({message: 'New Endpoint'})
 });
 
-app.get('/api/auth', authRoute);
+app.use('/api/auth', authRoute)
 
 app.listen(PORT, () =>
   console.log(
