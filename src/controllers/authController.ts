@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/user.ts';
+import { prisma } from '../lib/prisma.ts';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const MONTH = 30 * 24 * 60 * 60; // in seconds
@@ -16,7 +16,7 @@ export const userRegistration = async (req: express.Request, res: express.Respon
                 message: "Required fields are missing!",
             })
         }
-        const userExists = await User.findOne({ email });
+        const userExists = await prisma.users.findUnique({ where: {email} });
 
         if(userExists) {
             return res.status(400).json({ message: 'User already exists' });
@@ -24,26 +24,24 @@ export const userRegistration = async (req: express.Request, res: express.Respon
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const newUser = new User({
-            email,
-            password: hashedPassword,
-            first_name,
-            last_name,
-            username,
-        })
-
-        const savedUser = await newUser.save();
+        const newUser = await prisma.users.create({
+            data: {
+                email,
+                password: hashedPassword,
+                first_name,
+                last_name,
+            }
+        });
 
         const payload = { 
-            id: savedUser._id,
-            email: savedUser.email,
+            id: newUser.id,
+            email: newUser.email,
         }
 
         const token = createToken(payload);
-        // const refresh_token = createToken(payload, MONTH);
+        const refresh_token = createToken(payload, MONTH);
 
-        // res.cookie("refreshtoken", token, {
-        res.cookie("token", token, {
+        res.cookie("refreshtoken", refresh_token, {
             httpOnly: true,
             path: "/api/token",
             // path: "/api/refresh_token",
@@ -55,13 +53,11 @@ export const userRegistration = async (req: express.Request, res: express.Respon
             token, 
             message: 'User registered successfully', 
             user: { 
-                id: savedUser._id,
-                email: savedUser.email,
-                first_name: savedUser.first_name,
-                last_name: savedUser.last_name,
-                username: savedUser.username,
-                avatar: savedUser.avatar,
-                bio: savedUser.bio,
+                id: newUser.id,
+                email: newUser.email,
+                first_name: newUser.first_name,
+                last_name: newUser.last_name,
+                phone: newUser.phone,
             }
         });
 
@@ -74,7 +70,7 @@ export const userRegistration = async (req: express.Request, res: express.Respon
 export const userLogin = async (req: express.Request, res: express.Response) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await prisma.users.findUnique({ where: {email} });
 
         if(!user) {
             return res.status(400).json({ message: 'User not found' });
@@ -87,19 +83,19 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
         }
 
         const payload = { 
-            id: user._id,
+            id: user.id,
             email: user.email,
         }
 
         const token = createToken(payload);
-        // const refresh_token = createToken(payload, MONTH);
+        const refresh_token = createToken(payload, MONTH);
 
-        // res.cookie("refreshtoken", refresh_token, {
-        //     httpOnly: true,
-        //     path: "/api/refresh_token",
-        //     sameSite: 'lax',
-        //     maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
-        // });
+        res.cookie("refreshtoken", refresh_token, {
+            httpOnly: true,
+            path: "/api/refresh_token",
+            sameSite: 'lax',
+            maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
+        });
         res.cookie("token", token, {
             httpOnly: true,
             path: "/api/token",
@@ -149,7 +145,7 @@ type PayloadType = {
     email: string;
 }
 
-const createToken = (payload: PayloadType, expiresIn: number = 3600*24) => {
+const createToken = (payload: PayloadType, expiresIn: number = 3600*1) => {
     return jwt.sign(
         payload,
         JWT_SECRET,

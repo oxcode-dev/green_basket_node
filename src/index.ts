@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { prisma } from "./lib/prisma.ts";
+import { authRoute } from "./routes/authRoute.ts";
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.get('/test', async(req, res) => {
 
     // return res.status(200).json({message: 'New Endpoint'})
 });
+
+app.get('/api/auth', authRoute);
 
 app.listen(PORT, () =>
   console.log(
