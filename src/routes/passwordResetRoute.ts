@@ -6,6 +6,7 @@ import { forgotPasswordSchema, resetPasswordSchema } from '../validationSchemas/
 const router = express.Router();
 
 router.post('/forgot', validateInputData(forgotPasswordSchema), forgotPassword);
+router.post('/generate-otp', validateInputData(forgotPasswordSchema), forgotPassword);
 router.post('/reset', validateInputData(resetPasswordSchema), resetPassword);
 
 export { router as passwordResetRoute };
