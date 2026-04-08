@@ -1,9 +1,8 @@
 import express from 'express';
-import { User } from '../models/user.ts';
-import { OtpCode } from '../models/otpCode.ts';
 import { sendMail } from '../helpers/mailer.ts';
 import bcrypt from 'bcryptjs';
 import { generatePin } from '../helpers/index.ts';
+import { prisma } from '../lib/prisma.ts';
 
 const router = express.Router();
 
@@ -13,13 +12,14 @@ const CLIENT_URL = process.env.CLIENT_URL as string
 export const forgotPassword = async (req: express.Request, res: express.Response) => {
     try {
         const { email } = req.body;
-        const user = await User.findOne({ email });
+
+        const user = await prisma.users.findUnique({ where: {email} });
 
         if(!user) {
             return res.status(400).json({ message: 'User not found!' });
         }
 
-        await OtpCode.deleteMany({ email: user.email });
+        await prisma.otp_codes.deleteMany({ where: {email} });
 
         const newOtpCodeDetails = {
             code: generatePin(4),
@@ -27,7 +27,7 @@ export const forgotPassword = async (req: express.Request, res: express.Response
             expires_at: new Date(Date.now() + 15 * 60 * 1000) // OTP expires in 15 minutes
         }
 
-        const otpCode = await OtpCode.create(newOtpCodeDetails);
+        const otpCode = await prisma.otp_codes.create({ data: newOtpCodeDetails});
 
         await sendMail(
             EMAIL_SMTP_USERNAME,
