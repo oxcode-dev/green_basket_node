@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../lib/prisma.ts';
+import * as cookie from 'cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const MONTH = 30 * 24 * 60 * 60; // in seconds
@@ -96,24 +97,15 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
             sameSite: 'lax',
             maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
         });
-        res.cookie("token", token, {
-            httpOnly: true,
-            path: "/api/token",
-            // path: "/api/refresh_token",
-            sameSite: 'lax',
-            maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
-        });
         
         return res.status(201).json({
             token,
             user: {
-                id: user._id,
+                id: user.id,
                 email: user.email,
                 first_name: user.first_name,
                 last_name: user.last_name,
-                username: user.username,
-                avatar: user.avatar,
-                bio: user.bio,
+                phone: user.phone,
             },
             message: 'Login successful'
         });
@@ -123,20 +115,25 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
 }
 
 export const userLogout = async (req: express.Request, res: express.Response) => {
+
     try {
         // Clearing JWT cookie
-        // res.cookie("token", "", { maxAge: 0 });
-        res.cookie("token", "", {
-            httpOnly: true, // Important for security
-            expires: new Date(Date.now()), // Set expiration to the current time or past
-            // secure: process.env.NODE_ENV === "production" // Use secure in production
-        });
-        res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
+        res.setHeader(
+            "Set-Cookie",
+            cookie.stringifySetCookie({
+                name: "refreshtoken",
+                value: '',
+                httpOnly: true,
+                maxAge: 0 //30 * 24 * 60 * 60 * 1000, //validity of 30 days
+            }),
+        );
+
         // Sending success response
         res.status(201).json({ message: "Logged out successfully" });
     } catch (error: any) {
         // Handling errors
-        res.status(500).json({ error: `Internal Server Error: ${error}` });
+        console.log("Error in logout controller", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
