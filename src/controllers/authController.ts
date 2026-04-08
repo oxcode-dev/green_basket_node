@@ -11,8 +11,8 @@ const MONTH = 30 * 24 * 60 * 60; // in seconds
 export const userRegistration = async (req: express.Request, res: express.Response) => {
     try {
 
-        const { email, password, first_name, last_name, username } = req.body;
-        if(!first_name || !last_name || !email || !username || !password || password.length < 6) {
+        const { email, password, first_name, last_name } = req.body;
+        if(!first_name || !last_name || !email || !password || password.length < 6) {
             return res.status(400).json({
                 message: "Required fields are missing!",
             })
