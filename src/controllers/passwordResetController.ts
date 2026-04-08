@@ -55,7 +55,7 @@ export const forgotPassword = async (req: express.Request, res: express.Response
 export const resetPassword = async (req: express.Request, res: express.Response) => {
     try {
         const { email, otp, new_password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await prisma.users.findUnique({ where: {email} });
 
         if(!user) {
             return res.status(400).json({ message: 'User not found' });
@@ -65,25 +65,29 @@ export const resetPassword = async (req: express.Request, res: express.Response)
             return res.status(400).json({ message: "Required fields are missing!" });
         }
 
-        const otpCode = await OtpCode.findOne({ email, code: otp });
+        const otpCode = await prisma.otp_codes.findFirst({ where: {email, code: otp}})
 
         if(!otpCode) {
             return res.status(400).json({ message: "Invalid OTP" });
         }
 
-        if(otpCode.expires_at < new Date()) {
+        if(otpCode && otpCode.expires_at && otpCode.expires_at < new Date()) {
             return res.status(400).json({ message: "OTP has expired" });
         }
         
         const hashedPassword = await bcrypt.hash(new_password, 12);
-        user.password = hashedPassword;
-        await user.save();
 
-        await OtpCode.deleteMany({ email: user.email });
+        await prisma.users.update({
+            where: { email: user.email },
+            data: { password: hashedPassword },
+        });
+
+        await prisma.otp_codes.deleteMany({ where: {email: user.email} });
 
         let data = {
             status: "success",
             message: "Password reset successfully! Please login with your new password.",
+
         }
 
         return res.status(201).send(data);
