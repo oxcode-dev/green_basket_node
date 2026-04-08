@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs';
 import { generatePin } from '../helpers/index.ts';
 
 const router = express.Router();
-router.post('/forgot', async (req, res) => {})
 
 const EMAIL_SMTP_USERNAME = process.env.EMAIL_SMTP_USERNAME as string;
 const CLIENT_URL = process.env.CLIENT_URL as string
