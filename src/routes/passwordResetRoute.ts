@@ -1,7 +1,7 @@
 import express from 'express';
-import { forgotPassword, resetPassword } from '../controllers/PasswordResetController.ts';
 import { validateInputData } from '../middlewares/validate.ts';
-import { forgotPasswordSchema, resetPasswordSchema } from '../schemas/authSchema.ts';
+import { forgotPassword, resetPassword } from '../controllers/passwordResetController.ts';
+import { forgotPasswordSchema, resetPasswordSchema } from '../validationSchemas/authSchema.ts';
 
 const router = express.Router();
 

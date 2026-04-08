@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { prisma } from "./lib/prisma.ts";
 import { authRoute } from "./routes/authRoute.ts";
+import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
 
 dotenv.config();
 
@@ -32,6 +33,8 @@ app.get('/test', async(req, res) => {
 });
 
 app.use('/api/auth', authRoute)
+app.use('/api/password', passwordResetRoute)
+
 
 app.listen(PORT, () =>
   console.log(
