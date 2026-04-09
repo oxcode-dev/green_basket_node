@@ -23,7 +23,7 @@ model users {
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
 
-  products products[]
+  // products products[]
   orders orders[]
   reviews reviews[]
   addresses addresses[]
@@ -32,7 +32,7 @@ model users {
 
 model products {
   id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id String? @db.Uuid
+  // user_id String? @db.Uuid
   category_id String? @db.Uuid
   title String
   slug String
@@ -45,7 +45,7 @@ model products {
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
 
-  user users? @relation(fields: [user_id], references: [id])
+  // user users? @relation(fields: [user_id], references: [id])
   category categories? @relation(fields: [category_id], references: [id])
   order_items order_items[]
   reviews reviews[]
