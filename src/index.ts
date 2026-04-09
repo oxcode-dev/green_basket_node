@@ -6,12 +6,25 @@ import { prisma } from "./lib/prisma.ts";
 import { authRoute } from "./routes/authRoute.ts";
 import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
 import runSeed from "./db_temp.ts";
+import { categoriesRoute } from "./routes/categoriesRoute.ts";
+import cors from "cors"
 
 dotenv.config();
 
 const app: Application = express();
 
 app.use(express.json());
+
+app.use(cookieParser());
+
+const corsOptions = {
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+  credentials: true,
+  origin: [process.env.CLIENT_URL || 'http://localhost:2000', 'http://localhost:5173', 'https://nigerian-states-councils-admin.vercel.app/'],
+};
+
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON data
 app.use(bodyParser.json());
@@ -40,6 +53,7 @@ app.get('/test', async(req, res) => {
 
 app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
+app.use('/api/categories', categoriesRoute)
 
 
 app.listen(PORT, () =>
