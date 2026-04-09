@@ -21,20 +21,6 @@ async function main() {
                 name: faker.commerce.department(),
                 slug: faker.helpers.slugify(faker.commerce.department()).toLowerCase(),
                 description: faker.commerce.productDescription(),
-                // products: {
-                //     create: [
-                //         {
-                //             title: faker.commerce.productName(),
-                //             slug: faker.helpers.slugify(faker.commerce.productName()).toLowerCase(),
-                //             summary: faker.commerce.productDescription(),
-                //             description: faker.commerce.productDescription(),
-                //             price: parseFloat(faker.commerce.price()),
-                //             stock: faker.number.int({ min: 0, max: 100 }),
-                //             is_active: faker.datatype.boolean(),
-                //             image: faker.image.url(),
-                //         }
-                //     ]
-                // }
             },
             {
                 name: faker.commerce.department(),

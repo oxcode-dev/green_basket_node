@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { prisma } from "./lib/prisma.ts";
 import { authRoute } from "./routes/authRoute.ts";
 import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
+import runSeed from "./db_temp.ts";
 
 dotenv.config();
 
@@ -41,3 +42,11 @@ app.listen(PORT, () =>
     `🟢 Server running in development mode on port ${PORT}`
   )
 );
+
+runSeed()
+  .then(() => {
+    console.log('Seeding completed successfully.');
+  })
+  .catch((error) => {
+    console.error('Error during seeding:', error);
+  });   
