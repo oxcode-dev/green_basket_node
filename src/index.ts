@@ -18,7 +18,6 @@ app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(cookieParser());
 
 const PORT: number | string = 2000;
 
@@ -26,9 +25,15 @@ const PORT: number | string = 2000;
 // console.log(crypto.randomBytes(32).toString('hex'))
 
 app.get('/test', async(req, res) => {
-    const user = await prisma.users.findMany();
+    const users = await prisma.users.findMany({
+        omit: {
+            password: true,
+        }
+    });
+    const categories = await prisma.categories.findMany();
+    const products = await prisma.products.findMany();
 
-    return res.status(200).json(user);
+    return res.status(200).json({users, categories, products});
 
     // return res.status(200).json({message: 'New Endpoint'})
 });
