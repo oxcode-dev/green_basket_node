@@ -4,8 +4,6 @@ import bcrypt from 'bcryptjs';
 import { generatePin } from '../helpers/index.ts';
 import { prisma } from '../lib/prisma.ts';
 
-const router = express.Router();
-
 const EMAIL_SMTP_USERNAME = process.env.EMAIL_SMTP_USERNAME as string;
 const CLIENT_URL = process.env.CLIENT_URL as string
 
