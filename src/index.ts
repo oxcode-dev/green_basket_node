@@ -43,10 +43,10 @@ app.listen(PORT, () =>
   )
 );
 
-runSeed()
-  .then(() => {
-    console.log('Seeding completed successfully.');
-  })
-  .catch((error) => {
-    console.error('Error during seeding:', error);
-  });   
+// runSeed()
+//     .then(() => {
+//         console.log('Seeding completed successfully.');
+//     })
+//     .catch((error) => {
+//         console.error('Error during seeding:', error);
+//     });   
