@@ -35,3 +35,25 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
         return res.status(500).json({ message: `Server error: ${error}` });
     }
 }
+
+export const getProductsByCategory = async(req: express.Request, res: express.Response) => {
+    try {
+        const { category_id } = req.params;
+
+        const products = await prisma.products.findMany({
+            // skip: skip,
+            // take: take,
+            where: {
+                category_id: category_id,
+            }
+        });
+
+        return res.status(200).json({
+            message: "Category retrieved successfully!!!",
+            products
+        })
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
