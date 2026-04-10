@@ -10,6 +10,7 @@ import { categoriesRoute } from "./routes/categoriesRoute.ts";
 import cors from "cors"
 import helmet from "helmet";
 import morgan from 'morgan'
+import { ProductsRoute } from "./routes/productsRoute.ts";
 
 dotenv.config();
 
@@ -66,6 +67,7 @@ app.get('/test', async(req, res) => {
 app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
 app.use('/api/categories', categoriesRoute)
+app.use('/api/products', ProductsRoute)
 
 
 app.listen(PORT, () =>
