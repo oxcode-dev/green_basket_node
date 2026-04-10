@@ -8,6 +8,8 @@ import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
 import runSeed from "./db_temp.ts";
 import { categoriesRoute } from "./routes/categoriesRoute.ts";
 import cors from "cors"
+import helmet from "helmet";
+import morgan from 'morgan'
 
 dotenv.config();
 
@@ -25,7 +27,6 @@ const corsOptions = {
     headers: [
         { key: "Access-Control-Allow-Credentials", value: "true" },
         { key: "Access-Control-Allow-Origin", value: "*" },
-    // ...
     ],
     optionsSuccessStatus: 200,
 };
@@ -37,6 +38,10 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+app.use(morgan("common"));
 
 
 const PORT: number | string = 2000;

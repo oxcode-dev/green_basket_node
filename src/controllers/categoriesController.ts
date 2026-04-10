@@ -15,3 +15,24 @@ export const getCategories = async(req: express.Request, res: express.Response) 
         return res.status(500).json({ message: `Server error: ${error}` });
     }
 }
+
+export const getCategory = async(req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params;
+        
+        const category = await prisma.categories.findFirst({
+            where: { 
+                id: Array.isArray(id) ? id[0] : id
+            },
+            include: { products: true }
+        });
+
+        return res.status(200).json({
+            message: "Category retrieved successfully!!!",
+            category
+        })
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
