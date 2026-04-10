@@ -1,7 +1,6 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 
-
 export const getCategories = async(req: express.Request, res: express.Response) => {
     try {
         const categories = await prisma.categories.findMany();
