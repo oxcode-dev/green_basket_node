@@ -18,13 +18,20 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'], 
-  credentials: true,
-  origin: [process.env.CLIENT_URL || 'http://localhost:2000', 'http://localhost:5173', 'https://nigerian-states-councils-admin.vercel.app/'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'], 
+    credentials: true,
+    origin: [process.env.CLIENT_URL || 'http://localhost:2000', 'http://localhost:3000', 'https://nigerian-states-councils-admin.vercel.app/'],
+    headers: [
+        { key: "Access-Control-Allow-Credentials", value: "true" },
+        { key: "Access-Control-Allow-Origin", value: "*" },
+    // ...
+    ],
+    optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
+
 
 // Middleware to parse JSON data
 app.use(bodyParser.json());
