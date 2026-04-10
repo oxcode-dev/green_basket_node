@@ -15,7 +15,7 @@ export const getProducts = async(req: express.Request, res: express.Response) =>
     }
 }
 
-export const getCategory = async(req: express.Request, res: express.Response) => {
+export const getProduct = async(req: express.Request, res: express.Response) => {
     try {
         const { id } = req.params;
         
