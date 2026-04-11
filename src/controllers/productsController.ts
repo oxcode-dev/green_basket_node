@@ -3,11 +3,31 @@ import { prisma } from '../lib/prisma.ts';
 
 export const getProducts = async(req: express.Request, res: express.Response) => {
     try {
-        const products = await prisma.products.findMany();
+        // const products = await prisma.products.findMany();
+
+        const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
+        const pageNum = typeof page === 'string' ? parseInt(page) : page;
+        const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
+        const skip = (pageNum - 1) * limitNum;
+        // const skip = (page - 1) * limit;
+        
+        const totalCount = await prisma.products.count();
+
+        const products = await prisma.products.findMany({
+            skip: Number(skip),
+            take: Number(limit),
+            orderBy: { created_at: 'desc' }
+        });
 
         return res.status(200).json({
             message: "Products retrieved successfully!!!",
-            products
+            products,
+            metadata: {
+                page: pageNum,
+                limit: limitNum,
+                totalCount,
+                totalPages: Math.ceil(totalCount / limitNum),
+            }
         })
         
     } catch (error) {
@@ -39,18 +59,35 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
 export const getProductsByCategory = async(req: express.Request, res: express.Response) => {
     try {
         const { category } = req.params;
-
-        const products = await prisma.products.findMany({
-            // skip: skip,
-            // take: take,
+        const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
+        const pageNum = typeof page === 'string' ? parseInt(page) : page;
+        const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
+        const skip = (pageNum - 1) * limitNum;
+        
+        const totalCount = await prisma.products.count({
             where: {
                 category_id: category,
             }
         });
 
+        const products = await prisma.products.findMany({
+            skip: Number(skip),
+            take: Number(limitNum),
+            where: {
+                category_id: category,
+            },
+            orderBy: { created_at: 'desc' }
+        });
+
         return res.status(200).json({
             message: "Products retrieved successfully!!!",
-            products
+            products,
+            metadata: {
+                page,
+                limit,
+                totalCount,
+                totalPages: Math.ceil(totalCount / limitNum),
+            }
         })
         
     } catch (error) {
