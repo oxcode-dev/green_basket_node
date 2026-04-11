@@ -3,19 +3,18 @@ import { prisma } from '../lib/prisma.ts';
 
 export const getProducts = async(req: express.Request, res: express.Response) => {
     try {
-        // const products = await prisma.products.findMany();
 
         const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
         const pageNum = typeof page === 'string' ? parseInt(page) : page;
         const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
         const skip = (pageNum - 1) * limitNum;
-        // const skip = (page - 1) * limit;
         
         const totalCount = await prisma.products.count();
 
         const products = await prisma.products.findMany({
             skip: Number(skip),
             take: Number(limit),
+            include: { category: true },
             orderBy: { created_at: 'desc' }
         });
 
@@ -76,6 +75,7 @@ export const getProductsByCategory = async(req: express.Request, res: express.Re
             where: {
                 category_id: category,
             },
+            include: { category: true },
             orderBy: { created_at: 'desc' }
         });
 
@@ -83,8 +83,8 @@ export const getProductsByCategory = async(req: express.Request, res: express.Re
             message: "Products retrieved successfully!!!",
             products,
             metadata: {
-                page,
-                limit,
+                page: pageNum,
+                limit: limitNum,
                 totalCount,
                 totalPages: Math.ceil(totalCount / limitNum),
             }
