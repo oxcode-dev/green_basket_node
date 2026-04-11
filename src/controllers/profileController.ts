@@ -11,7 +11,7 @@ interface RequestWithUser extends express.Request {
 export const getUserDetails = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await prisma.users.findMany({
+        const user = await prisma.users.findFirst({
             where: { id: auth?.id },
             omit: ['password'],
         })
@@ -24,18 +24,13 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
             status: "success",
             message: "Profile retrieved successfully",
             user: {
-                id: user?.id,
+                id: user?.id || '',
                 fullName: user?.first_name + ' ' + user?.last_name,
                 email: user?.email,
                 first_name: user?.first_name,
                 last_name: user?.last_name,
-                username: user?.username,
-                avatar: user?.avatar,
-                bio: user?.bio,
-                // posts: user?.posts || [],
-                // saved: user?.saved || [],
-                // followers: user?.followers || [],
-                // followings: user?.followings || [],
+                // avatar: user?.avatar,
+                // bio: user?.bio,
             },
         }
 
