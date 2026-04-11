@@ -27,7 +27,7 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
         });
 
         return res.status(200).json({
-            message: "Category retrieved successfully!!!",
+            message: "Product retrieved successfully!!!",
             product
         })
         
@@ -38,18 +38,18 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
 
 export const getProductsByCategory = async(req: express.Request, res: express.Response) => {
     try {
-        const { category_id } = req.params;
+        const { category } = req.params;
 
         const products = await prisma.products.findMany({
             // skip: skip,
             // take: take,
             where: {
-                category_id: category_id,
+                category_id: category,
             }
         });
 
         return res.status(200).json({
-            message: "Category retrieved successfully!!!",
+            message: "Products retrieved successfully!!!",
             products
         })
         
