@@ -43,16 +43,19 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
 export const updateUserDetails = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await User.findById(auth?.id)
+        const user = await prisma.users.findFirst({
+            where: { id: auth?.id },
+            omit: ['password'],
+        })
 
         if(!user) {
             return res.status(404).json({ message: 'User not found' })
         }
 
-        const { first_name, last_name, email, bio, username } = req.body;
+        const { first_name, last_name, email, phone } = req.body;
 
         if(
-            !first_name || !last_name || !email || !username
+            !first_name || !last_name || !email
         ) {
             return res.status(400).json({
                 message: "Required fields are missing!",
@@ -62,13 +65,21 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
         if(first_name) user.first_name = first_name;
         if(last_name) user.last_name = last_name;
         if(email) user.email = email;
-        if(username) user.username = username;
-        if(bio) user.bio = bio;
+        // if(username) user.username = username;
+        // if(bio) user.bio = bio;
 
-        await user.save();
+        const updatedUser = await prisma.users.update({
+            where: { email: user.email },
+            data: { 
+                first_name,
+                last_name,
+                email, 
+                phone,
+            },
+        });
 
         let data = {
-            user,
+            user: updatedUser,
             status: "success",
             message: "Profile updated successfully",
         };
