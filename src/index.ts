@@ -11,6 +11,7 @@ import cors from "cors"
 import helmet from "helmet";
 import morgan from 'morgan'
 import { ProductsRoute } from "./routes/productsRoute.ts";
+import { profileRouter } from "./routes/profileRoute .ts";
 
 dotenv.config();
 
@@ -68,6 +69,7 @@ app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
 app.use('/api/categories', categoriesRoute)
 app.use('/api/products', ProductsRoute)
+app.use('/api/profile', profileRouter)
 
 
 app.listen(PORT, () =>
