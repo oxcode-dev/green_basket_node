@@ -62,12 +62,6 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
             })
         }
 
-        if(first_name) user.first_name = first_name;
-        if(last_name) user.last_name = last_name;
-        if(email) user.email = email;
-        // if(username) user.username = username;
-        // if(bio) user.bio = bio;
-
         const updatedUser = await prisma.users.update({
             where: { email: user.email },
             data: { 
