@@ -43,7 +43,7 @@ export const getUserOrder = async (req: express.Request, res: express.Response) 
     try {
         const auth: {id: string, email: string} = req?.user;
 
-        const id: string = req?.params?.id || ''
+        const id: string = String(req?.params?.id || '')
         
         const order = await prisma.orders.findMany({
             include: { order_items: true },
