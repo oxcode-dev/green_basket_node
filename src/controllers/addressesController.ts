@@ -46,3 +46,12 @@ export const getUserAddress = async (req: express.Request, res: express.Response
         return res.status(500).json({ message: `server error: ${error}`})
     }
 }
+
+export const storeUserAddress = async (req: express.Request, res: express.Response) => { 
+    try {
+        const { street, city, postal_code, state } = req.body;
+        
+    } catch (error) {
+        return res.status(500).json({ message: `server error: ${error}`})
+    }
+}
