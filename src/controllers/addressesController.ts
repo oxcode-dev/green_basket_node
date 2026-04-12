@@ -27,7 +27,7 @@ export const getUserAddresses = async (req: express.Request, res: express.Respon
 export const getUserAddress = async (req: express.Request, res: express.Response) => {
     try {
         const auth = req.user;
-        const { id } = req.params;
+        const id = String(req?.params?.id || '');
         
         const address = await prisma.addresses.findMany({
             include: { user: true },
