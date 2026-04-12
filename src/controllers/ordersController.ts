@@ -41,6 +41,22 @@ export const getUserOrders = async (req: express.Request, res: express.Response)
 
 export const getUserOrder = async (req: express.Request, res: express.Response) => {
     try {
+        const auth = req.user;
+        const { id } = req.params;
+        
+        const order = await prisma.orders.findMany({
+            include: { order_items: true },
+            orderBy: { created_at: 'desc' },
+            where: { user_id: auth?.id, id: id}
+        });
+
+        let data = {
+            status: "success",
+            message: "Orders fetched successfully",
+            order,
+        }
+
+        res.status(200).json(data);
         
     } catch (error) {
         return res.status(500).json({ message: `server error: ${error}`})
