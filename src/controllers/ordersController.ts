@@ -41,14 +41,13 @@ export const getUserOrders = async (req: express.Request, res: express.Response)
 
 export const getUserOrder = async (req: express.Request, res: express.Response) => {
     try {
-        const auth: string = req?.user;
-        const { id } = req?.params;
+        const auth: {id: string, email: string} = req?.user;
 
-        const ids: string = req?.params?.id || ''
+        const id: string = req?.params?.id || ''
         
         const order = await prisma.orders.findMany({
             include: { order_items: true },
-            where: { user_id: auth?.id, id: ids}
+            where: { user_id: auth?.id, id: id}
         });
 
         let data = {
