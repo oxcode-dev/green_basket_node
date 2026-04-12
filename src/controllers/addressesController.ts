@@ -77,6 +77,10 @@ export const updateUserAddress = async (req: express.Request, res: express.Respo
     try {
         const id = String(req?.params?.id)
 
+        if (!await prisma.addresses.findUnique({ where: { id: id } })) {
+            return res.status(404).json({ error: 'Address not found' })
+        }
+
         const auth = req.user;
         const { street, city, postal_code, state } = req.body;
 
@@ -93,6 +97,30 @@ export const updateUserAddress = async (req: express.Request, res: express.Respo
 
         return res.status(201).json({
             message: 'Address Updated successfully', 
+            address,
+            status: 'success'
+        });
+        
+    } catch (error) {
+        return res.status(500).json({ message: `server error: ${error}`})
+    }
+}
+
+export const deleteUserAddress = async (req: express.Request, res: express.Response) => { 
+    try {
+        const id = String(req?.params?.id)
+        if (!await prisma.addresses.findUnique({ where: { id: id } })) {
+            return res.status(404).json({ error: 'Address not found' })
+        }
+
+        const auth = req.user;
+
+        const address = await prisma.addresses.delete({
+            where: { id: id }
+        })
+
+        return res.status(201).json({
+            message: 'Address Delete successfully', 
             address,
             status: 'success'
         });
