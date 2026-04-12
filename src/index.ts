@@ -61,8 +61,6 @@ app.get('/test', async(req, res) => {
     const products = await prisma.products.findMany();
 
     return res.status(200).json({users, categories, products});
-
-    // return res.status(200).json({message: 'New Endpoint'})
 });
 
 app.use('/api/auth', authRoute)
