@@ -14,3 +14,11 @@ export const changePasswordSchema = z.object({
 }).refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match", path: ["confirm_password"]
 })
+
+export const userAddressSchema = z.object({
+    street: z.string().min(2, { message: "First name must be at least 2 characters long" }),
+    city: z.string().min(2, { message: "Last name must be at least 2 characters long" }),
+    state: z.string().min(2, { message: "Username must be at least 2 characters long" }),
+    postal_code: z.string().optional(),
+    // email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
+})
