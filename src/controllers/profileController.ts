@@ -92,7 +92,7 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
 export const changePassword = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await User.findById(auth?.id)
+        const user = await prisma.users.findUnique({ where: {id: auth?.id} });
 
         if(!user) {
             return res.status(404).json({ message: 'User not found' })
@@ -108,8 +108,12 @@ export const changePassword = async (req: RequestWithUser, res: express.Response
             return res.status(400).json({ message: 'Passwords do not match' })
         }
 
-        user.password = await bcrypt.hash(password, 12);
-        await user.save();
+        const hashedPassword = await bcrypt.hash(password, 12);
+        
+        await prisma.users.update({
+            where: { email: user.email },
+            data: { password: hashedPassword },
+        });
 
         let data = {
             status: "success",
@@ -123,40 +127,19 @@ export const changePassword = async (req: RequestWithUser, res: express.Response
 
 export const deleteProfile = async (req: RequestWithUser, res: express.Response) => {
 
-    const user = await User.findById(req.user?.id);
-    const posts = user?.posts || [];
-    const followers = user?.followers || [];
-    const following = user?.followings || [];
-    const userId = user?.id;
+    const user = await prisma.users.findUnique({ where: {id: req.user?.id} });
+    
+    await prisma.users.delete({ where: {id: req.user?.id} });
+
+    // const userId = user?.id;
 
     // delete post & user images ⚠️⚠️
-    const result = await User.findByIdAndDelete(userId);
+    // const result = await User.findByIdAndDelete(userId);
 
     res.cookie('token', '', {
         expires: new Date(Date.now()),
         httpOnly: true,
     });
-
-    // for (let i = 0; i < posts.length; i++) {
-    //     const post = await Post.findById(posts[i]);
-    //     await post.deleteOne();
-    // }
-
-    // for (let i = 0; i < followers.length; i++) {
-    //     const follower = await User.findById(followers[i]);
-
-    //     const index = follower?.following.indexOf(userId);
-    //     follower?.following.splice(index, 1);
-    //     await follower.save();
-    // }
-
-    // for (let i = 0; i < following.length; i++) {
-    //     const follows = await User.findById(following[i]);
-
-    //     const index = follows?.followers.indexOf(userId);
-    //     follows.followers.splice(index, 1);
-    //     await follows.save();
-    // }
 
     res.status(200).json({
         success: true,
