@@ -49,7 +49,53 @@ export const getUserAddress = async (req: express.Request, res: express.Response
 
 export const storeUserAddress = async (req: express.Request, res: express.Response) => { 
     try {
+        const auth = req.user;
         const { street, city, postal_code, state } = req.body;
+
+        const address = await prisma.addresses.create({
+            data: {
+                street,
+                city,
+                state, 
+                postal_code,
+                user_id: auth?.id
+            }
+        })
+
+        return res.status(201).json({
+            message: 'Address Created successfully', 
+            address,
+            status: 'success'
+        });
+        
+    } catch (error) {
+        return res.status(500).json({ message: `server error: ${error}`})
+    }
+}
+
+export const updateUserAddress = async (req: express.Request, res: express.Response) => { 
+    try {
+        const id = String(req?.params?.id)
+
+        const auth = req.user;
+        const { street, city, postal_code, state } = req.body;
+
+        const address = await prisma.addresses.update({
+            where: { id: id },
+            data: {
+                street,
+                city,
+                state, 
+                postal_code,
+                user_id: auth?.id
+            }
+        })
+
+        return res.status(201).json({
+            message: 'Address Updated successfully', 
+            address,
+            status: 'success'
+        });
         
     } catch (error) {
         return res.status(500).json({ message: `server error: ${error}`})
