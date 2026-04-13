@@ -55,6 +55,9 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
     }
 }
 
+export const storeWishlist = async (req: express.Request, res: express.Response) => {
+
+} 
 
 export const deleteWishlist = async (req: express.Request, res: express.Response) => {
     try {
