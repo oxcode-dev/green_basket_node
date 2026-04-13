@@ -124,7 +124,7 @@ export const deleteUserAddress = async (req: express.Request, res: express.Respo
         })
 
         return res.status(201).json({
-            message: 'Address Delete successfully', 
+            message: 'Address Deleted successfully', 
             address,
             status: 'success'
         });

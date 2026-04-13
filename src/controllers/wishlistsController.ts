@@ -55,3 +55,26 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
     }
 }
 
+
+export const deleteWishlist = async (req: express.Request, res: express.Response) => {
+    try {
+        const id = String(req?.params?.id)
+        if (!await prisma.wishlists.findUnique({ where: { id: id } })) {
+            return res.status(404).json({ error: 'Address not found' })
+        }
+
+        const auth = req.user;
+
+        const address = await prisma.wishlists.delete({
+            where: { id: id }
+        })
+
+        return res.status(201).json({
+            message: 'Wishlist Deleted successfully', 
+            address,
+            status: 'success'
+        });
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
