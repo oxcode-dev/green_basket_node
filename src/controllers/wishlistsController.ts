@@ -56,7 +56,15 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
 }
 
 export const storeWishlist = async (req: express.Request, res: express.Response) => {
-
+    try {
+        const product_id = String(req?.params?.id);
+        if (!await prisma.products.findUnique({ where: { id: product_id } })) {
+            return res.status(404).json({ error: 'Product not found' })
+        }
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
 } 
 
 export const deleteWishlist = async (req: express.Request, res: express.Response) => {
