@@ -28,6 +28,10 @@ export const getUserAddress = async (req: express.Request, res: express.Response
     try {
         const auth = req.user;
         const id = String(req?.params?.id || '');
+
+        if (!await prisma.addresses.findUnique({ where: { id: id } })) {
+            return res.status(404).json({ error: 'Address not found' })
+        }
         
         const address = await prisma.addresses.findMany({
             include: { user: true },
