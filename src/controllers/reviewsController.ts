@@ -57,7 +57,7 @@ export const getReview = async(req: express.Request, res: express.Response) => {
     }
 }
 
-export const storeWishlist = async (req: express.Request, res: express.Response) => {
+export const storeReview = async (req: express.Request, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
