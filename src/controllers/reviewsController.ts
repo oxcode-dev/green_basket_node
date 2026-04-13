@@ -48,7 +48,7 @@ export const getReview = async(req: express.Request, res: express.Response) => {
         });
 
         return res.status(200).json({
-            message: "User Wishlist retrieved successfully!!!",
+            message: "User review retrieved successfully!!!",
             review
         })
         
@@ -61,22 +61,24 @@ export const storeReview = async (req: express.Request, res: express.Response) =
     try {
         const auth: {id: string, email: string} = req?.user;
 
-        const product_id = String(req?.params?.id);
+        const {rating, product_id, comment} = req.body;
 
         if (!await prisma.products.findUnique({ where: { id: product_id } })) {
             return res.status(404).json({ error: 'Product not found' })
         }
 
-        const wishlist = await prisma.wishlists.create({
+        const review = await prisma.reviews.create({
             data: {
                 product_id,
+                rating: Number(rating),
+                comment,
                 user_id: auth?.id
             }
         })
 
         return res.status(200).json({
-            message: "User Wishlist added successfully!!!",
-            wishlist
+            message: "User review added successfully!!!",
+            review
         })
         
     } catch (error) {
