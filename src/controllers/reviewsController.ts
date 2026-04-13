@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 
-export const getUserWishlists = async(req: express.Request, res: express.Response) => {
+export const getReviews = async(req: express.Request, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
@@ -10,9 +10,9 @@ export const getUserWishlists = async(req: express.Request, res: express.Respons
         const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
         const skip = (pageNum - 1) * limitNum;
         
-        const totalCount = await prisma.wishlists.count();
+        const totalCount = await prisma.reviews.count();
 
-        const wishlists = await prisma.wishlists.findMany({
+        const reviews = await prisma.reviews.findMany({
             skip: Number(skip),
             take: Number(limit),
             where: { user_id: auth?.id},
@@ -21,8 +21,8 @@ export const getUserWishlists = async(req: express.Request, res: express.Respons
         });
 
         return res.status(200).json({
-            message: "User Wishlists retrieved successfully!!!",
-            wishlists,
+            message: "Reviews retrieved successfully!!!",
+            reviews,
             metadata: {
                 page: pageNum,
                 limit: limitNum,
@@ -36,11 +36,11 @@ export const getUserWishlists = async(req: express.Request, res: express.Respons
     }
 }
 
-export const getUserWishlist = async(req: express.Request, res: express.Response) => {
+export const getReview = async(req: express.Request, res: express.Response) => {
     try {
         const id = String(req?.params?.id);
         
-        const product = await prisma.wishlists.findFirst({
+        const review = await prisma.reviews.findFirst({
             where: { 
                 id: Array.isArray(id) ? id[0] : id
             },
@@ -49,7 +49,7 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
 
         return res.status(200).json({
             message: "User Wishlist retrieved successfully!!!",
-            product
+            review
         })
         
     } catch (error) {
@@ -87,13 +87,11 @@ export const storeWishlist = async (req: express.Request, res: express.Response)
 export const deleteWishlist = async (req: express.Request, res: express.Response) => {
     try {
         const id = String(req?.params?.id)
-        if (!await prisma.wishlists.findUnique({ where: { id: id } })) {
-            return res.status(404).json({ error: 'Address not found' })
+        if (!await prisma.reviews.findUnique({ where: { id: id } })) {
+            return res.status(404).json({ error: 'Review not found' })
         }
 
-        const auth = req.user;
-
-        const address = await prisma.wishlists.delete({
+        const address = await prisma.reviews.delete({
             where: { id: id }
         })
 
