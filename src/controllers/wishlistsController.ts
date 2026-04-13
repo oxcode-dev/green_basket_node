@@ -40,7 +40,7 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
     try {
         const id = String(req?.params?.id);
         
-        const product = await prisma.wishlists.findFirst({
+        const wishlist = await prisma.wishlists.findFirst({
             where: { 
                 id: Array.isArray(id) ? id[0] : id
             },
@@ -49,7 +49,7 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
 
         return res.status(200).json({
             message: "User Wishlist retrieved successfully!!!",
-            product
+            wishlist
         })
         
     } catch (error) {
