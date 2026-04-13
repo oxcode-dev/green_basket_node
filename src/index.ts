@@ -13,6 +13,7 @@ import morgan from 'morgan'
 import { ProductsRoute } from "./routes/productsRoute.ts";
 import { profileRouter } from "./routes/profileRoute .ts";
 import { ordersRouter } from "./routes/ordersRoute.ts";
+import { addressesRoute } from "./routes/addressesRoute.ts";
 
 dotenv.config();
 
@@ -70,6 +71,7 @@ app.use('/api/categories', categoriesRoute)
 app.use('/api/products', ProductsRoute)
 app.use('/api/profile', profileRouter)
 app.use('/api/orders', ordersRouter)
+app.use('/api/addresses', addressesRoute)
 
 
 app.listen(PORT, () =>
