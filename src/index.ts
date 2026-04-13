@@ -14,6 +14,7 @@ import { ProductsRoute } from "./routes/productsRoute.ts";
 import { profileRouter } from "./routes/profileRoute .ts";
 import { ordersRouter } from "./routes/ordersRoute.ts";
 import { addressesRoute } from "./routes/addressesRoute.ts";
+import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 
 dotenv.config();
 
@@ -72,6 +73,7 @@ app.use('/api/products', ProductsRoute)
 app.use('/api/profile', profileRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/addresses', addressesRoute)
+app.use('/api/wishlists', wishlistsRoute)
 
 
 app.listen(PORT, () =>
