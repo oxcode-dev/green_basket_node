@@ -96,7 +96,7 @@ export const deleteWishlist = async (req: express.Request, res: express.Response
         })
 
         return res.status(201).json({
-            message: 'Wishlist Deleted successfully', 
+            message: 'Review Deleted successfully', 
             address,
             status: 'success'
         });
