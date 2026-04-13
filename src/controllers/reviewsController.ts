@@ -84,7 +84,7 @@ export const storeWishlist = async (req: express.Request, res: express.Response)
     }
 } 
 
-export const deleteWishlist = async (req: express.Request, res: express.Response) => {
+export const deleteReview = async (req: express.Request, res: express.Response) => {
     try {
         const id = String(req?.params?.id)
         if (!await prisma.reviews.findUnique({ where: { id: id } })) {
