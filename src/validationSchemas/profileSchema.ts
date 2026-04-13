@@ -22,3 +22,9 @@ export const userAddressSchema = z.object({
     postal_code: z.string().optional(),
     // email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
 })
+
+export const productReviewSchema = z.object({
+    product_id: z.string({ message: 'Product is required.'}),
+    comment: z.string({ message: 'Comment is required.'}),
+    rating: z.number({ message: "Rating is required."})
+})
