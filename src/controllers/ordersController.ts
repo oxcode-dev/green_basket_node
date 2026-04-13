@@ -46,7 +46,7 @@ export const getUserOrder = async (req: express.Request, res: express.Response) 
         const id: string = String(req?.params?.id || '')
 
         if (!await prisma.orders.findUnique({ where: { id: id } })) {
-            return res.status(404).json({ error: 'Address not found' })
+            return res.status(404).json({ error: 'Order not found' })
         }
         
         const order = await prisma.orders.findMany({
