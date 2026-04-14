@@ -79,9 +79,9 @@ app.use('/api/reviews', reviewsRoute)
 
 
 app.listen(PORT, () =>
-  console.log(
-    `🟢 Server running in development mode on port ${PORT}`
-  )
+    console.log(
+        `🟢 Server running in development mode on port ${PORT}`
+    )
 );
 
 // runSeed()
