@@ -16,6 +16,8 @@ import { ordersRouter } from "./routes/ordersRoute.ts";
 import { addressesRoute } from "./routes/addressesRoute.ts";
 import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
+import expressListEndpoints from "express-list-endpoints";
+import { getRoutes } from "express-get-routes";
 
 dotenv.config();
 
@@ -83,6 +85,15 @@ app.listen(PORT, () =>
         `🟢 Server running in development mode on port ${PORT}`
     )
 );
+
+console.log(expressListEndpoints(app));
+
+// let routes = getRoutes(app);
+// console.log(JSON.stringify(routes));
+
+// routes.forEach((route) => {
+//   console.log(route.path);
+// })
 
 // runSeed()
 //     .then(() => {
