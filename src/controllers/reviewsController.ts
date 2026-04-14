@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
 
-export const getReviews = async(req: express.Request, res: express.Response) => {
+export const getReviews = async(req: any, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
@@ -57,7 +57,7 @@ export const getReview = async(req: express.Request, res: express.Response) => {
     }
 }
 
-export const storeReview = async (req: express.Request, res: express.Response) => {
+export const storeReview = async (req: any, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
