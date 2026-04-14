@@ -40,7 +40,7 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
         
         const product = await prisma.products.findFirst({
             where: { 
-                id: Array.isArray(id) ? id[0] : id
+                id: String(Array.isArray(id) ? id[0] : id)
             },
             include: { category: true }
         });
@@ -65,7 +65,7 @@ export const getProductsByCategory = async(req: express.Request, res: express.Re
         
         const totalCount = await prisma.products.count({
             where: {
-                category_id: category,
+                category_id: String(category),
             }
         });
 
@@ -73,7 +73,7 @@ export const getProductsByCategory = async(req: express.Request, res: express.Re
             skip: Number(skip),
             take: Number(limitNum),
             where: {
-                category_id: category,
+                category_id: String(category),
             },
             include: { category: true },
             orderBy: { created_at: 'desc' }
