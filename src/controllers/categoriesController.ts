@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
 
 export const getCategories = async(req: express.Request, res: express.Response) => {
@@ -15,13 +15,13 @@ export const getCategories = async(req: express.Request, res: express.Response) 
     }
 }
 
-export const getCategory = async(req: express.Request, res: express.Response) => {
+export const getCategory = async(req: Request, res: express.Response) => {
     try {
         const { id } = req.params;
         
         const category = await prisma.categories.findFirst({
             where: { 
-                id: Array.isArray(id) ? id[0] : id
+                id: String(Array.isArray(id) ? id[0] : id)
             },
             include: { products: true }
         });
