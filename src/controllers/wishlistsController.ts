@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 
-export const getUserWishlists = async(req: express.Request, res: express.Response) => {
+export const getUserWishlists = async(req: any, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
@@ -57,7 +57,7 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
     }
 }
 
-export const storeWishlist = async (req: express.Request, res: express.Response) => {
+export const storeWishlist = async (req: any, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
@@ -84,7 +84,7 @@ export const storeWishlist = async (req: express.Request, res: express.Response)
     }
 } 
 
-export const deleteWishlist = async (req: express.Request, res: express.Response) => {
+export const deleteWishlist = async (req: any, res: express.Response) => {
     try {
         const id = String(req?.params?.id)
         if (!await prisma.wishlists.findUnique({ where: { id: id } })) {
