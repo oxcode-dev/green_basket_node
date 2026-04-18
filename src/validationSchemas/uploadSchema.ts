@@ -19,8 +19,8 @@ export const imageSchema = z
 // Document Schema
 export const documentSchema = z
     .instanceof(File)
+    .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
     .refine(
-        (file) =>
-     .includes(file.type),
+        (file) => ACCEPTED_DOCUMENT_TYPES.includes(file.type),
         { message: "Invalid document file type" }
     );
