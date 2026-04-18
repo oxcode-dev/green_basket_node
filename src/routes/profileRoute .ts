@@ -18,4 +18,3 @@ router.delete('/delete-account', auth, deleteProfile as any);
 export { router as profileRouter };
 
 
-
