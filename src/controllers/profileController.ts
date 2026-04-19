@@ -43,13 +43,13 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
 export const updateUserDetails = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await prisma.users.findFirst({
-            where: { id: String(auth?.id) },
-        })
+        // const user = await prisma.users.findFirst({
+        //     where: { id: String(auth?.id) },
+        // })
 
-        if(!user) {
-            return res.status(404).json({ message: 'User not found' })
-        }
+        // if(!user) {
+        //     return res.status(404).json({ message: 'User not found' })
+        // }
 
         const { first_name, last_name, email, phone } = req.body;
 
