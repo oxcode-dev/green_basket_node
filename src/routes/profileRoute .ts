@@ -8,7 +8,7 @@ import { changePasswordSchema, userDetailsSchema } from '../validations/profileS
 
 const router = express.Router();
 
-router.route('/profile')
+router.route('/')
     .get(auth, getUserDetails as any)
     .put(auth, validateInputData(userDetailsSchema), updateUserDetails as any);
     
