@@ -12,8 +12,8 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
     try {
         const auth = req.user
         const user = await prisma.users.findFirst({
-            where: { id: auth?.id },
-            omit: ['password'],
+            where: { id: String(auth?.id) },
+            // omit: ['password'],
         })
 
          if (!user) {
@@ -44,8 +44,7 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
     try {
         const auth = req.user
         const user = await prisma.users.findFirst({
-            where: { id: auth?.id },
-            omit: ['password'],
+            where: { id: String(auth?.id) },
         })
 
         if(!user) {
@@ -86,7 +85,7 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
 export const changePassword = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await prisma.users.findUnique({ where: {id: auth?.id} });
+        const user = await prisma.users.findUnique({ where: {id: String(auth?.id)} });
 
         if(!user) {
             return res.status(404).json({ message: 'User not found' })
@@ -121,9 +120,9 @@ export const changePassword = async (req: RequestWithUser, res: express.Response
 
 export const deleteProfile = async (req: RequestWithUser, res: express.Response) => {
 
-    const user = await prisma.users.findUnique({ where: {id: req.user?.id} });
+    const user = await prisma.users.findUnique({ where: {id: String(req.user?.id)} });
     
-    await prisma.users.delete({ where: {id: req.user?.id} });
+    await prisma.users.delete({ where: {id: String(req.user?.id)} });
 
     // const userId = user?.id;
 
