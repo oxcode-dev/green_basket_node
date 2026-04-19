@@ -85,7 +85,7 @@ app.post('/api/upload', upload.single('file'), (req: any, res: express.Response)
         return res.status(400).json({ error: 'No file uploaded' });
     }
     // Here you can add additional validation for file type and size if needed
-    res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+    return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
 });
 
 app.use('/api/auth', authRoute)
