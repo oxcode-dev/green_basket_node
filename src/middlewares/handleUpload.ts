@@ -31,12 +31,12 @@ export const localUpload = (req: any, res: express.Response, next: express.NextF
     multerUpload(req, res, function (error) {
         if (error) {
             if (error.code === 'LIMIT_FILE_SIZE') {
-                return next(new Error('File too large'));
+                return res.status(400).json({ error: 'File too large' });
             }
-            next(error);
+            return res.status(400).json({ error: error.message });
         } 
         if (!req.file) {
-            next(new Error('You must provide a file'));
+            return res.status(400).json({ error: 'You must provide a file' });
         }
         next();
     });
