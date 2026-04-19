@@ -4,7 +4,7 @@ import {
 } from '../controllers/profileController.ts';
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
-import { changePasswordSchema, userDetailsSchema } from '../validationSchemas/profileSchema.ts';
+import { changePasswordSchema, userDetailsSchema } from '../validations/profileSchema.ts';
 
 const router = express.Router();
 

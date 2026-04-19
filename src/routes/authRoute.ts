@@ -4,7 +4,7 @@ import express from 'express';
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
 import { userLogin, userLogout, userRegistration } from '../controllers/authController.ts';
-import { loginSchema, registerSchema } from '../validationSchemas/authSchema.ts';
+import { loginSchema, registerSchema } from '../validations/authSchema.ts';
 
 const router = express.Router();
 
