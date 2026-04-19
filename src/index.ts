@@ -80,6 +80,7 @@ app.get('/test', async(req, res) => {
     return res.status(200).json({users, categories, products});
 });
 
+// app.post('/api/upload', upload.single('file'), (req: any, res: express.Response) => {
 app.post('/api/upload', upload.single('file'), (req: any, res: express.Response) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
