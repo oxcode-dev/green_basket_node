@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import { prisma } from "./lib/prisma.ts";
 import { authRoute } from "./routes/authRoute.ts";
 import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
-import runSeed from "./db_temp.ts";
+// import runSeed from "./db_temp.ts";
 import { categoriesRoute } from "./routes/categoriesRoute.ts";
 import cors from "cors"
 import helmet from "helmet";
@@ -16,7 +16,6 @@ import { ordersRouter } from "./routes/ordersRoute.ts";
 import { addressesRoute } from "./routes/addressesRoute.ts";
 import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
-import expressListEndpoints from "express-list-endpoints";
 import { localUpload } from "./middlewares/handleUpload.ts";
 
 dotenv.config();
@@ -45,7 +44,7 @@ app.use(cors(corsOptions));
 // Middleware to parse JSON data
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -92,8 +91,6 @@ app.listen(PORT, () =>
         `🟢 Server running in development mode on port ${PORT}`
     )
 );
-
-console.log(expressListEndpoints(app));
 
 // runSeed()
 //     .then(() => {

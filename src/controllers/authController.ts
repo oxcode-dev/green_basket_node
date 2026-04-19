@@ -69,6 +69,8 @@ export const userRegistration = async (req: express.Request, res: express.Respon
 
 // Router for user login
 export const userLogin = async (req: express.Request, res: express.Response) => {
+    // return res.status(500).json({ message: 'server error', req: JSON.stringify(req.body) })
+
     try {
         const { email, password } = req.body;
         const user = await prisma.users.findUnique({ where: {email} });
