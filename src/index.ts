@@ -51,6 +51,8 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 
+const upload = multer({dest: 'uploads/'});
+
 
 const PORT: number | string = 2000;
 
@@ -87,13 +89,6 @@ app.listen(PORT, () =>
 );
 
 console.log(expressListEndpoints(app));
-
-// let routes = getRoutes(app);
-// console.log(JSON.stringify(routes));
-
-// routes.forEach((route) => {
-//   console.log(route.path);
-// })
 
 // runSeed()
 //     .then(() => {
