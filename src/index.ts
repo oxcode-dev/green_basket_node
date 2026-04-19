@@ -51,7 +51,7 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 
-const upload = multer({dest: 'uploads/'});
+const upload = multer({dest: 'src/uploads/'});
 
 
 const PORT: number | string = 2000;
@@ -69,6 +69,14 @@ app.get('/test', async(req, res) => {
     const products = await prisma.products.findMany();
 
     return res.status(200).json({users, categories, products});
+});
+
+app.post('/api/upload', upload.single('file'), (req: any, res: express.Response) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    // Here you can add additional validation for file type and size if needed
+    res.status(200).json({ message: 'File uploaded successfully', file: req.file });
 });
 
 app.use('/api/auth', authRoute)
