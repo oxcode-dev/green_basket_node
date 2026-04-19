@@ -17,7 +17,7 @@ import { addressesRoute } from "./routes/addressesRoute.ts";
 import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
 import expressListEndpoints from "express-list-endpoints";
-import { getRoutes } from "express-get-routes";
+import multer from "multer";
 
 dotenv.config();
 
