@@ -18,6 +18,7 @@ import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
 import expressListEndpoints from "express-list-endpoints";
 import multer from "multer";
+import { localUpload } from "./middlewares/handleUpload.ts";
 
 dotenv.config();
 
@@ -81,7 +82,7 @@ app.get('/test', async(req, res) => {
 });
 
 // app.post('/api/upload', upload.single('file'), (req: any, res: express.Response) => {
-app.post('/api/upload', upload.single('file'), (req: any, res: express.Response) => {
+app.post('/api/upload', localUpload, (req: any, res: express.Response) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
