@@ -1,4 +1,5 @@
 import multer from "multer";
+import express from "express";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -25,3 +26,18 @@ export const multerUpload = multer({
     limits: { fileSize: fileMaxSize }
     
 }).single("file");
+
+export const localUpload = (req: any, res: express.Response, next: express.NextFunction) => {
+    multerUpload(req, res, function (error) {
+        if (error) {
+            if (error.code === 'LIMIT_FILE_SIZE') {
+                return next(new Error('File too large'));
+            }
+            next(error);
+        } 
+        if (!req.file) {
+            next(new Error('You must provide a file'));
+        }
+        next();
+    });
+};
