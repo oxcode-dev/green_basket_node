@@ -6,7 +6,7 @@ import { deleteWishlist, getUserWishlist, getUserWishlists, storeWishlist } from
 const router = express.Router();
 
 router.get('/', auth, getUserWishlists)
-router.post('/', auth, storeWishlist)
+router.post('/:product_id', auth, storeWishlist)
 router.get('/:id', auth, getUserWishlist)
 router.delete('/:id', auth, deleteWishlist)
 
