@@ -29,7 +29,7 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
                 email: user?.email,
                 first_name: user?.first_name,
                 last_name: user?.last_name,
-                // avatar: user?.avatar,
+                avatar: user?.avatar,
                 // bio: user?.bio,
             },
         }
@@ -132,3 +132,32 @@ export const deleteProfile = async (req: RequestWithUser, res: express.Response)
         message: "Profile Deleted"
     });
 };
+
+export const uploadAvatar = async (req: RequestWithUser, res: express.Response) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        const auth = req.user;
+
+        const updatedUser = await prisma.users.update({
+            where: { id: String(auth?.id) },
+            data: { 
+                avatar: req.file?.filename,
+            },
+        });
+
+        let data = {
+            user: updatedUser,
+            status: "success",
+            message: "Avatar Uploaded successfully",
+        };
+        res.status(201).json(data);
+
+        // Here you can add additional validation for file type and size if needed
+        // return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+    } catch (error) {
+        return res.status(500).json({ message: 'server error'})
+    }
+   
+}
