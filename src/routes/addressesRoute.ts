@@ -1,7 +1,7 @@
 import express from 'express';
 import { deleteUserAddress, getUserAddress, getUserAddresses, storeUserAddress, updateUserAddress } from '../controllers/addressesController.ts';
 import { validateInputData } from '../middlewares/validate.ts';
-import { userAddressSchema } from '../validations/profileSchema.ts';
+import { userAddressSchema } from '../validations/profileValidation.ts';
 import { auth } from '../middlewares/authMiddleware.ts';
 
 const router = express.Router();

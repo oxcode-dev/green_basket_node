@@ -5,7 +5,7 @@ import {
 } from '../controllers/profileController.ts';
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
-import { changePasswordSchema, userDetailsSchema } from '../validations/profileSchema.ts';
+import { changePasswordSchema, userDetailsSchema } from '../validations/profileValidation.ts';
 import { imageSchema } from '../validations/uploadSchema.ts';
 import { localUpload } from '../middlewares/handleUpload.ts';
 

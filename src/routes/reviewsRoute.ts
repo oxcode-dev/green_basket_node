@@ -2,7 +2,7 @@ import express from 'express';
 
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
-import { productReviewSchema } from '../validations/profileSchema.ts';
+import { productReviewSchema } from '../validations/profileValidation.ts';
 import { getReviews, getReview, deleteReview, storeReview } from '../controllers/reviewsController.ts';
 
 const router = express.Router();

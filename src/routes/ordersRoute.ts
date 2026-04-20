@@ -2,7 +2,7 @@ import express from 'express';
 
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
-import { changePasswordSchema, userDetailsSchema } from '../validations/profileSchema.ts';
+import { changePasswordSchema, userDetailsSchema } from '../validations/profileValidation.ts';
 import { getUserOrder, getUserOrders } from '../controllers/ordersController.ts';
 
 const router = express.Router();
