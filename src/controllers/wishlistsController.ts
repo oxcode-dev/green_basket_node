@@ -41,7 +41,7 @@ export const getUserWishlist = async(req: express.Request, res: express.Response
         const id = String(req?.params?.id);
 
         if (!await prisma.wishlists.findUnique({ where: { id: id } })) {
-            return res.status(404).json({ error: 'Product not found' })
+            return res.status(404).json({ error: 'Wishlist not found' })
         }
         
         const wishlist = await prisma.wishlists.findFirst({
