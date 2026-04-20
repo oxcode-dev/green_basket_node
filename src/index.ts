@@ -18,7 +18,7 @@ import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
 import { localUpload } from "./middlewares/handleUpload.ts";
 
-import fs from 'fs'
+import fs, { link } from 'fs'
 import path from 'path'
 
 dotenv.config();
@@ -80,11 +80,14 @@ app.post('/api/upload', localUpload, (req: any, res: express.Response) => {
     return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
 });
 
-app.get('/api/delete-image/:filename', localUpload, (req: any, res: express.Response) => {
+app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
 
-    const filePath = path.join(__dirname, 'public', 'uploads', req.params.filename);
-
-    return res.status(200).json({ filename: filePath })
+    const filePath = path.join(__dirname, '/../../uploads', req.params.filename);
+    
+    // return res.status(200).json({ 
+    //     filename: filePath, 
+    //     link: '/Users/theoneglobal/apps/web-apps/green-basket/src/uploads/1776604383935-449436539-985b09a7-1033-48d6-9871-4c2260ddeb84.JPG'
+    // })
 
     fs.unlink(filePath, (err) => {
         if (err) {
