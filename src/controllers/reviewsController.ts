@@ -93,13 +93,12 @@ export const deleteReview = async (req: express.Request, res: express.Response) 
             return res.status(404).json({ error: 'Review not found' })
         }
 
-        const address = await prisma.reviews.delete({
+        await prisma.reviews.delete({
             where: { id: id }
         })
 
         return res.status(201).json({
             message: 'Review Deleted successfully', 
-            address,
             status: 'success'
         });
     } catch (error) {
