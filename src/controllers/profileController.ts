@@ -86,11 +86,6 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
 export const changePassword = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await prisma.users.findUnique({ where: {id: String(auth?.id)} });
-
-        if(!user) {
-            return res.status(404).json({ message: 'User not found' })
-        }
         
         const { password, confirm_password } = req.body;
 
@@ -105,7 +100,7 @@ export const changePassword = async (req: RequestWithUser, res: express.Response
         const hashedPassword = await bcrypt.hash(password, 12);
         
         await prisma.users.update({
-            where: { email: user.email },
+            where: { id: String(auth?.id) },
             data: { password: hashedPassword },
         });
 
