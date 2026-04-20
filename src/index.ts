@@ -24,6 +24,8 @@ const app: Application = express();
 
 app.use(express.json());
 
+app.use(express.static('src/uploads'))
+
 app.use(cookieParser());
 
 const corsOptions = {

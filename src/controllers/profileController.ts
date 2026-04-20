@@ -148,6 +148,9 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         }
         const auth = req.user;
 
+        // Construct the full URL to the uploaded image
+        const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
         // const updatedUser = await prisma.users.update({
         //     where: { id: String(auth?.id) },
         //     data: { 
@@ -156,9 +159,10 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         // });
 
         let data = {
-            status: "success",
-            message: "Avatar Uploaded successfully",
-            file: req.file,
+            // status: "success",
+            // message: "Avatar Uploaded successfully",
+            // file: req.file,
+            imageUrl,
             // user: {
             //     id: updatedUser?.id || '',
             //     fullName: updatedUser?.first_name + ' ' + updatedUser?.last_name,
