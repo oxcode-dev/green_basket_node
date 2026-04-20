@@ -148,25 +148,26 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         }
         const auth = req.user;
 
-        const updatedUser = await prisma.users.update({
-            where: { id: String(auth?.id) },
-            data: { 
-                avatar: req.file?.filename,
-            },
-        });
+        // const updatedUser = await prisma.users.update({
+        //     where: { id: String(auth?.id) },
+        //     data: { 
+        //         avatar: req.file?.filename,
+        //     },
+        // });
 
         let data = {
             status: "success",
             message: "Avatar Uploaded successfully",
-            user: {
-                id: updatedUser?.id || '',
-                fullName: updatedUser?.first_name + ' ' + updatedUser?.last_name,
-                email: updatedUser?.email,
-                first_name: updatedUser?.first_name,
-                last_name: updatedUser?.last_name,
-                avatar: updatedUser?.avatar,
-                phone: updatedUser?.phone,
-            },
+            file: req.file,
+            // user: {
+            //     id: updatedUser?.id || '',
+            //     fullName: updatedUser?.first_name + ' ' + updatedUser?.last_name,
+            //     email: updatedUser?.email,
+            //     first_name: updatedUser?.first_name,
+            //     last_name: updatedUser?.last_name,
+            //     avatar: updatedUser?.avatar,
+            //     phone: updatedUser?.phone,
+            // },
         };
         res.status(201).json(data);
 

@@ -15,7 +15,8 @@ router.route('/')
     .get(auth, getUserDetails as any)
     .put(auth, validateInputData(userDetailsSchema), updateUserDetails as any);
     
-router.post('/upload-avatar', auth, validateInputData(imageSchema), localUpload, uploadAvatar as any);
+router.post('/upload-avatar', auth, localUpload, uploadAvatar as any);
+// router.post('/upload-avatar', auth, validateInputData(imageSchema), localUpload, uploadAvatar as any);
 router.post('/change-password', auth, validateInputData(changePasswordSchema), changePassword as any);
 router.delete('/delete-account', auth, deleteProfile as any);
 
