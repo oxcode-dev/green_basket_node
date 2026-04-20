@@ -2,7 +2,7 @@ import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 
 
-export const getUserOrders = async (req: express.Request, res: express.Response) => {
+export const getUserOrders = async (req: any, res: express.Response) => {
     try {
         const auth = req.user
 
@@ -39,7 +39,7 @@ export const getUserOrders = async (req: express.Request, res: express.Response)
     }
 }
 
-export const getUserOrder = async (req: express.Request, res: express.Response) => {
+export const getUserOrder = async (req: any, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
