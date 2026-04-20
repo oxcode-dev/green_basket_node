@@ -82,17 +82,12 @@ app.post('/api/upload', localUpload, (req: any, res: express.Response) => {
 
 app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
 
-    const filePath = path.join(__dirname, '/../../uploads', req.params.filename);
-    
-    // return res.status(200).json({ 
-    //     filename: filePath, 
-    //     link: '/Users/theoneglobal/apps/web-apps/green-basket/src/uploads/1776604383935-449436539-985b09a7-1033-48d6-9871-4c2260ddeb84.JPG'
-    // })
+    const filePath = path.join(__dirname, '/../../uploads/avatars', req.params.filename);
 
     fs.unlink(filePath, (err) => {
         if (err) {
-            console.error(err);
-            return res.status(500).send('Error deleting file');
+            // console.error(err);
+            return res.status(500).send(`Error deleting file: ${err}`);
         }
         res.status(200).send('File deleted successfully');
     })
