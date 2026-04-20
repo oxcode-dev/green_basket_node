@@ -18,6 +18,9 @@ import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
 import { localUpload } from "./middlewares/handleUpload.ts";
 
+import fs from 'fs'
+import path from 'path'
+
 dotenv.config();
 
 const app: Application = express();
@@ -76,6 +79,21 @@ app.post('/api/upload', localUpload, (req: any, res: express.Response) => {
     // Here you can add additional validation for file type and size if needed
     return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
 });
+
+app.get('/api/delete-image/:filename', localUpload, (req: any, res: express.Response) => {
+
+    const filePath = path.join(__dirname, 'public', 'uploads', req.params.filename);
+
+    return res.status(200).json({ filename: filePath })
+
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error deleting file');
+        }
+        res.status(200).send('File deleted successfully');
+    })
+})
 
 app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
