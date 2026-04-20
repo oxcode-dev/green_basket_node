@@ -61,7 +61,7 @@ export const storeWishlist = async (req: any, res: express.Response) => {
     try {
         const auth: {id: string, email: string} = req?.user;
 
-        const product_id = String(req?.params?.id);
+        const product_id = String(req?.params?.product_id);
 
         if (!await prisma.products.findUnique({ where: { id: product_id } })) {
             return res.status(404).json({ error: 'Product not found' })
