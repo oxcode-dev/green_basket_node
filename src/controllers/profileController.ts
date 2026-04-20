@@ -30,7 +30,7 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
                 first_name: user?.first_name,
                 last_name: user?.last_name,
                 avatar: user?.avatar,
-                // bio: user?.bio,
+                phone: user?.phone,
             },
         }
 
@@ -74,7 +74,7 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
                 first_name: updatedUser?.first_name,
                 last_name: updatedUser?.last_name,
                 avatar: updatedUser?.avatar,
-                // bio: user?.bio,
+                phone: updatedUser?.phone,
             },
         };
         res.status(201).json(data);
@@ -165,7 +165,7 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
                 first_name: updatedUser?.first_name,
                 last_name: updatedUser?.last_name,
                 avatar: updatedUser?.avatar,
-                // bio: user?.bio,
+                phone: updatedUser?.phone,
             },
         };
         res.status(201).json(data);
