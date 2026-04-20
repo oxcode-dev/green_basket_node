@@ -81,7 +81,6 @@ export const storeUserAddress = async (req: express.Request | any, res: express.
 export const updateUserAddress = async (req: express.Request | any, res: express.Response) => { 
     try {
         const id = String(req?.params?.id)
-
         if (!await prisma.addresses.findUnique({ where: { id: id } })) {
             return res.status(404).json({ error: 'Address not found' })
         }
@@ -121,13 +120,14 @@ export const deleteUserAddress = async (req: express.Request | any, res: express
 
         const auth = req.user;
 
-        const address = await prisma.addresses.delete({
+        // const address = await prisma.addresses.delete({
+        await prisma.addresses.delete({
             where: { id: id }
         })
 
         return res.status(201).json({
             message: 'Address Deleted successfully', 
-            address,
+            // address,
             status: 'success'
         });
         
