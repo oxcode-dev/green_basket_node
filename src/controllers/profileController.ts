@@ -65,9 +65,17 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
         });
 
         let data = {
-            user: updatedUser,
             status: "success",
             message: "Profile updated successfully",
+            user: {
+                id: updatedUser?.id || '',
+                fullName: updatedUser?.first_name + ' ' + updatedUser?.last_name,
+                email: updatedUser?.email,
+                first_name: updatedUser?.first_name,
+                last_name: updatedUser?.last_name,
+                avatar: updatedUser?.avatar,
+                // bio: user?.bio,
+            },
         };
         res.status(201).json(data);
     } catch(error) {
@@ -148,9 +156,17 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         });
 
         let data = {
-            user: updatedUser,
             status: "success",
             message: "Avatar Uploaded successfully",
+            user: {
+                id: updatedUser?.id || '',
+                fullName: updatedUser?.first_name + ' ' + updatedUser?.last_name,
+                email: updatedUser?.email,
+                first_name: updatedUser?.first_name,
+                last_name: updatedUser?.last_name,
+                avatar: updatedUser?.avatar,
+                // bio: user?.bio,
+            },
         };
         res.status(201).json(data);
 
