@@ -149,7 +149,7 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         const auth = req.user;
 
         // Construct the full URL to the uploaded image
-        const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        const imageUrl = `${req.protocol}://${req.get('host')}/avatars/${req.file.filename}`;
 
         // const updatedUser = await prisma.users.update({
         //     where: { id: String(auth?.id) },
