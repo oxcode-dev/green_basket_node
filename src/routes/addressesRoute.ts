@@ -3,7 +3,7 @@ import { deleteUserAddress, getUserAddress, getUserAddresses, storeUserAddress, 
 import { validateInputData } from '../middlewares/validate.ts';
 import { userAddressSchema } from '../validations/profileValidation.ts';
 import { auth } from '../middlewares/authMiddleware.ts';
-import { handleCustomer } from '../middlewares/handleCustomer.ts';
+import { handleCustomer } from '../middlewares/handleUserRole.ts';
 
 const router = express.Router();
 
