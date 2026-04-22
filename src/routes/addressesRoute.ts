@@ -12,8 +12,8 @@ router.route('/')
     .post(auth, handleCustomer, validateInputData(userAddressSchema), storeUserAddress);
 
 router.route('/:id')
-    .get(auth, getUserAddress)
-    .put(auth, validateInputData(userAddressSchema), updateUserAddress)
-    .delete(auth, deleteUserAddress);
+    .get(auth, handleCustomer, getUserAddress)
+    .put(auth, handleCustomer, validateInputData(userAddressSchema), updateUserAddress)
+    .delete(auth, handleCustomer, deleteUserAddress);
 
 export { router as addressesRoute };
