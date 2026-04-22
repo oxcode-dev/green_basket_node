@@ -14,6 +14,7 @@ export interface DataStoredInToken {
 }
 
 const handleCustomer = async (req: any, res: express.Response, next: express.NextFunction)  => {
+    console.log(req.user)
     return req.user.role === 'CUSTOMER' ? next() : res.status(403).json({ message: 'Access denied: Customers only' });
     // const authHeader = req.headers['authorization'];
 
