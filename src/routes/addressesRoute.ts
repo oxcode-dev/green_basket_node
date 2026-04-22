@@ -3,12 +3,13 @@ import { deleteUserAddress, getUserAddress, getUserAddresses, storeUserAddress, 
 import { validateInputData } from '../middlewares/validate.ts';
 import { userAddressSchema } from '../validations/profileValidation.ts';
 import { auth } from '../middlewares/authMiddleware.ts';
+import { handleCustomer } from '../middlewares/handleCustomer.ts';
 
 const router = express.Router();
 
 router.route('/')
-    .get(auth, getUserAddresses)
-    .post(auth, validateInputData(userAddressSchema), storeUserAddress);
+    .get(auth, handleCustomer, getUserAddresses)
+    .post(auth, handleCustomer, validateInputData(userAddressSchema), storeUserAddress);
 
 router.route('/:id')
     .get(auth, getUserAddress)
