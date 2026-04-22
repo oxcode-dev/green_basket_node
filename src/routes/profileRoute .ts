@@ -6,7 +6,6 @@ import {
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
 import { changePasswordSchema, userDetailsSchema } from '../validations/profileValidation.ts';
-import { imageSchema } from '../validations/uploadValidation.ts';
 import { localUpload } from '../middlewares/handleUpload.ts';
 
 const router = express.Router();
