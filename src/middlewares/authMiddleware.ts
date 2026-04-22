@@ -29,9 +29,17 @@ const auth = async (req: any, res: express.Response, next: express.NextFunction)
             JWT_SECRET
         ) as DataStoredInToken;
 
-        req.user = await prisma.users.findFirst({
-            where: {id: decoded?.id}
+        const user = await prisma.users.findFirst({
+            where: {id: decoded?.id},
         })
+
+        if(user) {
+            req.user = {
+                id: user?.id,
+                email: user?.email,
+                role: user?.role,
+            }
+        }
 
         next();
     } catch (error) {
