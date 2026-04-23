@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { prisma } from './lib/prisma.ts';
-import { ca } from 'zod/locales';
+import bcrypt from 'bcryptjs';
 
 async function createCategories() {
     let name = faker.commerce.department()
@@ -19,17 +19,6 @@ async function createCategories() {
     return categories;
 }
 
-// category_id String? @db.Uuid
-//   title String
-//   slug String
-//   summary String?
-//   description String?
-//   price Decimal @db.Decimal(10,2) @default(0.00)
-//   stock Int @default(0)
-//   is_active Boolean @default(true)
-//   image String?
-//   created_at DateTime @db.Timestamp(6) @default(now())
-//   updated_at DateTime @db.Timestamp(6) @default(now())
 async function createProducts(categories: string[]) {
     let title = faker.commerce.productName();
 
@@ -52,20 +41,43 @@ async function createProducts(categories: string[]) {
     return products;
 }
 
+async function createUsers(email: string = '', role: string = 'CUSTOMER') {
+    const hashedPassword = await bcrypt.hash('password', 12);
+    
+    const user = await prisma.users.create({
+        data: {
+            email: email || faker.internet.email(),
+            password: hashedPassword,
+            first_name: faker.person.firstName(),
+            last_name: faker.person.lastName(),
+            role: role,
+            phone: faker.phone.number(),
+        }
+    });
+
+    return user;
+}
+
 async function runSeed() {
-    // await prisma.categories.deleteMany();
-    // for(let i = 0; i < 10; i++) {
-    //     const categories = await createCategories();
-    //     console.log(categories)
-    // }
+    await prisma.categories.deleteMany();
+    await prisma.products.deleteMany();
+    await prisma.users.deleteMany();
 
-    // const categories = await prisma.categories.findMany();
-    // const categoriesIds = categories.map((category) => category.id);
+    for(let i = 0; i < 10; i++) {
+        const categories = await createCategories();
+        console.log(categories)
+    }
 
-    // for(let i = 0; i < 10; i++) {
-    //     const products = await createProducts(categoriesIds);
-    //     console.log(products)
-    // }
+    const categories = await prisma.categories.findMany();
+    const categoriesIds = categories.map((category) => category.id);
+
+    for(let i = 0; i < 10; i++) {
+        const products = await createProducts(categoriesIds);
+        console.log(products)
+    }
+
+    await createUsers('user@customer.com', 'CUSTOMER');
+    await createUsers('user@admin.com', 'ADMIN');
 
 }
 

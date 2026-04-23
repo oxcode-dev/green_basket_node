@@ -26,3 +26,5 @@ dist-ssr
 /src/generated/prisma
 /src/db_temp.ts
 /src/uploads/
+src/uploads/
+src/db_temp.ts
