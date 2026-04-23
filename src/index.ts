@@ -20,6 +20,7 @@ import { localUpload } from "./middlewares/handleUpload.ts";
 
 import fs, { link } from 'fs'
 import path from 'path'
+import { adminRoute } from "./routes/adminRoute.ts";
 
 dotenv.config();
 
@@ -102,6 +103,7 @@ app.use('/api/orders', ordersRouter)
 app.use('/api/addresses', addressesRoute)
 app.use('/api/wishlists', wishlistsRoute)
 app.use('/api/reviews', reviewsRoute)
+app.use('/api/admin', adminRoute)
 
 
 app.listen(PORT, () =>
