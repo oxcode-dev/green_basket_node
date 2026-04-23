@@ -1,6 +1,5 @@
 import express from 'express';
 
-
 import { auth } from '../middlewares/authMiddleware.ts';
 import { validateInputData } from '../middlewares/validate.ts';
 import { userLogin, userLogout, userRegistration } from '../controllers/authController.ts';
