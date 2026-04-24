@@ -10,8 +10,6 @@ async function createCategories() {
         description: faker.commerce.productDescription(),
     }
 
-    // await prisma.categories.deleteMany();
-
     const categories = await prisma.categories.create({
         data: data
     })
