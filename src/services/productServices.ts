@@ -1,8 +1,8 @@
 import { prisma } from "../lib/prisma.ts"
 import type { ProductType } from "../types/index.ts";
 
-export const fetchCategories = async () => {
-    return await prisma.categories.findMany();
+export const fetchAllProducts = async () => {
+    return await prisma.products.findMany();
 }
 
 export const fetchProduct = async (id: string) => {
@@ -12,6 +12,10 @@ export const fetchProduct = async (id: string) => {
         },
         include: { category: true }
     });
+}
+
+export const countAllProducts = async () => {
+    return await prisma.products.count();
 }
 
 export const storeProduct = async (productData: ProductType) => {
