@@ -16,7 +16,7 @@ router.delete('/logout', auth, userLogout);
 // Category Routes
 router.post('/categories', auth, handleAdmin, validateInputData(categoryValidation), createCategory);
 router.route('/categories/:id')
-    .put(auth, handleAdmin, updateCategory)
+    .put(auth, handleAdmin, validateInputData(categoryValidation), updateCategory)
     .delete(auth, handleAdmin, deleteCategory);
 
 // Product Routes
