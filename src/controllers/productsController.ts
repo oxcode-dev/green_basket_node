@@ -1,6 +1,6 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { destroyProduct, fetchProduct, storeProduct, updateProduct } from '../services/productServices.ts';
+import { countAllProducts, destroyProduct, fetchProduct, fetchProductsWithPagination, storeProduct, updateProduct } from '../services/productServices.ts';
 import { slugify } from '../helpers/index.ts';
 
 export const getProducts = async(req: express.Request, res: express.Response) => {
@@ -11,14 +11,9 @@ export const getProducts = async(req: express.Request, res: express.Response) =>
         const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
         const skip = (pageNum - 1) * limitNum;
         
-        const totalCount = await prisma.products.count();
+        const totalCount = await countAllProducts();
 
-        const products = await prisma.products.findMany({
-            skip: Number(skip),
-            take: Number(limit),
-            include: { category: true },
-            orderBy: { created_at: 'desc' }
-        });
+        const products = await fetchProductsWithPagination(skip, Number(limit))
 
         return res.status(200).json({
             message: "Products retrieved successfully!!!",

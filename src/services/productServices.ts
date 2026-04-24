@@ -14,6 +14,15 @@ export const fetchProduct = async (id: string) => {
     });
 }
 
+export const fetchProductsWithPagination = async(skip: number, limit: number) => {
+    return await prisma.products.findMany({
+        skip: skip,
+        take: limit,
+        include: { category: true },
+        orderBy: { created_at: 'desc' }
+    });
+}
+
 export const countAllProducts = async () => {
     return await prisma.products.count();
 }
