@@ -110,7 +110,7 @@ export const createProduct = async (req: express.Request, res: express.Response)
                 price: Number(price), 
                 stock: Number(stock), 
                 is_active: Boolean(is_active), 
-                image: image ||'', 
+                image: image || '', 
                 category_id: category_id
             }
         );
@@ -137,7 +137,7 @@ export const editProduct = async (req: express.Request, res: express.Response) =
             price: Number(price), 
             stock: Number(stock), 
             is_active: Boolean(is_active), 
-            image: image ||'', 
+            image: image || '', 
             category_id: category_id
         });
 
