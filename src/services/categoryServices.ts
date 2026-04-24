@@ -29,3 +29,9 @@ export const updateCategory = async (id: string, name: string, description?: str
 
     return category;
 } 
+
+export const destroyCategory = async(id: string) => {
+    await prisma.categories.delete({
+        where: { id: id },
+    })
+}

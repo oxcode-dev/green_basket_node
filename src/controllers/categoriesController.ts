@@ -1,7 +1,6 @@
 import express, {type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { storeCategory, updateCategory } from '../services/categoryServices.ts';
-import { ca } from 'zod/locales';
+import { destroyCategory, storeCategory, updateCategory } from '../services/categoryServices.ts';
 
 export const getCategories = async(req: express.Request, res: express.Response) => {
     try {
@@ -43,7 +42,7 @@ export const createCategory = async (req: express.Request, res: express.Response
     try {
         const { name, description } = req.body;
 
-        const category = storeCategory(name, description);
+        const category = await storeCategory(name, description);
 
         return res.status(201).json({
             message: "Category created successfully!!!",
@@ -61,7 +60,7 @@ export const editCategory = async (req: express.Request, res: express.Response) 
 
         const { id } = req.params; 
 
-        const category = updateCategory(String(id), name, description);
+        const category = await updateCategory(String(id), name, description);
 
         return res.status(201).json({
             message: "Category updated successfully!!!",
@@ -74,7 +73,13 @@ export const editCategory = async (req: express.Request, res: express.Response) 
 
 export const deleteCategory = async (req: express.Request, res: express.Response) => {
     try {
-        
+        const { id } = req.params; 
+
+        await destroyCategory(String(id));
+
+        return res.status(201).json({
+            message: "Category deleted successfully!!!",
+        })
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error}` });
     }
