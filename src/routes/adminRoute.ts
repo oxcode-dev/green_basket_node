@@ -6,6 +6,7 @@ import { loginSchema } from '../validations/authValidation.ts';
 import { handleAdmin } from '../middlewares/handleUserRole.ts';
 import { createCategory, deleteCategory, updateCategory } from '../controllers/categoriesController.ts';
 import { createProduct, deleteProduct, updateProduct } from '../controllers/productsController.ts';
+import { categoryValidation } from '../validations/categoryValidation.ts';
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.post('/login', validateInputData(loginSchema), userLogin);
 router.delete('/logout', auth, userLogout);
 
 // Category Routes
-router.post('/categories', auth, handleAdmin, createCategory);
+router.post('/categories', auth, handleAdmin, validateInputData(categoryValidation), createCategory);
 router.route('/categories/:id')
     .put(auth, handleAdmin, updateCategory)
     .delete(auth, handleAdmin, deleteCategory);
