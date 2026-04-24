@@ -1,6 +1,6 @@
 import express, {type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { storeCategory } from '../services/categoryServices.ts';
+import { storeCategory, updateCategory } from '../services/categoryServices.ts';
 import { ca } from 'zod/locales';
 
 export const getCategories = async(req: express.Request, res: express.Response) => {
@@ -55,9 +55,18 @@ export const createCategory = async (req: express.Request, res: express.Response
     }
 }
 
-export const updateCategory = async (req: express.Request, res: express.Response) => {
+export const editCategory = async (req: express.Request, res: express.Response) => {
     try {
-        
+        const { name, description } = req.body;
+
+        const { id } = req.params; 
+
+        const category = updateCategory(String(id), name, description);
+
+        return res.status(201).json({
+            message: "Category updated successfully!!!",
+            category
+        })
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error}` });
     }
