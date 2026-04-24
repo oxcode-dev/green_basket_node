@@ -1,6 +1,6 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { destroyProduct, storeProduct, updateProduct } from '../services/productServices.ts';
+import { destroyProduct, fetchProduct, storeProduct, updateProduct } from '../services/productServices.ts';
 import { slugify } from '../helpers/index.ts';
 
 export const getProducts = async(req: express.Request, res: express.Response) => {
@@ -40,12 +40,7 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
     try {
         const { id } = req.params;
         
-        const product = await prisma.products.findFirst({
-            where: { 
-                id: String(Array.isArray(id) ? id[0] : id)
-            },
-            include: { category: true }
-        });
+        const product = await fetchProduct(String(id))
 
         return res.status(200).json({
             message: "Product retrieved successfully!!!",
