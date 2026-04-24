@@ -1,6 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { PaginationType } from '../types/index.ts';
+import { countAllOrders } from '../services/OrderServices.ts';
 
 interface RequestWithUser extends express.Request {
     user: {
@@ -13,7 +14,7 @@ export const getUserOrders = async (req: RequestWithUser & PaginationType, res: 
 
         const { page, limit, skip } = req as PaginationType;
         
-        const totalCount = await prisma.orders.count();
+        const totalCount = await countAllOrders();
 
         const orders = await prisma.orders.findMany({
             skip: Number(skip),
@@ -45,7 +46,7 @@ export const getUserOrder = async (req: RequestWithUser, res: express.Response) 
     try {
         const auth = req.user
 
-        const id: string = String(req?.params?.id || '')
+        const id = String(req?.params?.id || '')
 
         if (!await prisma.orders.findUnique({ where: { id: id } })) {
             return res.status(404).json({ error: 'Order not found' })
