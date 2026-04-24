@@ -9,3 +9,9 @@ export type ProductType = {
     image: string;
     category_id: string;
 }
+
+export type PaginationType = {
+    page: number;
+    limit: number;
+    skip: number;
+}

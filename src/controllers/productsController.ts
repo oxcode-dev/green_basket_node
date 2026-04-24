@@ -2,10 +2,11 @@ import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import { countAllProducts, destroyProduct, fetchProduct, fetchProductsWithPagination, storeProduct, updateProduct } from '../services/productServices.ts';
 import { slugify } from '../helpers/index.ts';
+import type { PaginationType } from '../types/index.ts';
 
-export const getProducts = async(req: express.Request, res: express.Response) => {
+export const getProducts = async(req: express.Request | PaginationType, res: express.Response) => {
     try {
-        const { page, limit, skip } = req as { page: number, limit: number, skip: number}
+        const { page, limit, skip } = req as PaginationType;//{ page: number, limit: number, skip: number}
 
         // const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
         // const pageNum = typeof page === 'string' ? parseInt(page) : page;
