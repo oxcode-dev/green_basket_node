@@ -1,3 +1,5 @@
+import express from 'express';
+
 export type ProductType = {
     title: string;
     slug: string;
@@ -14,4 +16,10 @@ export type PaginationType = {
     page: number;
     limit: number;
     skip: number;
+}
+
+interface RequestWithUser extends express.Request {
+    user: {
+        id: string;
+    } | null;
 }

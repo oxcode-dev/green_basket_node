@@ -1,15 +1,17 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
+import type { PaginationType } from '../types/index.ts';
 
-
-export const getUserOrders = async (req: any, res: express.Response) => {
+interface RequestWithUser extends express.Request {
+    user: {
+        id: string;
+    } | null;
+}
+export const getUserOrders = async (req: RequestWithUser & PaginationType, res: express.Response) => {
     try {
         const auth = req.user
 
-        const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
-        const pageNum = typeof page === 'string' ? parseInt(page) : page;
-        const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
-        const skip = (pageNum - 1) * limitNum;
+        const { page, limit, skip } = req as PaginationType;
         
         const totalCount = await prisma.orders.count();
 
@@ -18,7 +20,7 @@ export const getUserOrders = async (req: any, res: express.Response) => {
             take: Number(limit),
             include: { order_items: true },
             orderBy: { created_at: 'desc' },
-            where: { user_id: auth?.id}
+            where: { user_id: String(auth?.id) }
         });
 
         let data = {
@@ -26,10 +28,10 @@ export const getUserOrders = async (req: any, res: express.Response) => {
             message: "Orders fetched successfully",
             orders,
             metadata: {
-                page: pageNum,
-                limit: limitNum,
+                page: page,
+                limit: limit,
                 totalCount,
-                totalPages: Math.ceil(totalCount / limitNum),
+                totalPages: Math.ceil(totalCount / limit),
             }
         }
 
@@ -39,9 +41,9 @@ export const getUserOrders = async (req: any, res: express.Response) => {
     }
 }
 
-export const getUserOrder = async (req: any, res: express.Response) => {
+export const getUserOrder = async (req: RequestWithUser, res: express.Response) => {
     try {
-        const auth: {id: string, email: string} = req?.user;
+        const auth = req.user
 
         const id: string = String(req?.params?.id || '')
 
@@ -51,7 +53,7 @@ export const getUserOrder = async (req: any, res: express.Response) => {
         
         const order = await prisma.orders.findMany({
             include: { order_items: true },
-            where: { user_id: auth?.id, id: id}
+            where: { user_id: String(auth?.id), id: String(id) }
         });
 
         let data = {
