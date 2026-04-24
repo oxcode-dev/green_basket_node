@@ -94,3 +94,27 @@ export const getProductsByCategory = async(req: express.Request, res: express.Re
         return res.status(500).json({ message: `Server error: ${error}` });
     }
 }
+
+export const createProduct = async (req: express.Request, res: express.Response) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
+
+export const updateProduct = async (req: express.Request, res: express.Response) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
+
+export const deleteProduct = async (req: express.Request, res: express.Response) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
