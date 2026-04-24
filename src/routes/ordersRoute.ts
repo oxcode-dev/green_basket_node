@@ -14,4 +14,4 @@ router.route('/')
 router.route('/:id')
     .get(auth, handleCustomer, getUserOrder)
 
-export { router as ordersRouter };
+export { router as ordersRoute };

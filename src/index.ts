@@ -11,8 +11,8 @@ import cors from "cors"
 import helmet from "helmet";
 import morgan from 'morgan'
 import { ProductsRoute } from "./routes/productsRoute.ts";
-import { profileRouter } from "./routes/profileRoute .ts";
-import { ordersRouter } from "./routes/ordersRoute.ts";
+import { profileRoute } from "./routes/profileRoute .ts";
+import { ordersRoute } from "./routes/ordersRoute.ts";
 import { addressesRoute } from "./routes/addressesRoute.ts";
 import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
@@ -98,8 +98,8 @@ app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
 app.use('/api/categories', categoriesRoute)
 app.use('/api/products', ProductsRoute)
-app.use('/api/profile', profileRouter)
-app.use('/api/orders', ordersRouter)
+app.use('/api/profile', profileRoute)
+app.use('/api/orders', ordersRoute)
 app.use('/api/addresses', addressesRoute)
 app.use('/api/wishlists', wishlistsRoute)
 app.use('/api/reviews', reviewsRoute)

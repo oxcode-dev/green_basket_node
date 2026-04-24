@@ -19,4 +19,4 @@ router.post('/upload-avatar', auth, localUpload, uploadAvatar as any);
 router.post('/change-password', auth, validateInputData(changePasswordSchema), changePassword as any);
 router.delete('/delete-account', auth, deleteProfile as any);
 
-export { router as profileRouter };
+export { router as profileRoute };
