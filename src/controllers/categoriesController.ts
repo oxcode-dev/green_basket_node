@@ -1,6 +1,6 @@
 import express, {type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { destroyCategory, storeCategory, updateCategory } from '../services/categoryServices.ts';
+import { destroyCategory, fetchCategory, storeCategory, updateCategory } from '../services/categoryServices.ts';
 
 export const getCategories = async(req: express.Request, res: express.Response) => {
     try {
@@ -20,12 +20,7 @@ export const getCategory = async(req: Request, res: express.Response) => {
     try {
         const { id } = req.params;
         
-        const category = await prisma.categories.findFirst({
-            where: { 
-                id: String(Array.isArray(id) ? id[0] : id)
-            },
-            include: { products: true }
-        });
+        const category = await fetchCategory(String(id))
 
         return res.status(200).json({
             message: "Category retrieved successfully!!!",
