@@ -14,6 +14,7 @@ router.post('/login', validateInputData(loginSchema), userLogin);
 router.delete('/logout', auth, userLogout);
 
 // Category Routes
+// router.post('/categories', auth, handleAdmin, createCategory);
 router.post('/categories', auth, handleAdmin, validateInputData(categoryValidation), createCategory);
 router.route('/categories/:id')
     .put(auth, handleAdmin, validateInputData(categoryValidation), editCategory)
