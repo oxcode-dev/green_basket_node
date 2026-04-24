@@ -1,12 +1,4 @@
-import { config } from "dotenv";
 import express from "express";
-import jwt from 'jsonwebtoken'
-import { prisma } from "../lib/prisma.ts";
-// import { AuthUserType, DataStoredInToken } from "../types/index.ts";
-
-config();
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export interface DataStoredInToken {
   id: string;

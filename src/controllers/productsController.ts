@@ -5,24 +5,25 @@ import { slugify } from '../helpers/index.ts';
 
 export const getProducts = async(req: express.Request, res: express.Response) => {
     try {
+        const { page, limit, skip } = req as { page: number, limit: number, skip: number}
 
-        const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
-        const pageNum = typeof page === 'string' ? parseInt(page) : page;
-        const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
-        const skip = (pageNum - 1) * limitNum;
+        // const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
+        // const pageNum = typeof page === 'string' ? parseInt(page) : page;
+        // const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
+        // const skip = (pageNum - 1) * limitNum;
         
         const totalCount = await countAllProducts();
 
-        const products = await fetchProductsWithPagination(skip, Number(limit))
+        const products = await fetchProductsWithPagination(skip, limit);
 
         return res.status(200).json({
             message: "Products retrieved successfully!!!",
             products,
             metadata: {
-                page: pageNum,
-                limit: limitNum,
+                page: page,
+                limit: limit,
                 totalCount,
-                totalPages: Math.ceil(totalCount / limitNum),
+                totalPages: Math.ceil(totalCount / limit),
             }
         })
         
