@@ -1,6 +1,5 @@
-import { title } from "node:process";
-import { slugify } from "../helpers/index.ts"
 import { prisma } from "../lib/prisma.ts"
+import { ProductType } from "../types/index.ts";
 
 export const fetchCategories = async () => {
     return await prisma.categories.findMany();
@@ -15,30 +14,18 @@ export const fetchCategory = async (id: string) => {
     });
 }
 
-export const storeProduct = async (title: string, description?: string) => {
-    let data = {
-        title: title,
-        slug: slugify(title),
-        description: description || '',
-    };
-
+export const storeProduct = async (productData: ProductType) => {
     const product = await prisma.products.create({
-        data: data,
+        data: productData,
     })
 
     return product;
 } 
 
-export const updateProduct = async (id: string, name: string, description?: string) => {
-    let data = {
-        name: name,
-        slug: slugify(name),
-        description: description || '',
-    };
-
+export const updateProduct = async (id: string, productData: ProductType) => {
     const product = await prisma.products.update({
         where: { id: id },
-        data: data,
+        data: productData,
     })
 
     return product;
