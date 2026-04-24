@@ -1,5 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
+import { destroyProduct, storeProduct, updateProduct } from '../services/productServices.ts';
+import { slugify } from '../helpers/index.ts';
 
 export const getProducts = async(req: express.Request, res: express.Response) => {
     try {
@@ -97,15 +99,52 @@ export const getProductsByCategory = async(req: express.Request, res: express.Re
 
 export const createProduct = async (req: express.Request, res: express.Response) => {
     try {
+        const { title, description, price, stock, is_active, image, category_id } = req.body;
         
+        const product = await storeProduct(
+            { 
+                title: title, 
+                slug: slugify(title), 
+                summary: '', 
+                description, 
+                price: Number(price), 
+                stock: Number(stock), 
+                is_active: Boolean(is_active), 
+                image: image ||'', 
+                category_id: category_id
+            }
+        );
+
+        return res.status(201).json({
+            message: "Product created successfully!!!",
+            product
+        })
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error}` });
     }
 }
 
-export const updateProduct = async (req: express.Request, res: express.Response) => {
+export const editProduct = async (req: express.Request, res: express.Response) => {
     try {
+        const { title, description, price, stock, is_active, image, category_id } = req.body;
+        const { id } = req.params; 
         
+        const product = await updateProduct(String(id), { 
+            title: title, 
+            slug: slugify(title), 
+            summary: '', 
+            description, 
+            price: Number(price), 
+            stock: Number(stock), 
+            is_active: Boolean(is_active), 
+            image: image ||'', 
+            category_id: category_id
+        });
+
+        return res.status(201).json({
+            message: "Product updated successfully!!!",
+            product
+        })
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error}` });
     }
@@ -113,7 +152,13 @@ export const updateProduct = async (req: express.Request, res: express.Response)
 
 export const deleteProduct = async (req: express.Request, res: express.Response) => {
     try {
+        const { id } = req.params; 
         
+        await destroyProduct(String(id));
+
+        return res.status(201).json({
+            message: "Product deleted successfully!!!",
+        })
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error}` });
     }

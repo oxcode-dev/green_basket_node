@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts"
-import { ProductType } from "../types/index.ts";
+import type { ProductType } from "../types/index.ts";
 
 export const fetchCategories = async () => {
     return await prisma.categories.findMany();
