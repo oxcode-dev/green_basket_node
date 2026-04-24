@@ -37,7 +37,23 @@ export const getCategory = async(req: Request, res: express.Response) => {
 }
 
 
-const createCategory = async (req: express.Request, res: express.Response) => {
+export const createCategory = async (req: express.Request, res: express.Response) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
+
+export const updateCategory = async (req: express.Request, res: express.Response) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
+
+export const deleteCategory = async (req: express.Request, res: express.Response) => {
     try {
         
     } catch (error) {
