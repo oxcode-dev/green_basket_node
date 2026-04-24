@@ -13,14 +13,14 @@ router.post('/login', validateInputData(loginSchema), userLogin);
 router.delete('/logout', auth, userLogout);
 
 // Category Routes
-router.post('/category', auth, handleAdmin, createCategory);
-router.route('/category/:id')
+router.post('/categories', auth, handleAdmin, createCategory);
+router.route('/categories/:id')
     .put(auth, handleAdmin, updateCategory)
     .delete(auth, handleAdmin, deleteCategory);
 
 // Product Routes
-router.post('/category', auth, handleAdmin, createProduct);
-router.route('/category/:id')
+router.post('/products', auth, handleAdmin, createProduct);
+router.route('/products/:id')
     .put(auth, handleAdmin, updateProduct)
     .delete(auth, handleAdmin, deleteProduct);
 
