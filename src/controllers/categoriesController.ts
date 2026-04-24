@@ -35,3 +35,12 @@ export const getCategory = async(req: Request, res: express.Response) => {
         return res.status(500).json({ message: `Server error: ${error}` });
     }
 }
+
+
+const createCategory = async (req: express.Request, res: express.Response) => {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error}` });
+    }
+}
