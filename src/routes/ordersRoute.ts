@@ -9,9 +9,9 @@ import { handleCustomer } from '../middlewares/handleUserRole.ts';
 const router = express.Router();
 
 router.route('/')
-    .get(auth, handleCustomer, getUserOrders)
+    .get(auth, handleCustomer, getUserOrders as any)
 
 router.route('/:id')
-    .get(auth, handleCustomer, getUserOrder)
+    .get(auth, handleCustomer, getUserOrder as any)
 
 export { router as ordersRoute };
