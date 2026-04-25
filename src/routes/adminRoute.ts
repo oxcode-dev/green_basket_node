@@ -7,6 +7,7 @@ import { handleAdmin } from '../middlewares/handleUserRole.ts';
 import { createCategory, deleteCategory, editCategory } from '../controllers/categoriesController.ts';
 import { createProduct, deleteProduct, editProduct } from '../controllers/productsController.ts';
 import { categoryValidation } from '../validations/categoryValidation.ts';
+import { getAllOrders } from '../controllers/ordersController.ts';
 
 const router = express.Router();
 
@@ -24,6 +25,13 @@ router.post('/products', auth, handleAdmin, createProduct);
 router.route('/products/:id')
     .put(auth, handleAdmin, editProduct)
     .delete(auth, handleAdmin, deleteProduct);
+
+// Order Routes
+router.route('/orders')
+    .get(auth, handleAdmin, getAllOrders as any)
+
+router.route('/orders')
+    .get(auth, handleAdmin)
 
 
 
