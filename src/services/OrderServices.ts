@@ -33,6 +33,12 @@ export const fetchCustomerOrdersWithPagination = async(user_id: string, skip: nu
     });
 }
 
+export const countAllCustomerOrders = async (user_id: string) => {
+    return await prisma.orders.count({
+        where: { user_id: user_id }
+    });
+}
+
 export const countAllOrders = async () => {
     return await prisma.orders.count();
 }

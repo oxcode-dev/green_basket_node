@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { PaginationType } from '../types/index.ts';
-import { countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination } from '../services/OrderServices.ts';
+import { countAllCustomerOrders, countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination } from '../services/OrderServices.ts';
 
 interface RequestWithUser extends express.Request {
     user: {
@@ -14,7 +14,7 @@ export const getUserOrders = async (req: RequestWithUser & PaginationType, res: 
 
         const { page, limit, skip } = req as PaginationType;
         
-        const totalCount = await countAllOrders();
+        const totalCount = await countAllCustomerOrders(String(auth?.id));
 
         const orders = await fetchCustomerOrdersWithPagination(String(auth?.id), skip, limit);
 
@@ -56,6 +56,32 @@ export const getOrder = async (req: RequestWithUser, res: express.Response) => {
 
         res.status(200).json(data);
         
+    } catch (error) {
+        return res.status(500).json({ message: `server error: ${error}`})
+    }
+}
+
+export const getAllOrders = async (req: express.Request & PaginationType, res: express.Response) => {
+    try {
+        const { page, limit, skip } = req as PaginationType;
+        
+        const totalCount = await countAllOrders();
+
+        const orders = await fetchOrdersWithPagination(skip, limit);
+
+        let data = {
+            status: "success",
+            message: "Orders fetched successfully",
+            orders,
+            metadata: {
+                page: page,
+                limit: limit,
+                totalCount,
+                totalPages: Math.ceil(totalCount / limit),
+            }
+        }
+
+        res.status(200).json(data);
     } catch (error) {
         return res.status(500).json({ message: `server error: ${error}`})
     }
