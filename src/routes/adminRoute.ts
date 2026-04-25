@@ -7,7 +7,7 @@ import { handleAdmin } from '../middlewares/handleUserRole.ts';
 import { createCategory, deleteCategory, editCategory } from '../controllers/categoriesController.ts';
 import { createProduct, deleteProduct, editProduct } from '../controllers/productsController.ts';
 import { categoryValidation } from '../validations/categoryValidation.ts';
-import { getAllOrders } from '../controllers/ordersController.ts';
+import { getAllOrders, getOrder } from '../controllers/ordersController.ts';
 
 const router = express.Router();
 
@@ -30,8 +30,8 @@ router.route('/products/:id')
 router.route('/orders')
     .get(auth, handleAdmin, getAllOrders as any)
 
-router.route('/orders')
-    .get(auth, handleAdmin)
+router.route('/orders/:id')
+    .get(auth, handleAdmin, getOrder as any)
 
 
 
