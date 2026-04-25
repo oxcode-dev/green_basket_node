@@ -8,6 +8,7 @@ interface RequestWithUser extends express.Request {
         id: string;
     } | null;
 }
+
 export const getUserOrders = async (req: RequestWithUser & PaginationType, res: express.Response) => {
     try {
         const auth = req.user
