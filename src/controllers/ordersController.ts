@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { PaginationType } from '../types/index.ts';
-import { countAllOrders } from '../services/OrderServices.ts';
+import { countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination } from '../services/OrderServices.ts';
 
 interface RequestWithUser extends express.Request {
     user: {
@@ -16,13 +16,7 @@ export const getUserOrders = async (req: RequestWithUser & PaginationType, res: 
         
         const totalCount = await countAllOrders();
 
-        const orders = await prisma.orders.findMany({
-            skip: Number(skip),
-            take: Number(limit),
-            include: { order_items: true },
-            orderBy: { created_at: 'desc' },
-            where: { user_id: String(auth?.id) }
-        });
+        const orders = await fetchCustomerOrdersWithPagination(String(auth?.id), skip, limit);
 
         let data = {
             status: "success",
@@ -47,15 +41,12 @@ export const getUserOrder = async (req: RequestWithUser, res: express.Response) 
         const auth = req.user
 
         const id = String(req?.params?.id || '')
+        
+        const order = await fetchOrder(id);
 
-        if (!await prisma.orders.findUnique({ where: { id: id } })) {
+        if (!order || order.user_id !== auth?.id) {
             return res.status(404).json({ error: 'Order not found' })
         }
-        
-        const order = await prisma.orders.findMany({
-            include: { order_items: true },
-            where: { user_id: String(auth?.id), id: String(id) }
-        });
 
         let data = {
             status: "success",

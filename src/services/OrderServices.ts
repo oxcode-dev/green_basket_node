@@ -23,6 +23,16 @@ export const fetchOrdersWithPagination = async(skip: number, limit: number) => {
     });
 }
 
+export const fetchCustomerOrdersWithPagination = async(user_id: string, skip: number, limit: number) => {
+    return await prisma.orders.findMany({
+        skip: skip,
+        take: limit,
+        include: { order_items: true },
+        orderBy: { created_at: 'desc' },
+        where: { user_id: user_id }
+    });
+}
+
 export const countAllOrders = async () => {
     return await prisma.orders.count();
 }
