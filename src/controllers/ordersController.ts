@@ -36,7 +36,7 @@ export const getUserOrders = async (req: RequestWithUser & PaginationType, res: 
     }
 }
 
-export const getUserOrder = async (req: RequestWithUser, res: express.Response) => {
+export const getOrder = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
 
