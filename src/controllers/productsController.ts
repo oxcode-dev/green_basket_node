@@ -34,6 +34,10 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
         
         const product = await fetchProduct(String(id))
 
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' })
+        }
+
         return res.status(200).json({
             message: "Product retrieved successfully!!!",
             product
