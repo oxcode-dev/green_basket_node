@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../lib/prisma.ts';
 import * as cookie from 'cookie';
+import { mergeGuestCart } from '../services/cartMergeServices.ts';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const MONTH = 30 * 24 * 60 * 60; // in seconds
@@ -99,6 +100,9 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
             sameSite: 'lax',
             maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
         });
+
+        // merge carts
+        await mergeGuestCart(req, user.id);
         
         return res.status(201).json({
             token,
