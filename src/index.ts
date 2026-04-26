@@ -17,8 +17,9 @@ import { addressesRoute } from "./routes/addressesRoute.ts";
 import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
 import { localUpload } from "./middlewares/handleUpload.ts";
+import sessionMiddleware from "./lib/session.ts";
 
-import fs, { link } from 'fs'
+import fs from 'fs'
 import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
 
@@ -57,6 +58,9 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 
 const PORT: number | string = 2000;
+
+// const sessionMiddleware = require("./config/session");
+app.use(sessionMiddleware);
 
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
