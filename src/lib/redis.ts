@@ -1,6 +1,5 @@
 import Redis from "ioredis";
 
-
 //@ts-ignore
 const redis = new Redis.default({
   host: process.env.REDIS_HOST || "127.0.0.1",
