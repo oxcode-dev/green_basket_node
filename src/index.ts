@@ -2,7 +2,6 @@ import express, { type Application } from "express";
 import dotenv from 'dotenv'
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import { prisma } from "./lib/prisma.ts";
 import { authRoute } from "./routes/authRoute.ts";
 import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
 // import runSeed from "./db_temp.ts";
@@ -16,18 +15,15 @@ import { ordersRoute } from "./routes/ordersRoute.ts";
 import { addressesRoute } from "./routes/addressesRoute.ts";
 import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
 import { reviewsRoute } from "./routes/reviewsRoute.ts";
-import { localUpload } from "./middlewares/handleUpload.ts";
 import sessionMiddleware from "./lib/session.ts";
 
 import fs from 'fs'
 import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
-import { getCartKey } from "./utils/index.ts";
-import redis from "./lib/redis.ts";
 import session from "express-session";
+import { cartRoute } from "./routes/cartRoute.ts";
 
 dotenv.config();
-
 
 const app: Application = express();
 
@@ -74,20 +70,6 @@ app.use(sessionMiddleware);
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
 
-app.get('/session', async (req: any, res) => {
-    req.session.user_id = 'abc123';
-    // console.log('user_id: ', req.session);
-
-    return res.status(200).json({ message: 'Session set', session: req.session });
-});
-
-app.get('/get-session', async (req: any, res) => {
-    // req.session.user_id = 'abc123';
-    let session = req.session;
-    console.log('user_id: ', session);
-    return res.status(200).json({ message: 'Session set', session: JSON.stringify(session) });
-});
-
 app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
 
     const filePath = path.join(__dirname, '/../../uploads/avatars', req.params.filename);
@@ -101,56 +83,6 @@ app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
     })
 })
 
-app.post('/add-cart', async(req, res) => {
-    const { productId, quantity = 1 }: { productId: string, quantity: number } = req.body;
-
-    const key = getCartKey(req);
-
-    const product = await prisma.products.findUnique({ where: { id: productId } });
-
-    if (!product) return res.status(404).json({ message: "Product not found" });
-
-    const existing = await redis.hget(key, productId);
-
-    if (existing) {
-        const item = JSON.parse(existing);
-        item.quantity += quantity;
-        await redis.hset(key, productId, JSON.stringify(item));
-    } else {
-        await redis.hset(key, productId, JSON.stringify({
-            productId,
-            quantity,
-            price: product.price
-        }));
-    }
-
-    const items = await redis.hgetall(key);
-
-    await redis.expire(key, 60 * 60 * 24); // TTL
-
-    return res.status(500).json({ message: 'server error', items, session: JSON.stringify(req.session.id), key });
-
-
-    // res.json({ message: "Added to cart" });
-});
-
-app.get('/get-cart', async(req, res) => {
-    const key = getCartKey(req);
-    
-    const items = await redis.hgetall(key);
-
-    const parsed = Object.values(items).map(item => JSON.parse(item));
-
-    const total = parsed.reduce((acc, item) => {
-        return acc + item.price * item.quantity;
-    }, 0);
-
-    await redis.flushall();
-
-    res.json({ items, key, session: JSON.stringify(req.session.id) });
-    // res.json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
-});
-
 app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
 app.use('/api/categories', categoriesRoute)
@@ -161,6 +93,7 @@ app.use('/api/addresses', addressesRoute)
 app.use('/api/wishlists', wishlistsRoute)
 app.use('/api/reviews', reviewsRoute)
 app.use('/api/admin', adminRoute)
+app.use('/api/cart', cartRoute)
 
 
 app.listen(PORT, () =>
