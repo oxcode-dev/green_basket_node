@@ -51,6 +51,9 @@ export const userRegistration = async (req: express.Request, res: express.Respon
             maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
         });
 
+        // merge carts
+        await mergeGuestCart(req, newUser.id);
+
         return res.status(201).json({
             token, 
             message: 'User registered successfully', 
@@ -102,7 +105,7 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
         });
 
         // merge carts
-        // await mergeGuestCart(req, user.id);
+        await mergeGuestCart(req, user.id);
         
         return res.status(201).json({
             token,
