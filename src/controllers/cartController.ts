@@ -49,3 +49,39 @@ export const getCart = async(req: express.Request, res: express.Response) => {
 
     res.json({ items: parsed, total });
 }
+
+export const updateCartItem = async (req: express.Request, res: express.Response) => {
+  
+    const { productId } = req.params;
+    const { quantity } = req.body;
+
+    const key = getCartKey(req);
+
+    const existing = await redis.hget(key, String(productId));
+    if (!existing) return res.status(404).json({ message: "Item not found" });
+
+    const item = JSON.parse(existing);
+    item.quantity = quantity;
+
+    await redis.hset(key, String(productId), JSON.stringify(item));
+
+    res.json({ message: "Cart updated" });
+};
+
+export const removeCartItem = async (req: express.Request, res: express.Response) => {
+    const { productId } = req.params;
+
+    const key = getCartKey(req);
+
+    await redis.hdel(key, String(productId));
+
+    res.json({ message: "Item removed" });
+};
+
+export const clearCart = async (req: express.Request, res: express.Response) => {
+    const key = getCartKey(req);
+
+    await redis.del(`cart:${key}`);
+
+    res.json({ message: "Cart cleared" });
+}; 
