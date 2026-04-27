@@ -102,7 +102,7 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
         });
 
         // merge carts
-        await mergeGuestCart(req, user.id);
+        // await mergeGuestCart(req, user.id);
         
         return res.status(201).json({
             token,

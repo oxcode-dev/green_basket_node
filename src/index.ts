@@ -24,16 +24,24 @@ import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
 import { getCartKey } from "./utils/index.ts";
 import redis from "./lib/redis.ts";
+import session from "express-session";
 
 dotenv.config();
 
+
 const app: Application = express();
+
+app.use(cookieParser());
+
+app.use(session({
+    secret: '2b502d83205b4fe68b1577a92239d4ab58e520e1b56969d1bcd7c048e95afbdf', //'secret',
+    resave: true,
+    saveUninitialized: true,
+}));
 
 app.use(express.json());
 
 app.use(express.static('src/uploads'))
-
-app.use(cookieParser());
 
 const corsOptions = {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -66,24 +74,18 @@ app.use(sessionMiddleware);
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
 
-app.get('/test', async(req, res) => {
-    const users = await prisma.users.findMany({
-        omit: {
-            password: true,
-        }
-    });
-    const categories = await prisma.categories.findMany();
-    const products = await prisma.products.findMany();
+app.get('/session', async (req: any, res) => {
+    req.session.user_id = 'abc123';
+    // console.log('user_id: ', req.session);
 
-    return res.status(200).json({users, categories, products});
+    return res.status(200).json({ message: 'Session set', session: req.session });
 });
 
-app.post('/api/upload', localUpload, (req: any, res: express.Response) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-    // Here you can add additional validation for file type and size if needed
-    return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+app.get('/get-session', async (req: any, res) => {
+    // req.session.user_id = 'abc123';
+    let session = req.session;
+    console.log('user_id: ', session);
+    return res.status(200).json({ message: 'Session set', session: JSON.stringify(session) });
 });
 
 app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
@@ -124,9 +126,10 @@ app.post('/add-cart', async(req, res) => {
 
     const items = await redis.hgetall(key);
 
+    await redis.expire(key, 60 * 60 * 24); // TTL
+
     return res.status(500).json({ message: 'server error', items, session: JSON.stringify(req.session.id), key });
 
-    // await redis.expire(key, 60 * 60 * 24); // TTL
 
     // res.json({ message: "Added to cart" });
 });
@@ -134,18 +137,17 @@ app.post('/add-cart', async(req, res) => {
 app.get('/get-cart', async(req, res) => {
     const key = getCartKey(req);
     
-    const items = await redis.hgetall('cart:guest:RzqGhk_tBMs7SPD2CVguJRf-bnb94qH8');
-    // const items = await redis.hgetall(key);
+    const items = await redis.hgetall(key);
 
-    // const parsed = Object.values(items).map(JSON.parse);
+    const parsed = Object.values(items).map(item => JSON.parse(item));
 
-    // const total = parsed.reduce((acc, item) => {
-    //     return acc + item.price * item.quantity;
-    // }, 0);
+    const total = parsed.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
+    }, 0);
 
     await redis.flushall();
 
-    res.json({ items, key });
+    res.json({ items, key, session: JSON.stringify(req.session.id) });
     // res.json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
 });
 

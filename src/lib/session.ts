@@ -7,7 +7,7 @@ const genId = uuidv4();
 
 const sessionMiddleware = session({
     store: new RedisStore({ client: redis }),
-    secret: genId, // "your-secret",
+    secret: '2b502d83205b4fe68b1577a92239d4ab58e520e1b56969d1bcd7c048e95afbdf', 
     resave: true,
     saveUninitialized: true,
     cookie: {
