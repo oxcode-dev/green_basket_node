@@ -4,7 +4,7 @@ export const mergeGuestCart = async (req: any, userId: string) => {
     const guestKey = `cart:guest:${req.session.id}`;
     const userKey = `cart:user:${userId}`;
 
-    const guestItems = await redis.hgetall(guestKey);
+    const guestItems: any = await redis.hgetall(guestKey);
 
     if (!guestItems || Object.keys(guestItems).length === 0) {
         return;

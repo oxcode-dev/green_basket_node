@@ -22,6 +22,8 @@ import sessionMiddleware from "./lib/session.ts";
 import fs from 'fs'
 import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
+import { getCartKey } from "./utils/index.ts";
+import redis from "./lib/redis.ts";
 
 dotenv.config();
 
@@ -59,7 +61,6 @@ app.use(morgan("common"));
 
 const PORT: number | string = 2000;
 
-// const sessionMiddleware = require("./config/session");
 app.use(sessionMiddleware);
 
 // import crypto from 'crypto';
@@ -97,6 +98,56 @@ app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
         res.status(200).send('File deleted successfully');
     })
 })
+
+app.post('/add-cart', async(req, res) => {
+    const { productId, quantity = 1 }: { productId: string, quantity: number } = req.body;
+
+    const key = getCartKey(req);
+
+    const product = await prisma.products.findUnique({ where: { id: productId } });
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const existing = await redis.hget(key, productId);
+
+    if (existing) {
+        const item = JSON.parse(existing);
+        item.quantity += quantity;
+        await redis.hset(key, productId, JSON.stringify(item));
+    } else {
+        await redis.hset(key, productId, JSON.stringify({
+            productId,
+            quantity,
+            price: product.price
+        }));
+    }
+
+    const items = await redis.hgetall(key);
+
+    return res.status(500).json({ message: 'server error', items, session: JSON.stringify(req.session.id), key });
+
+    // await redis.expire(key, 60 * 60 * 24); // TTL
+
+    // res.json({ message: "Added to cart" });
+});
+
+app.get('/get-cart', async(req, res) => {
+    const key = getCartKey(req);
+    
+    const items = await redis.hgetall('cart:guest:RzqGhk_tBMs7SPD2CVguJRf-bnb94qH8');
+    // const items = await redis.hgetall(key);
+
+    // const parsed = Object.values(items).map(JSON.parse);
+
+    // const total = parsed.reduce((acc, item) => {
+    //     return acc + item.price * item.quantity;
+    // }, 0);
+
+    await redis.flushall();
+
+    res.json({ items, key });
+    // res.json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
+});
 
 app.use('/api/auth', authRoute)
 app.use('/api/password', passwordResetRoute)
