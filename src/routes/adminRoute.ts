@@ -8,6 +8,7 @@ import { createCategory, deleteCategory, editCategory } from '../controllers/cat
 import { createProduct, deleteProduct, editProduct } from '../controllers/productsController.ts';
 import { categoryValidation } from '../validations/categoryValidation.ts';
 import { getAllOrders, getOrder } from '../controllers/ordersController.ts';
+import { getAdminUsers } from '../controllers/usersController.ts';
 
 const router = express.Router();
 
@@ -33,6 +34,6 @@ router.route('/orders')
 router.route('/orders/:id')
     .get(auth, handleAdmin, getOrder as any)
 
-
+router.get('/users/admin', getAdminUsers as any) 
 
 export { router as adminRoute };
