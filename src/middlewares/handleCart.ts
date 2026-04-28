@@ -19,8 +19,8 @@ const checkAuthForCart = async (req: any, res: express.Response, next: express.N
         const authHeader = req.headers['authorization'];
 
         if(!authHeader || !authHeader.startsWith('Bearer ')) {
-            return next()
-            // return res.status(401).json({ message: 'Kindly login to access this resource' });
+            // return next()
+            return res.status(401).json({ message: 'Kindly login to access this resource' });
         }
 
         const token : string = authHeader.split(' ')[1] || '';
