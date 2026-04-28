@@ -34,6 +34,6 @@ router.route('/orders')
 router.route('/orders/:id')
     .get(auth, handleAdmin, getOrder as any)
 
-router.get('/users/admin', getAdminUsers as any) 
+router.get('/users', getAdminUsers as any) 
 
 export { router as adminRoute };

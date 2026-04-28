@@ -1,5 +1,5 @@
 import express from 'express';
-import { PaginationType } from '../types/index.ts';
+import type { PaginationType } from '../types/index.ts';
 import { prisma } from '../lib/prisma.ts';
 
 export const getAdminUsers = async (req: express.Request | PaginationType, res: express.Response) => {
@@ -14,7 +14,7 @@ export const getAdminUsers = async (req: express.Request | PaginationType, res: 
         });
 
         // const products = await fetchProductsWithPagination(skip, limit);
-        const users = await prisma.users.count({
+        const users = await prisma.users.findMany({
             where: {
                 role: 'ADMIN',
             }
