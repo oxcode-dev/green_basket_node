@@ -1,5 +1,13 @@
 import { prisma } from "../lib/prisma.ts";
 
+export const countAllUsers = async () => {
+    return await prisma.users.count();
+};
+
+export const fetchAllUsers = async () => {
+    return await prisma.users.findMany();
+};
+
 export const countUsersByRole = async (role: 'ADMIN' | 'CUSTOMER') => {
     return await prisma.users.count({
         where: {
@@ -16,9 +24,3 @@ export const fetchUsersByRoleWithPagination = async(skip: number, limit: number,
         orderBy: { created_at: 'desc' }
     });
 }
-
-const users = await prisma.users.findMany({
-    where: {
-        role: 'ADMIN',
-    }
-});
