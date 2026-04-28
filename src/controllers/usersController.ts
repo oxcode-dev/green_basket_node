@@ -1,24 +1,15 @@
 import express from 'express';
 import type { PaginationType } from '../types/index.ts';
 import { prisma } from '../lib/prisma.ts';
+import { countUsersByRole, fetchUsersByRoleWithPagination } from '../services/usersServices.ts';
 
 export const getAdminUsers = async (req: express.Request | PaginationType, res: express.Response) => {
     try {
         const { page, limit, skip } = req as PaginationType;
                 
-        // const totalCount = await countAllProducts();
-        const totalCount = await prisma.users.count({
-            where: {
-                role: 'ADMIN',
-            }
-        });
+        const totalCount = await countUsersByRole('ADMIN');
 
-        // const products = await fetchProductsWithPagination(skip, limit);
-        const users = await prisma.users.findMany({
-            where: {
-                role: 'ADMIN',
-            }
-        });
+        const users = await fetchUsersByRoleWithPagination(skip, limit, 'ADMIN');
 
         return res.status(200).json({
             message: "Users retrieved successfully!!!",
