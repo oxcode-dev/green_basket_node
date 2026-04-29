@@ -8,7 +8,7 @@ import { createCategory, deleteCategory, editCategory } from '../controllers/cat
 import { createProduct, deleteProduct, editProduct } from '../controllers/productsController.ts';
 import { categoryValidation } from '../validations/categoryValidation.ts';
 import { getAllOrders, getOrder } from '../controllers/ordersController.ts';
-import { getAdminUsers, getCustomerUsers } from '../controllers/usersController.ts';
+import { deleteUserByAdmin, getAdminUsers, getCustomerUsers, getUser, updateUserByAdmin } from '../controllers/usersController.ts';
 
 const router = express.Router();
 
@@ -34,7 +34,11 @@ router.route('/orders')
 router.route('/orders/:id')
     .get(auth, handleAdmin, getOrder as any)
 
-router.get('/users', getAdminUsers as any)
-router.get('/users/customers', getCustomerUsers as any)
+router.get('/users', auth, handleAdmin, getAdminUsers as any)
+router.get('/users/customers', auth, handleAdmin, getCustomerUsers as any)
+router.route('/users/:id')
+    .get(auth, handleAdmin, getUser as any)
+    .put(auth, handleAdmin, updateUserByAdmin as any)
+    .delete(auth, handleAdmin, deleteUserByAdmin as any)
 
 export { router as adminRoute };
