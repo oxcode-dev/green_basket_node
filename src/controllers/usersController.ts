@@ -1,7 +1,7 @@
 import express from 'express';
 import type { PaginationType } from '../types/index.ts';
 import { prisma } from '../lib/prisma.ts';
-import { countUsersByRole, fetchUsersByRoleWithPagination } from '../services/usersServices.ts';
+import { countUsersByRole, fetchUser, fetchUsersByRoleWithPagination } from '../services/usersServices.ts';
 
 export const getAdminUsers = async (req: express.Request | PaginationType, res: express.Response) => {
     try {
@@ -45,6 +45,23 @@ export const getCustomerUsers = async (req: express.Request | PaginationType, re
                 totalPages: Math.ceil(totalCount / limit),
             }
         })
+        
+    } catch (error) {
+        return res.status(500).json({ message: `server error: ${error}`})
+    }
+}
+
+export const getUser = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = req.params;                
+
+        const user = await fetchUser(String(id));
+
+        return res.status(200).json({
+            message: "User fetched successfully!!!",
+            status: 'success',
+            user,
+        });
         
     } catch (error) {
         return res.status(500).json({ message: `server error: ${error}`})

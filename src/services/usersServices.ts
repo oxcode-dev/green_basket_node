@@ -24,3 +24,17 @@ export const fetchUsersByRoleWithPagination = async(skip: number, limit: number,
         orderBy: { created_at: 'desc' }
     });
 }
+
+export const fetchUser = async (id: string) => {
+    return await prisma.users.findFirst({
+        where: { 
+            id: id,
+        },
+        include: { 
+            orders: true,
+            reviews: true,
+            addresses: true,
+            wishlists: true,
+        }
+    });
+}
