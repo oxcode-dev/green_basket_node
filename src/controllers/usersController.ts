@@ -130,3 +130,4 @@ export const updateUserByAdmin = async (req: express.Request, res: express.Respo
         return res.status(500).json({ message: `server error: ${error}`})
     }
 }
+
