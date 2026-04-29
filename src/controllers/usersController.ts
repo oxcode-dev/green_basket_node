@@ -74,7 +74,6 @@ export const createUserByAdmin = async (req: express.Request, res: express.Respo
     try {
         const { first_name, email, last_name, role, phone,  } = req.body;                
 
-        // const user = await storeUser(String(id));
         const user = await storeUser({
             email,
             first_name,
@@ -87,7 +86,13 @@ export const createUserByAdmin = async (req: express.Request, res: express.Respo
         return res.status(200).json({
             message: "User created successfully!!!",
             status: 'success',
-            user,
+            user: {
+                id: user.id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                phone: user.phone,
+            },
         });
         
     } catch (error) {
@@ -112,7 +117,13 @@ export const updateUserByAdmin = async (req: express.Request, res: express.Respo
         return res.status(200).json({
             message: "User created successfully!!!",
             status: 'success',
-            user,
+            user: {
+                id: user.id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                phone: user.phone,
+            },
         });
         
     } catch (error) {
