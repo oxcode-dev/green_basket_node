@@ -9,4 +9,4 @@ export const productValidation = z.object({
     stock: z.number().int().nonnegative({ message: "Stock must be a non-negative integer" }),
     is_active: z.boolean(),
     // image: z.string().url({ message: "Image must be a valid URL" }),
-})
+}).strict();
