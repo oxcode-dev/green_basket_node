@@ -9,6 +9,7 @@ import { createProduct, deleteProduct, editProduct } from '../controllers/produc
 import { categoryValidation } from '../validations/categoryValidation.ts';
 import { getAllOrders, getOrder } from '../controllers/ordersController.ts';
 import { createUserByAdmin, deleteUserByAdmin, getAdminUsers, getCustomerUsers, getUser, updateUserByAdmin } from '../controllers/usersController.ts';
+import { productValidation } from '../validations/productValidation.ts';
 
 const router = express.Router();
 
@@ -22,9 +23,9 @@ router.route('/categories/:id')
     .delete(auth, handleAdmin, deleteCategory);
 
 // Product Routes
-router.post('/products', auth, handleAdmin, createProduct);
+router.post('/products', auth, handleAdmin, validateInputData(productValidation), createProduct);
 router.route('/products/:id')
-    .put(auth, handleAdmin, editProduct)
+    .put(auth, handleAdmin, validateInputData(productValidation), editProduct)
     .delete(auth, handleAdmin, deleteProduct);
 
 // Order Routes
