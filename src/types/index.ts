@@ -24,7 +24,7 @@ interface RequestWithUser extends express.Request {
     } | null;
 }
 
-export type UserType = {
+export interface UserType  {
     email: string;
     password: string;
     first_name: string;

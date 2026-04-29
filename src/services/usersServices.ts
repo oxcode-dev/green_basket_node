@@ -48,7 +48,8 @@ export const storeUser = async (userData: UserType) => {
     return user;
 } 
 
-export const updateUser = async (id: string, userData: UserType) => {
+type UserWithoutPasswordType = Omit<UserType, 'password'>
+export const updateUser = async (id: string, userData: UserWithoutPasswordType) => {
     const user = await prisma.users.update({
         where: { id: id },
         data: userData,
