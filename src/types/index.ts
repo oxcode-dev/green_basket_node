@@ -23,3 +23,13 @@ interface RequestWithUser extends express.Request {
         id: string;
     } | null;
 }
+
+export type UserType = {
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    role: 'ADMIN' | 'CUSTOMER';
+    phone: string;
+    avatar?: string | null;
+}
