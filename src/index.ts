@@ -22,6 +22,12 @@ import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
 import session from "express-session";
 import { cartRoute } from "./routes/cartRoute.ts";
+import { createClient } from "redis";
+import { cacheClient } from "./lib/redis.ts";
+
+// const client = await createClient()
+//     .on("error", (err) => console.log("Redis Client Error", err))
+//     .connect();
 
 dotenv.config();
 
@@ -69,6 +75,18 @@ app.use(sessionMiddleware);
 
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
+
+
+app.post('/test-redis', async (req: any, res: express.Response) => {
+    await cacheClient.set("key", "2b502d83205b4fe68b1577a92239d4ab58e520e1b56969d1bcd7c048e95afbdf");
+    // const value = await client.get("key");
+    res.json({ message: "Key set in Redis" });
+});
+
+app.get('/test-redis', async (req: any, res: express.Response) => {
+    const value = await cacheClient.get("key");
+    res.json({ key: value });
+});
 
 app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
 
