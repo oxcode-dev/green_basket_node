@@ -51,7 +51,7 @@ export const getCart = async(req: express.Request, res: express.Response) => {
 
     await redis.flushall();
 
-    res.json({ items: parsed, total });
+    res.json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
 }
 
 export const updateCartItem = async (req: express.Request, res: express.Response) => {
