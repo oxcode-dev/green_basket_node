@@ -54,8 +54,6 @@ export const updateCartItem = async (req: express.Request, res: express.Response
 
     const key = getCartKey(req);
 
-    const items = await redis.hgetall(key);
-
     const existing = await redis.hget(key, String(productId));
 
     if (!existing) return res.status(404).json({ message: "Item not found" });
