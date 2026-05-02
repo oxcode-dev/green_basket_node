@@ -90,9 +90,9 @@ export const removeCartItem = async (req: express.Request, res: express.Response
 export const clearCart = async (req: express.Request, res: express.Response) => {
     const key = getCartKey(req);
 
-    console.log(key)
+    console.log(`{key}`)
 
     // await redis.del(`cart:${key}`);
 
-    res.json({ message: "Cart cleared", link: key });
+    res.json({ message: "Cart cleared", key: `cart:${key}`, link: key });
 }; 

@@ -9,11 +9,12 @@ router.post('/', checkAuthForCart, addToCart);
 
 router.get('/', checkAuthForCart, getCart);
 
+router.delete('/clear', checkAuthForCart, clearCart)
+
 router.put('/:productId', checkAuthForCart, updateCartItem);
 
 router.delete('/:productId', checkAuthForCart, removeCartItem)
 
-router.delete('/clear', checkAuthForCart, clearCart)
 
 
 export { router as cartRoute };
