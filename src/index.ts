@@ -22,13 +22,6 @@ import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
 import session from "express-session";
 import { cartRoute } from "./routes/cartRoute.ts";
-import { createClient } from "redis";
-import { cacheClient } from "./lib/redis.ts";
-import { getCartKey } from "./utils/index.ts";
-
-// const client = await createClient()
-//     .on("error", (err) => console.log("Redis Client Error", err))
-//     .connect();
 
 dotenv.config();
 
@@ -76,53 +69,6 @@ app.use(sessionMiddleware);
 
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
-
-
-app.post('/test-redis', async (req: any, res: express.Response) => {
-    // await cacheClient.set("key", "2b502d83205b4fe68b1577a92239d4ab58e520e1b56969d1bcd7c048e95afbdf");
-    const { productId, quantity = 1 }: { productId: string, quantity: number } = req.body;
-    
-    const key = getCartKey(req);
-
-    const existing = await cacheClient.get(key);
-
-    const carts = existing ? JSON.parse(existing) : [];
-
-    // const productInCart = carts.find(n => n.productId === productId);
-
-    if (existing) {
-        const item = JSON.parse(existing);
-        item.quantity += quantity;
-        await cacheClient.set(key, JSON.stringify(item));
-    } else {
-        await cacheClient.set(key, JSON.stringify([{
-            productId,
-            quantity,
-            // price: product.price
-        }]));
-    }
-
-    // const items = await cacheClient.getall(key);
-
-
-    const value = await cacheClient.get(key);
-
-    res.json({ message: "Key set in Redis", value: value });
-});
-
-app.get('/test-redis', async (req: any, res: express.Response) => {
-    // const value = await cacheClient.get("key");
-    const key = getCartKey(req);
-
-    const value = await cacheClient.get(key);
-
-    res.json({ key: value ? JSON.parse(value) : [] });
-});
-
-app.delete('/test-redis', async (req: any, res: express.Response) => {
-    const value = await cacheClient.del("key");
-    res.json({ key: value });
-});
 
 app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
 
