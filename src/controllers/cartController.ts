@@ -38,8 +38,6 @@ export const getCart = async(req: express.Request, res: express.Response) => {
     
     const items = await redis.hgetall(key);
 
-    console.log('cart items:', {items, key});
-
     const parsed = Object.values(items).map(item => JSON.parse(item));
 
     const total = parsed.reduce((acc, item) => {
