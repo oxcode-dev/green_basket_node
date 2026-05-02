@@ -30,7 +30,7 @@ export const addToCart = async(req: express.Request, res: express.Response) => {
 
     await redis.expire(key, 60 * 60 * 24); // TTL
 
-    return res.status(200).json({ message: 'Added to cart', cart: items, session: JSON.stringify(req.session.id), key });
+    return res.status(201).json({ message: 'Added to cart', cart: items, session: JSON.stringify(req.session.id), key });
 }
 
 export const getCart = async(req: express.Request, res: express.Response) => {
@@ -44,7 +44,7 @@ export const getCart = async(req: express.Request, res: express.Response) => {
         return acc + item.price * item.quantity;
     }, 0);
 
-    res.json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
+    res.status(200).json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
 }
 
 export const updateCartItem = async (req: express.Request, res: express.Response) => {
