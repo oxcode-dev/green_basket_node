@@ -49,7 +49,7 @@ export const getCart = async(req: express.Request, res: express.Response) => {
         return acc + item.price * item.quantity;
     }, 0);
 
-    await redis.flushall();
+    // await redis.flushall();
 
     res.json({ items: parsed, total, session: JSON.stringify(req.session.id), key });
 }

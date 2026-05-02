@@ -86,16 +86,20 @@ app.post('/test-redis', async (req: any, res: express.Response) => {
 
     const existing = await cacheClient.get(key);
 
+    const carts = existing ? JSON.parse(existing) : [];
+
+    // const productInCart = carts.find(n => n.productId === productId);
+
     if (existing) {
         const item = JSON.parse(existing);
         item.quantity += quantity;
         await cacheClient.set(key, JSON.stringify(item));
     } else {
-        await cacheClient.set(key, JSON.stringify({
+        await cacheClient.set(key, JSON.stringify([{
             productId,
             quantity,
             // price: product.price
-        }));
+        }]));
     }
 
     // const items = await cacheClient.getall(key);
