@@ -2,8 +2,6 @@ import express from 'express';
 import { getCartKey } from '../utils/index.ts';
 import { prisma } from '../lib/prisma.ts';
 import redis from '../lib/redis.ts';
-import { link } from 'fs';
-
 
 export const addToCart = async(req: express.Request, res: express.Response) => {
     const { productId, quantity = 1 }: { productId: string, quantity: number } = req.body;
@@ -13,8 +11,6 @@ export const addToCart = async(req: express.Request, res: express.Response) => {
     const product = await prisma.products.findUnique({ where: { id: productId } });
 
     if (!product) return res.status(404).json({ message: "Product not found" });
-
-    console.log('cart key:', { key});
 
     const existing = await redis.hget(key, productId);
 
@@ -61,8 +57,6 @@ export const updateCartItem = async (req: express.Request, res: express.Response
     const key = getCartKey(req);
 
     const items = await redis.hgetall(key);
-
-    console.log('cart items:', {items, key});
 
     const existing = await redis.hget(key, String(productId));
 
