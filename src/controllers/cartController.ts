@@ -2,6 +2,7 @@ import express from 'express';
 import { getCartKey } from '../utils/index.ts';
 import { prisma } from '../lib/prisma.ts';
 import redis from '../lib/redis.ts';
+import { link } from 'fs';
 
 
 export const addToCart = async(req: express.Request, res: express.Response) => {
@@ -89,7 +90,9 @@ export const removeCartItem = async (req: express.Request, res: express.Response
 export const clearCart = async (req: express.Request, res: express.Response) => {
     const key = getCartKey(req);
 
-    await redis.del(`cart:${key}`);
+    console.log(key)
 
-    res.json({ message: "Cart cleared" });
+    // await redis.del(`cart:${key}`);
+
+    res.json({ message: "Cart cleared", link: key });
 }; 
