@@ -99,7 +99,7 @@ const checkout = async (req: any, res: express.Response) => {
 
         const userId = req.user.id;
 
-        const { address_id, card_number, exp_month, exp_year, cvc, currency  } = req.body
+        const { address_id  } = req.body
 
         // 1. Get user cart
         // const cart = await Cart.findOne({ user: userId }).populate("items.product");
@@ -149,7 +149,7 @@ const checkout = async (req: any, res: express.Response) => {
             },
             {
                 headers: {
-                Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+                    Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
                 }
             }
         );
