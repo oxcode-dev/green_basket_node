@@ -33,7 +33,7 @@ export const storeCart = async (key: string, productId: string, quantity: number
         await redis.hset(key, productId, JSON.stringify({
             productId,
             quantity,
-            price: product?.price
+            price: Number(product?.price)
         }));
     }
 
