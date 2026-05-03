@@ -44,8 +44,8 @@ const checkAuthForCart = async (req: any, res: express.Response, next: express.N
 
         next();
     } catch (error) {
-        // console.error("Token verification error: ", error || 'Server error');
-        res.status(401).json({ message: "User Logged out" });
+        console.error("Token verification error: ", error || 'Server error');
+        // res.status(401).json({ message: "User Logged out" });
     }
 }
 
