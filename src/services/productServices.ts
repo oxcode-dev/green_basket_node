@@ -27,7 +27,7 @@ export const countAllProducts = async () => {
     return await prisma.products.count();
 }
 
-export const storeProduct = async (productData: ProductType) => {
+export const storeProduct = async (productData: Omit<ProductType, "id">) => {
     const product = await prisma.products.create({
         data: productData,
     })
@@ -35,7 +35,7 @@ export const storeProduct = async (productData: ProductType) => {
     return product;
 } 
 
-export const updateProduct = async (id: string, productData: ProductType) => {
+export const updateProduct = async (id: string, productData: Omit<ProductType, "id">) => {
     const product = await prisma.products.update({
         where: { id: id },
         data: productData,

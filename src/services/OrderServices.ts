@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts"
-import type { ProductType } from "../types/index.ts";
+import type { OrderType } from "../types/index.ts";
 
 export const fetchAllOrders = async () => {
     return await prisma.orders.findMany();
@@ -43,21 +43,21 @@ export const countAllOrders = async () => {
     return await prisma.orders.count();
 }
 
-export const storeProduct = async (productData: ProductType) => {
-    const product = await prisma.products.create({
-        data: productData,
+export const storeOrder = async (orderData: Omit<OrderType, "id">) => {
+    const order = await prisma.orders.create({
+        data: orderData,
     })
 
-    return product;
+    return order;
 } 
 
-export const updateProduct = async (id: string, productData: ProductType) => {
-    const product = await prisma.products.update({
+export const updateProduct = async (id: string, orderData: Omit<OrderType, "id">) => {
+    const order = await prisma.orders.update({
         where: { id: id },
-        data: productData,
+        data: orderData,
     })
 
-    return product;
+    return order;
 } 
 
 export const destroyOrder = async(id: string) => {

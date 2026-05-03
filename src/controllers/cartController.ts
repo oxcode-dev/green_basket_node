@@ -1,7 +1,5 @@
 import express from 'express';
 import { getCartKey } from '../utils/index.ts';
-import { prisma } from '../lib/prisma.ts';
-import redis from '../lib/redis.ts';
 import { deleteCart, deleteCartItem, fetchCart, fetchCartItem, modifyCartItems, storeCart } from '../services/cartServices.ts';
 import { fetchProduct } from '../services/productServices.ts';
 
