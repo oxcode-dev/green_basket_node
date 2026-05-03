@@ -150,7 +150,7 @@ type PayloadType = {
     email: string;
 }
 
-const createToken = (payload: PayloadType, expiresIn: number = 3600*1) => {
+const createToken = (payload: PayloadType, expiresIn: number = 3600*15) => {
     return jwt.sign(
         payload,
         JWT_SECRET,
