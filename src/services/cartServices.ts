@@ -1,4 +1,5 @@
 import redis from "../lib/redis.ts";
+import { type CartType, type CartItemsType } from "../types/index.ts";
 import { fetchProduct } from "./productServices.ts";
 
 
@@ -6,7 +7,7 @@ export const fetchCart = async (key: string) => {
     
     const items = await redis.hgetall(key);
 
-    const parsed = Object.values(items).map(item => JSON.parse(item));
+    const parsed: CartItemsType[] = Object.values(items).map(item => JSON.parse(item));
 
     const total = parsed.reduce((acc, item) => {
         return acc + item.price * item.quantity;
@@ -15,7 +16,7 @@ export const fetchCart = async (key: string) => {
     return {
         items: parsed,
         total
-    }
+    } as CartType
 }
 
 export const storeCart = async (key: string, productId: string, quantity: number) => {
@@ -25,7 +26,7 @@ export const storeCart = async (key: string, productId: string, quantity: number
     const existing = await redis.hget(key, productId);
 
     if (existing) {
-        const item = JSON.parse(existing);
+        const item : CartItemsType = JSON.parse(existing);
         item.quantity += quantity;
         await redis.hset(key, productId, JSON.stringify(item));
     } else {

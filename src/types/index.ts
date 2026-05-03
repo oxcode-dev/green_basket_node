@@ -33,3 +33,14 @@ export interface UserType  {
     phone: string;
     avatar?: string | null;
 }
+
+export type CartItemsType = {
+    productId: string;
+    quantity: number;
+    price: number;
+}
+
+export type CartType = {
+    total: number | 0;
+    items: CartItemsType[]
+}
