@@ -36,9 +36,11 @@ export const storeCart = async (key: string, productId: string, quantity: number
         }));
     }
 
-    const items = await redis.hgetall(key);
+    // const items = await redis.hgetall(key);
 
     await redis.expire(key, 60 * 60 * 24); // TTL
+
+    return await fetchCart(key)
 
 }
 

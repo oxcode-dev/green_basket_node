@@ -2,36 +2,41 @@ import express from 'express';
 import { getCartKey } from '../utils/index.ts';
 import { prisma } from '../lib/prisma.ts';
 import redis from '../lib/redis.ts';
-import { fetchCart } from '../services/cartServices.ts';
+import { fetchCart, storeCart } from '../services/cartServices.ts';
+import { fetchProduct } from '../services/productServices.ts';
 
 export const addToCart = async(req: express.Request, res: express.Response) => {
     const { productId, quantity = 1 }: { productId: string, quantity: number } = req.body;
 
     const key = getCartKey(req);
 
-    const product = await prisma.products.findUnique({ where: { id: productId } });
+    const product = await fetchProduct(productId);
 
     if (!product) return res.status(404).json({ message: "Product not found" });
 
-    const existing = await redis.hget(key, productId);
+    const { total, items } = await storeCart(key, productId, quantity)
 
-    if (existing) {
-        const item = JSON.parse(existing);
-        item.quantity += quantity;
-        await redis.hset(key, productId, JSON.stringify(item));
-    } else {
-        await redis.hset(key, productId, JSON.stringify({
-            productId,
-            quantity,
-            price: product.price
-        }));
-    }
+    res.status(201).json({ message: 'Added to cart successfully', cart: { items, total } });
 
-    const items = await redis.hgetall(key);
+    // const existing = await redis.hget(key, productId);
 
-    await redis.expire(key, 60 * 60 * 24); // TTL
+    // if (existing) {
+    //     const item = JSON.parse(existing);
+    //     item.quantity += quantity;
+    //     await redis.hset(key, productId, JSON.stringify(item));
+    // } else {
+    //     await redis.hset(key, productId, JSON.stringify({
+    //         productId,
+    //         quantity,
+    //         price: product.price
+    //     }));
+    // }
 
-    return res.status(201).json({ message: 'Added to cart', cart: items });
+    // const items = await redis.hgetall(key);
+
+    // await redis.expire(key, 60 * 60 * 24); // TTL
+
+    // return res.status(201).json({ message: 'Added to cart', cart: items });
 }
 
 export const getCart = async(req: express.Request, res: express.Response) => {
