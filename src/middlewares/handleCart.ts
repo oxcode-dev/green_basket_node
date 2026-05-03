@@ -18,8 +18,6 @@ const checkAuthForCart = async (req: any, res: express.Response, next: express.N
     try {
         const authHeader = req.headers['authorization'];
 
-        // console.log(authHeader)
-
         if(!authHeader || !authHeader.startsWith('Bearer ')) {
             return next()
             // return res.status(401).json({ message: 'Kindly login to access this resource' });
