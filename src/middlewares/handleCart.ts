@@ -18,6 +18,8 @@ const checkAuthForCart = async (req: any, res: express.Response, next: express.N
     try {
         const authHeader = req.headers['authorization'];
 
+        // console.log(authHeader)
+
         if(!authHeader || !authHeader.startsWith('Bearer ')) {
             return next()
             // return res.status(401).json({ message: 'Kindly login to access this resource' });
@@ -44,8 +46,9 @@ const checkAuthForCart = async (req: any, res: express.Response, next: express.N
 
         next();
     } catch (error) {
-        console.error("Token verification error: ", error || 'Server error');
+        // console.error("Token verification error: ", error || 'Server error');
         // res.status(401).json({ message: "User Logged out" });
+        next();
     }
 }
 
