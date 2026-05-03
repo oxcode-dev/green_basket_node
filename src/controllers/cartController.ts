@@ -2,7 +2,7 @@ import express from 'express';
 import { getCartKey } from '../utils/index.ts';
 import { prisma } from '../lib/prisma.ts';
 import redis from '../lib/redis.ts';
-import { fetchCart, storeCart } from '../services/cartServices.ts';
+import { deleteCart, deleteCartItem, fetchCart, fetchCartItem, modifyCartItems, storeCart } from '../services/cartServices.ts';
 import { fetchProduct } from '../services/productServices.ts';
 
 export const addToCart = async(req: express.Request, res: express.Response) => {
@@ -12,31 +12,12 @@ export const addToCart = async(req: express.Request, res: express.Response) => {
 
     const product = await fetchProduct(productId);
 
-    if (!product) return res.status(404).json({ message: "Product not found" });
+    if (!product) return res.status(403).json({ message: "Product not found" });
 
     const { total, items } = await storeCart(key, productId, quantity)
 
     res.status(201).json({ message: 'Added to cart successfully', cart: { items, total } });
 
-    // const existing = await redis.hget(key, productId);
-
-    // if (existing) {
-    //     const item = JSON.parse(existing);
-    //     item.quantity += quantity;
-    //     await redis.hset(key, productId, JSON.stringify(item));
-    // } else {
-    //     await redis.hset(key, productId, JSON.stringify({
-    //         productId,
-    //         quantity,
-    //         price: product.price
-    //     }));
-    // }
-
-    // const items = await redis.hgetall(key);
-
-    // await redis.expire(key, 60 * 60 * 24); // TTL
-
-    // return res.status(201).json({ message: 'Added to cart', cart: items });
 }
 
 export const getCart = async(req: express.Request, res: express.Response) => {
@@ -49,38 +30,34 @@ export const getCart = async(req: express.Request, res: express.Response) => {
 
 export const updateCartItem = async (req: express.Request, res: express.Response) => {
   
-    const { productId } = req.params;
-    const { quantity } = req.body;
+    const { productId } = req.params as { productId: string };
+    const { quantity } = req.body as { quantity: number };
 
     const key = getCartKey(req);
 
-    const existing = await redis.hget(key, String(productId));
+    const existing = await fetchCartItem(key, String(productId));
 
     if (!existing) return res.status(404).json({ message: "Item not found" });
 
-    const item = JSON.parse(existing);
+    const { total, items } = await modifyCartItems(key, productId, quantity)
 
-    item.quantity = quantity;
-
-    await redis.hset(key, String(productId), JSON.stringify(item));
-
-    res.json({ message: "Cart updated" });
+    res.json({ message: "Cart updated", cart: { items, total } });
 };
 
 export const removeCartItem = async (req: express.Request, res: express.Response) => {
-    const { productId } = req.params;
+    const { productId } = req.params as { productId: string };
 
     const key = getCartKey(req);
 
-    await redis.hdel(key, String(productId));
+    const { total, items } = await deleteCartItem(key, productId)
 
-    res.json({ message: "Item removed" });
+    res.json({ message: "Item removed", cart: { items, total } });
 };
 
 export const clearCart = async (req: express.Request, res: express.Response) => {
     const key = getCartKey(req);
 
-    await redis.del(key);
+    const { total, items } = await deleteCart(key)
 
-    res.json({ message: "Cart cleared", });
+    res.json({ message: "Cart cleared", cart: { items, total } });
 }; 

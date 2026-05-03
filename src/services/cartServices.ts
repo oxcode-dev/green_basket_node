@@ -37,31 +37,38 @@ export const storeCart = async (key: string, productId: string, quantity: number
         }));
     }
 
-    // const items = await redis.hgetall(key);
-
     await redis.expire(key, 60 * 60 * 24); // TTL
 
     return await fetchCart(key)
-
 }
 
 export const modifyCartItems = async (key: string, productId: string, quantity: number) => {
     
-    const existing = await redis.hget(key, productId);
+    const existing = await fetchCartItem(key, productId);
 
-    if (!existing) {
-        const errorDetails = {
-            message: "Item not found",
-            hasError: true
-        }
-        return { err: errorDetails };
+    if(existing) {
+        const item: CartItemsType = JSON.parse(existing);
+
+        item.quantity = quantity;
+
+        await redis.hset(key, productId, JSON.stringify(item));
     }
 
-    const item = JSON.parse(existing);
+    return await fetchCart(key)
+}
 
-    item.quantity = quantity;
+export const fetchCartItem = async(key: string, productId: string) => {
+    return await redis.hget(key, productId);
+}
 
-    await redis.hset(key, String(productId), JSON.stringify(item));
+export const deleteCartItem = async(key: string, productId: string) => {
+    await redis.hdel(key, String(productId));
+
+    return await fetchCart(key)
+}
+
+export const deleteCart = async (key: string) => {
+    await redis.del(key);
 
     return await fetchCart(key)
 }
