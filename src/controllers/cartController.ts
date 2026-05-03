@@ -2,6 +2,7 @@ import express from 'express';
 import { getCartKey } from '../utils/index.ts';
 import { prisma } from '../lib/prisma.ts';
 import redis from '../lib/redis.ts';
+import { fetchCart } from '../services/cartServices.ts';
 
 export const addToCart = async(req: express.Request, res: express.Response) => {
     const { productId, quantity = 1 }: { productId: string, quantity: number } = req.body;
@@ -36,15 +37,17 @@ export const addToCart = async(req: express.Request, res: express.Response) => {
 export const getCart = async(req: express.Request, res: express.Response) => {
     const key = getCartKey(req);
     
-    const items = await redis.hgetall(key);
+    // const items = await redis.hgetall(key);
 
-    const parsed = Object.values(items).map(item => JSON.parse(item));
+    // const parsed = Object.values(items).map(item => JSON.parse(item));
 
-    const total = parsed.reduce((acc, item) => {
-        return acc + item.price * item.quantity;
-    }, 0);
+    // const total = parsed.reduce((acc, item) => {
+    //     return acc + item.price * item.quantity;
+    // }, 0);
 
-    res.status(200).json({ message: 'Added to cart', cart: { items: parsed, total } });
+    const { total, items } = await fetchCart(key)
+
+    res.status(200).json({ message: 'Fetch cart successfully', cart: { items, total } });
 }
 
 export const updateCartItem = async (req: express.Request, res: express.Response) => {

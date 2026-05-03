@@ -1,7 +1,7 @@
 import redis from "../lib/redis.ts";
 
 
-const fetchCart = async (key: string) => {
+export const fetchCart = async (key: string) => {
     
     const items = await redis.hgetall(key);
 
