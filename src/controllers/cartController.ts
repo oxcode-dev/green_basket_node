@@ -44,7 +44,7 @@ export const getCart = async(req: express.Request, res: express.Response) => {
         return acc + item.price * item.quantity;
     }, 0);
 
-    res.status(200).json({ items: parsed, total });
+    res.status(200).json({ message: 'Added to cart', cart: { items: parsed, total } });
 }
 
 export const updateCartItem = async (req: express.Request, res: express.Response) => {
