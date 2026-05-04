@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma.ts';
 import { fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
 import axios from 'axios';
-import { storeOrder } from '../services/OrderServices.ts';
+import { storeOrder, storeOrderItem } from '../services/OrderServices.ts';
 
 interface RequestWithUser extends express.Request {
     user: {
@@ -54,7 +54,14 @@ const checkout = async (req: any, res: express.Response) => {
             payment_status: 'unpaid'
         });
 
-        const orderItems = await prisma.order_items.createMany();
+        cart.items.map(async (item, key) => {
+            await storeOrderItem({
+                order_id: order.id,
+                product_id: item?.productId,
+                quantity: item?.quantity || 0,
+                unit_price: item?.price || 0
+            })
+        })
 
         // 4. Initialize Paystack payment
         const paystackRes = await axios.post(
