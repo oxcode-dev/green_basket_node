@@ -1,6 +1,5 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
-import type { PaginationType } from '../types/index.ts';
 import { countAllCustomerOrders, countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination, storeOrder } from '../services/OrderServices.ts';
 import { fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
@@ -55,7 +54,7 @@ const checkout = async (req: any, res: express.Response) => {
             payment_status: 'unpaid'
         });
 
-        const orderItems;
+        const orderItems = await prisma.order_items.createMany();
 
         // 4. Initialize Paystack payment
         const paystackRes = await axios.post(
