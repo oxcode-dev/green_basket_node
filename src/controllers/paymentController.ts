@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma.ts';
 import { fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
 import axios from 'axios';
-import { storeOrder, storeOrderItem } from '../services/OrderServices.ts';
+import { storeOrder, storeOrderItem, updateOrder } from '../services/OrderServices.ts';
 
 interface RequestWithUser extends express.Request {
     user: {
@@ -84,9 +84,12 @@ const checkout = async (req: any, res: express.Response) => {
         // 5. Save reference
         // order.paymentReference = paystackRes.data.data.reference;
         // await order.save();
+        await updateOrder(order.id, {
+            payment_reference: paystackRes.data.data.reference,
+        });
 
         // 6. Return payment link
-        res.json({
+        res.status(201).json({
             paymentUrl: paystackRes.data.data.authorization_url,
             orderId: order.id
         });

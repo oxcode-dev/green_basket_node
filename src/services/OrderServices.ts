@@ -51,7 +51,7 @@ export const storeOrder = async (orderData: Omit<OrderType, "id">) => {
     return order;
 } 
 
-export const updateOrder = async (id: string, orderData: Omit<OrderType, "id">) => {
+export const updateOrder = async (id: string, orderData: Partial<OrderType>) => {
     const order = await prisma.orders.update({
         where: { id: id },
         data: orderData,

@@ -60,8 +60,9 @@ model orders {
   total_amount Decimal @db.Decimal(10,2) @default(0.00)
   delivery_cost Decimal @db.Decimal(10,2) @default(0.00)
   status String @default("pending") //@db.Enum(['pending', 'paid', 'shipped', 'delivered', 'cancelled'])
-  payment_method String? //@db.Enum(['cash', 'bank transfer', 'online payment'])
+  payment_method String? @default("none") //@db.Enum(['cash', 'bank transfer', 'online payment'])
   payment_status String @default("unpaid") //@db.Enum(['unpaid', 'paid', 'refunded'])
+  payment_reference String
   created_at DateTime @db.Timestamp(6) @default(now())
   updated_at DateTime @db.Timestamp(6) @default(now())
 

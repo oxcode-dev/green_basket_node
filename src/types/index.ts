@@ -53,6 +53,7 @@ export type OrderType = {
     address_id: string;
     total_amount: number;
     delivery_cost: number;
+    payment_reference?: string;
     status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
     payment_method: 'cash' | 'bank transfer' | 'online payment' | 'none';
     payment_status: 'unpaid' | 'paid' | 'refunded';
