@@ -1,10 +1,13 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { fetchCart } from '../services/cartServices.ts';
+import { deleteCart, fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
 import axios from 'axios';
 import { storeOrder, storeOrderItem, updateOrder } from '../services/OrderServices.ts';
+import crypto from "crypto"
+import dotenv from 'dotenv'
 
+dotenv.config();
 interface RequestWithUser extends express.Request {
     user: {
         id: string;
@@ -104,10 +107,7 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
 
         if (data.status === "success") {
             const order = await prisma.orders.findFirst({
-                where: { 
-                    payment_reference: reference
-                },
-                include: { order_items: true }
+                where: { payment_reference: reference },
             });
             
             if (!order) return res.status(404).json({ message: "Order not found" });
@@ -121,49 +121,50 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
         }
 
         res.status(400).json({ message: "Payment failed" });
-        
+
     } catch (err: any) {
         res.status(500).json({ error: err.message });
     }
 };
 
 
-// const crypto = require("crypto");
-// const Order = require("../models/Order");
 
-// exports.paystackWebhook = async (req, res) => {
-//   const hash = crypto
-//     .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
-//     .update(JSON.stringify(req.body))
-//     .digest("hex");
+export const paystackWebhook = async (req: express.Request, res: express.Response) => {
+    const key = getCartKey(req)
+  const hash = crypto
+    .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY || '')
+    .update(JSON.stringify(req.body))
+    .digest("hex");
 
-//   if (hash !== req.headers["x-paystack-signature"]) {
-//     return res.sendStatus(400);
-//   }
+  if (hash !== req.headers["x-paystack-signature"]) {
+    return res.sendStatus(400);
+  }
 
-//   const event = req.body;
+  const event = req.body;
 
-//   if (event.event === "charge.success") {
-//     const payment = event.data;
+  if (event.event === "charge.success") {
+    const payment = event.data;
 
-//     const order = await Order.findOne({
-//       paymentReference: payment.reference
-//     });
+    const order = await prisma.orders.findFirst({
+        where: { payment_reference: payment.reference },
+    });
 
-//     if (!order) return res.sendStatus(200);
+    if (!order) return res.sendStatus(200);
 
-//     // Prevent double processing
-//     if (order.paymentStatus === "paid") return res.sendStatus(200);
+    // Prevent double processing
+    if (order.payment_status === "paid") return res.sendStatus(200);
 
-//     order.paymentStatus = "paid";
-//     order.status = "paid";
-//     await order.save();
+    await updateOrder(order.id, {
+        payment_status: "paid",
+        status: "paid",
+    });
 
-//     // OPTIONAL: clear cart
-//     await Cart.findOneAndDelete({ user: order.user });
+    // OPTIONAL: clear cart
+    // await Cart.findOneAndDelete({ user: order.user });
+    await deleteCart(key)
 
-//     console.log("✅ Order paid:", order._id);
-//   }
+    console.log("✅ Order paid:", order.id);
+  }
 
-//   res.sendStatus(200);
-// };
+  res.sendStatus(200);
+};
