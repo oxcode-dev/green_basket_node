@@ -101,7 +101,7 @@ const checkout = async (req: any, res: express.Response) => {
 
 
 export const verifyPayment = async (req: express.Request, res: express.Response) => {
-    const { reference } = req.query;
+    const { reference } = req.query as { reference: string};
 
     const response = await axios.get(
         `https://api.paystack.co/transaction/verify/${reference}`,
@@ -114,14 +114,20 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
 
     const data = response.data.data;
 
-    if (data.status === "success") {
-        const order = await Order.findOne({ paymentReference: reference });
-
+    if (data.status === "success" && reference) {
+        const order = await prisma.orders.findFirst({
+            where: { 
+                payment_reference: reference
+            },
+            include: { order_items: true }
+        });
+        
         if (!order) return res.status(404).json({ message: "Order not found" });
 
-        order.paymentStatus = "paid";
-        order.status = "paid";
-        await order.save();
+        await updateOrder(order.id, {
+            payment_status: "paid",
+            status: "paid",
+        });
 
         return res.json({ message: "Payment successful" });
     }

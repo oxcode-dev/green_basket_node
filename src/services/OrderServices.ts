@@ -14,6 +14,15 @@ export const fetchOrder = async (id: string) => {
     });
 }
 
+// export const fetchOrderByKey = async (key: string, value: string) => {
+//     return await prisma.orders.findFirst({
+//         where: { 
+//             `${key}`: value,
+//         },
+//         include: { order_items: true }
+//     });
+// }
+
 export const fetchOrdersWithPagination = async(skip: number, limit: number) => {
     return await prisma.orders.findMany({
         skip: skip,
