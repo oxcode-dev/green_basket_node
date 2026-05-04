@@ -131,40 +131,39 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
 
 export const paystackWebhook = async (req: express.Request, res: express.Response) => {
     const key = getCartKey(req)
-  const hash = crypto
-    .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY || '')
-    .update(JSON.stringify(req.body))
-    .digest("hex");
+    const hash = crypto
+        .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY || '')
+        .update(JSON.stringify(req.body))
+        .digest("hex");
 
-  if (hash !== req.headers["x-paystack-signature"]) {
-    return res.sendStatus(400);
-  }
+    if (hash !== req.headers["x-paystack-signature"]) {
+        return res.sendStatus(400);
+    }
 
-  const event = req.body;
+    const event = req.body;
 
-  if (event.event === "charge.success") {
-    const payment = event.data;
+    if (event.event === "charge.success") {
+        const payment = event.data;
 
-    const order = await prisma.orders.findFirst({
-        where: { payment_reference: payment.reference },
-    });
+        const order = await prisma.orders.findFirst({
+            where: { payment_reference: payment.reference },
+        });
 
-    if (!order) return res.sendStatus(200);
+        if (!order) return res.sendStatus(200);
 
-    // Prevent double processing
-    if (order.payment_status === "paid") return res.sendStatus(200);
+        // Prevent double processing
+        if (order.payment_status === "paid") return res.sendStatus(200);
 
-    await updateOrder(order.id, {
-        payment_status: "paid",
-        status: "paid",
-    });
+        await updateOrder(order.id, {
+            payment_status: "paid",
+            status: "paid",
+        });
 
-    // OPTIONAL: clear cart
-    // await Cart.findOneAndDelete({ user: order.user });
-    await deleteCart(key)
+        // OPTIONAL: clear cart
+        await deleteCart(key)
 
-    console.log("✅ Order paid:", order.id);
-  }
+        console.log("✅ Order paid:", order.id);
+    }
 
-  res.sendStatus(200);
+    res.sendStatus(200);
 };
