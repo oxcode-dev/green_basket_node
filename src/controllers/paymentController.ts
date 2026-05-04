@@ -1,9 +1,9 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { countAllCustomerOrders, countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination, storeOrder } from '../services/OrderServices.ts';
 import { fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
 import axios from 'axios';
+import { storeOrder } from '../services/OrderServices.ts';
 
 interface RequestWithUser extends express.Request {
     user: {

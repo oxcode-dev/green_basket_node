@@ -19,9 +19,10 @@ export type PaginationType = {
     skip: number;
 }
 
-interface RequestWithUser extends express.Request {
+export interface RequestWithUser extends express.Request {
     user: {
         id: string;
+        email: string;
     } | null;
 }
 
@@ -55,4 +56,12 @@ export type OrderType = {
     status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
     payment_method: 'cash' | 'bank transfer' | 'online payment' | 'none';
     payment_status: 'unpaid' | 'paid' | 'refunded';
+}
+
+export type OrderItemsType = {
+    id: string;
+    order_id: string;
+    product_id: string;
+    quantity: number;
+    unit_price: number;
 }
