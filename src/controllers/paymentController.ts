@@ -11,7 +11,7 @@ interface RequestWithUser extends express.Request {
     } | null;
 }
 
-const checkout = async (req: any, res: express.Response) => {
+export const checkout = async (req: any, res: express.Response) => {
     try {
         const key = getCartKey(req)
 
@@ -20,7 +20,6 @@ const checkout = async (req: any, res: express.Response) => {
         const { address_id  } = req.body
 
         // 1. Get user cart
-        // const cart = await Cart.findOne({ user: userId }).populate("items.product");
         const cart = await fetchCart(key)
 
         if (!cart || cart.items.length === 0) {
@@ -33,17 +32,6 @@ const checkout = async (req: any, res: express.Response) => {
         //     return acc + item.product.price * item.quantity;
         // }, 0);
 
-        // 3. Create order (PENDING)
-        // const order = await Order.create({
-        //     user: userId,
-        //     // items: cart.items.map(item => ({
-        //     //     product: item.product._id,
-        //     //     quantity: item.quantity,
-        //     //     price: item.product.price
-        //     // })),
-        //     totalAmount
-        // });
-
         const order = await storeOrder({
             user_id: userId,
             address_id: address_id,
@@ -51,7 +39,8 @@ const checkout = async (req: any, res: express.Response) => {
             delivery_cost: 800,
             status: 'pending', 
             payment_method: 'none',
-            payment_status: 'unpaid'
+            payment_status: 'unpaid',
+            payment_reference: '',
         });
 
         cart.items.map(async (item, key) => {
@@ -114,7 +103,7 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
 
     const data = response.data.data;
 
-    if (data.status === "success" && reference) {
+    if (data.status === "success") {
         const order = await prisma.orders.findFirst({
             where: { 
                 payment_reference: reference
