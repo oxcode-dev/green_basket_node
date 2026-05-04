@@ -4,6 +4,7 @@ import type { PaginationType } from '../types/index.ts';
 import { countAllCustomerOrders, countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination, storeOrder } from '../services/OrderServices.ts';
 import { fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
+import axios from 'axios';
 
 interface RequestWithUser extends express.Request {
     user: {
@@ -92,8 +93,6 @@ export const getAllOrders = async (req: express.Request & PaginationType, res: e
 
 const checkout = async (req: any, res: express.Response) => {
     try {
-        const axios = require("axios");
-
         const key = getCartKey(req)
 
         const userId = req.user.id;
@@ -134,6 +133,8 @@ const checkout = async (req: any, res: express.Response) => {
             payment_method: 'none',
             payment_status: 'unpaid'
         });
+
+        const orderItems;
 
         // 4. Initialize Paystack payment
         const paystackRes = await axios.post(
