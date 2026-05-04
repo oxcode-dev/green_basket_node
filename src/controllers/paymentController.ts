@@ -12,85 +12,6 @@ interface RequestWithUser extends express.Request {
     } | null;
 }
 
-export const getUserOrders = async (req: RequestWithUser & PaginationType, res: express.Response) => {
-    try {
-        const auth = req.user
-
-        const { page, limit, skip } = req as PaginationType;
-        
-        const totalCount = await countAllCustomerOrders(String(auth?.id));
-
-        const orders = await fetchCustomerOrdersWithPagination(String(auth?.id), skip, limit);
-
-        let data = {
-            status: "success",
-            message: "Orders fetched successfully",
-            orders,
-            metadata: {
-                page: page,
-                limit: limit,
-                totalCount,
-                totalPages: Math.ceil(totalCount / limit),
-            }
-        }
-
-        res.status(200).json(data);
-    } catch (error) {
-        return res.status(500).json({ message: `server error: ${error}`})
-    }
-}
-
-export const getOrder = async (req: RequestWithUser, res: express.Response) => {
-    try {
-        const auth = req.user
-
-        const id = String(req?.params?.id || '')
-        
-        const order = await fetchOrder(id);
-
-        if (!order || order.user_id !== auth?.id) {
-            return res.status(404).json({ error: 'Order not found' })
-        }
-
-        let data = {
-            status: "success",
-            message: "Orders fetched successfully",
-            order,
-        }
-
-        res.status(200).json(data);
-        
-    } catch (error) {
-        return res.status(500).json({ message: `server error: ${error}`})
-    }
-}
-
-export const getAllOrders = async (req: express.Request & PaginationType, res: express.Response) => {
-    try {
-        const { page, limit, skip } = req as PaginationType;
-        
-        const totalCount = await countAllOrders();
-
-        const orders = await fetchOrdersWithPagination(skip, limit);
-
-        let data = {
-            status: "success",
-            message: "Orders fetched successfully",
-            orders,
-            metadata: {
-                page: page,
-                limit: limit,
-                totalCount,
-                totalPages: Math.ceil(totalCount / limit),
-            }
-        }
-
-        res.status(200).json(data);
-    } catch (error) {
-        return res.status(500).json({ message: `server error: ${error}`})
-    }
-}
-
 const checkout = async (req: any, res: express.Response) => {
     try {
         const key = getCartKey(req)
@@ -170,34 +91,34 @@ const checkout = async (req: any, res: express.Response) => {
 }
 
 
-// exports.verifyPayment = async (req, res) => {
-//   const { reference } = req.query;
+export const verifyPayment = async (req: express.Request, res: express.Response) => {
+    const { reference } = req.query;
 
-//   const response = await axios.get(
-//     `https://api.paystack.co/transaction/verify/${reference}`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-//       }
-//     }
-//   );
+    const response = await axios.get(
+        `https://api.paystack.co/transaction/verify/${reference}`,
+        {
+            headers: {
+                Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+            }
+        }
+    );
 
-//   const data = response.data.data;
+    const data = response.data.data;
 
-//   if (data.status === "success") {
-//     const order = await Order.findOne({ paymentReference: reference });
+    if (data.status === "success") {
+        const order = await Order.findOne({ paymentReference: reference });
 
-//     if (!order) return res.status(404).json({ message: "Order not found" });
+        if (!order) return res.status(404).json({ message: "Order not found" });
 
-//     order.paymentStatus = "paid";
-//     order.status = "paid";
-//     await order.save();
+        order.paymentStatus = "paid";
+        order.status = "paid";
+        await order.save();
 
-//     return res.json({ message: "Payment successful" });
-//   }
+        return res.json({ message: "Payment successful" });
+    }
 
-//   res.status(400).json({ message: "Payment failed" });
-// };
+    res.status(400).json({ message: "Payment failed" });
+};
 
 
 // const crypto = require("crypto");
