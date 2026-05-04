@@ -93,7 +93,6 @@ export const getAllOrders = async (req: express.Request & PaginationType, res: e
 const checkout = async (req: any, res: express.Response) => {
     try {
         const axios = require("axios");
-        const Order = require("../models/Order");
 
         const key = getCartKey(req)
 
