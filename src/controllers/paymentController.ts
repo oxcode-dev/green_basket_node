@@ -71,8 +71,6 @@ export const checkout = async (req: any, res: express.Response) => {
         );
 
         // 5. Save reference
-        // order.paymentReference = paystackRes.data.data.reference;
-        // await order.save();
         await updateOrder(order.id, {
             payment_reference: paystackRes.data.data.reference,
         });
@@ -90,38 +88,43 @@ export const checkout = async (req: any, res: express.Response) => {
 
 
 export const verifyPayment = async (req: express.Request, res: express.Response) => {
-    const { reference } = req.query as { reference: string};
+    try {
+        const { reference } = req.query as { reference: string};
 
-    const response = await axios.get(
-        `https://api.paystack.co/transaction/verify/${reference}`,
-        {
-            headers: {
-                Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+        const response = await axios.get(
+            `https://api.paystack.co/transaction/verify/${reference}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+                }
             }
+        );
+
+        const data = response.data.data;
+
+        if (data.status === "success") {
+            const order = await prisma.orders.findFirst({
+                where: { 
+                    payment_reference: reference
+                },
+                include: { order_items: true }
+            });
+            
+            if (!order) return res.status(404).json({ message: "Order not found" });
+
+            await updateOrder(order.id, {
+                payment_status: "paid",
+                status: "paid",
+            });
+
+            return res.json({ message: "Payment successful" });
         }
-    );
 
-    const data = response.data.data;
-
-    if (data.status === "success") {
-        const order = await prisma.orders.findFirst({
-            where: { 
-                payment_reference: reference
-            },
-            include: { order_items: true }
-        });
+        res.status(400).json({ message: "Payment failed" });
         
-        if (!order) return res.status(404).json({ message: "Order not found" });
-
-        await updateOrder(order.id, {
-            payment_status: "paid",
-            status: "paid",
-        });
-
-        return res.json({ message: "Payment successful" });
+    } catch (err: any) {
+        res.status(500).json({ error: err.message });
     }
-
-    res.status(400).json({ message: "Payment failed" });
 };
 
 
