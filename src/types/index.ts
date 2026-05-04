@@ -22,7 +22,7 @@ export type PaginationType = {
 export interface RequestWithUser extends express.Request {
     user: {
         id: string;
-        email: string;
+        email?: string;
     } | null;
 }
 

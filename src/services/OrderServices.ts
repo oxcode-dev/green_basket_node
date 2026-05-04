@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts"
-import type { OrderType } from "../types/index.ts";
+import type { OrderItemsType, OrderType } from "../types/index.ts";
 
 export const fetchAllOrders = async () => {
     return await prisma.orders.findMany();
@@ -62,6 +62,20 @@ export const updateProduct = async (id: string, orderData: Omit<OrderType, "id">
 
 export const destroyOrder = async(id: string) => {
     await prisma.orders.delete({
+        where: { id: id },
+    })
+}
+
+export const storeOrderItem = async (orderData: Omit<OrderItemsType, "id">) => {
+    const order = await prisma.order_items.create({
+        data: orderData,
+    })
+
+    return order;
+} 
+
+export const destroyOrderItem = async(id: string) => {
+    await prisma.order_items.delete({
         where: { id: id },
     })
 }
