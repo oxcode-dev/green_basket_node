@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { PaginationType, RequestWithUser } from '../types/index.ts';
-import { countUserWishlists, fetchUserWishlistsWithPagination, fetchWishlist, storeWishlist } from '../services/wishlistServices.ts';
+import { countUserWishlists, destroyWishlist, fetchUserWishlistsWithPagination, fetchWishlist, storeWishlist } from '../services/wishlistServices.ts';
 import { fetchProduct } from '../services/productServices.ts';
 
 export const getUserWishlists = async(req: RequestWithUser & PaginationType, res: express.Response) => {
@@ -78,13 +78,12 @@ export const createWishlist = async (req: RequestWithUser, res: express.Response
 export const deleteWishlist = async (req: any, res: express.Response) => {
     try {
         const id = String(req?.params?.id)
-        if (!await prisma.wishlists.findUnique({ where: { id: id } })) {
+
+        if (!await fetchWishlist(id)) {
             return res.status(404).json({ error: 'Wishlist not found' })
         }
 
-        await prisma.wishlists.delete({
-            where: { id: id }
-        })
+        await destroyWishlist(id);
 
         return res.status(201).json({
             message: 'Wishlist Deleted successfully', 
