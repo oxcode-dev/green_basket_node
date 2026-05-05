@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { RequestWithUser } from '../types/index.ts';
-import { fetchAddress, fetchUserAddresses, storeAddress, updateAddress } from '../services/addressServices.ts';
+import { destroyAddress, fetchAddress, fetchUserAddresses, storeAddress, updateAddress } from '../services/addressServices.ts';
 import { string } from 'zod';
 
 
@@ -111,20 +111,17 @@ export const updateUserAddress = async (req: RequestWithUser, res: express.Respo
 export const deleteUserAddress = async (req: RequestWithUser, res: express.Response) => { 
     try {
         const id = String(req?.params?.id)
-        if (!await prisma.addresses.findUnique({ where: { id: id } })) {
+
+        const userAddress = await fetchAddress(id)
+
+        if (!userAddress) {
             return res.status(404).json({ error: 'Address not found' })
         }
 
-        const auth = req.user;
-
-        // const address = await prisma.addresses.delete({
-        await prisma.addresses.delete({
-            where: { id: id }
-        })
+        await destroyAddress(id)
 
         return res.status(201).json({
             message: 'Address Deleted successfully', 
-            // address,
             status: 'success'
         });
         

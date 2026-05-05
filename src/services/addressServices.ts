@@ -39,7 +39,7 @@ export const updateAddress = async (id: string, data: Partial<AddressType>) => {
     return address;
 } 
 
-export const destroyCategory = async(id: string) => {
+export const destroyAddress = async(id: string) => {
     await prisma.addresses.delete({
         where: { id: id },
     })
