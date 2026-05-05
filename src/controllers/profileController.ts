@@ -1,20 +1,14 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../lib/prisma.ts';
-
-interface RequestWithUser extends express.Request {
-    user: {
-        id: string;
-    } | null
-}
+import { RequestWithUser } from '../types/index.ts';
+import { fetchUser } from '../services/usersServices.ts';
 
 export const getUserDetails = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
-        const user = await prisma.users.findFirst({
-            where: { id: String(auth?.id) },
-            // omit: ['password'],
-        })
+
+        const user = await fetchUser(String(auth?.id))
 
          if (!user) {
             res.status(400).json({ msg: "User does not exist." });

@@ -1,8 +1,6 @@
 import express from 'express';
 import type { PaginationType } from '../types/index.ts';
-import { prisma } from '../lib/prisma.ts';
 import { countUsersByRole, destroyUser, fetchUser, fetchUsersByRoleWithPagination, storeUser, updateUser } from '../services/usersServices.ts';
-import { get } from 'node:http';
 import { generatePassword } from '../helpers/index.ts';
 
 export const getAdminUsers = async (req: express.Request | PaginationType, res: express.Response) => {
@@ -104,7 +102,7 @@ export const updateUserByAdmin = async (req: express.Request, res: express.Respo
     try {
         const { id } = req.params;                
 
-        const { first_name, email, last_name, role, phone,  } = req.body;                
+        const { first_name, email, last_name, role, phone } = req.body;                
 
         const user = await updateUser(String(id), {
             email,
