@@ -4,8 +4,6 @@ export const userDetailsSchema = z.object({
     first_name: z.string().min(2, { message: "First name must be at least 2 characters long" }),
     last_name: z.string().min(2, { message: "Last name must be at least 2 characters long" }),
     phone: z.string().optional(),
-    // .min(2, { message: "Username must be at least 2 characters long" }),
-    bio: z.string().optional(),
     email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
 })
 
@@ -21,7 +19,6 @@ export const userAddressSchema = z.object({
     city: z.string().min(2, { message: "Last name must be at least 2 characters long" }),
     state: z.string().min(2, { message: "Username must be at least 2 characters long" }),
     postal_code: z.string().optional(),
-    // email: z.string().email({ message: "Invalid email address" }).trim().toLowerCase(),
 })
 
 export const productReviewSchema = z.object({
