@@ -75,7 +75,7 @@ export const createWishlist = async (req: RequestWithUser, res: express.Response
     }
 } 
 
-export const deleteWishlist = async (req: any, res: express.Response) => {
+export const deleteWishlist = async (req: express.Request, res: express.Response) => {
     try {
         const id = String(req?.params?.id)
 
