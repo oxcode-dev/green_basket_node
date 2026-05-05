@@ -1,12 +1,7 @@
 import express from 'express';
-import type { PaginationType } from '../types/index.ts';
-import { countAllCustomerOrders, countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination, storeOrder } from '../services/OrderServices.ts';
+import type { PaginationType, RequestWithUser } from '../types/index.ts';
+import { countAllCustomerOrders, countAllOrders, fetchCustomerOrdersWithPagination, fetchOrder, fetchOrdersWithPagination } from '../services/OrderServices.ts';
 
-interface RequestWithUser extends express.Request {
-    user: {
-        id: string;
-    } | null;
-}
 
 export const getUserOrders = async (req: RequestWithUser & PaginationType, res: express.Response) => {
     try {
