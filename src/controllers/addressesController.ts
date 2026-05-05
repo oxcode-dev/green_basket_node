@@ -1,15 +1,16 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
+import type { RequestWithUser } from '../types/index.ts';
 
 
-export const getUserAddresses = async (req: express.Request | any, res: express.Response) => {
+export const getUserAddresses = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
 
         const addresses = await prisma.addresses.findMany({
             include: { user: true },
             orderBy: { created_at: 'desc' },
-            where: { user_id: auth?.id}
+            where: { user_id: String(auth?.id)}
         });
 
         let data = {
@@ -24,7 +25,7 @@ export const getUserAddresses = async (req: express.Request | any, res: express.
     }
 }
 
-export const getUserAddress = async (req: express.Request | any, res: express.Response) => {
+export const getUserAddress = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user;
         const id = String(req?.params?.id || '');
@@ -35,7 +36,7 @@ export const getUserAddress = async (req: express.Request | any, res: express.Re
         
         const address = await prisma.addresses.findMany({
             include: { user: false },
-            where: { user_id: auth?.id, id: id}
+            where: { user_id: auth?.id || '', id: id}
         });
 
         let data = {
@@ -51,7 +52,7 @@ export const getUserAddress = async (req: express.Request | any, res: express.Re
     }
 }
 
-export const storeUserAddress = async (req: express.Request | any, res: express.Response) => { 
+export const storeUserAddress = async (req: RequestWithUser, res: express.Response) => { 
     try {
         const auth = req.user;
         const { street, city, postal_code, state, country } = req.body;
@@ -63,7 +64,7 @@ export const storeUserAddress = async (req: express.Request | any, res: express.
                 state, 
                 postal_code,
                 country,
-                user_id: auth?.id
+                user_id: String(auth?.id)
             }
         })
 
@@ -78,7 +79,7 @@ export const storeUserAddress = async (req: express.Request | any, res: express.
     }
 }
 
-export const updateUserAddress = async (req: express.Request | any, res: express.Response) => { 
+export const updateUserAddress = async (req: RequestWithUser, res: express.Response) => { 
     try {
         const id = String(req?.params?.id)
         if (!await prisma.addresses.findUnique({ where: { id: id } })) {
@@ -96,7 +97,7 @@ export const updateUserAddress = async (req: express.Request | any, res: express
                 state, 
                 postal_code,
                 country,
-                user_id: auth?.id
+                user_id: String(auth?.id)
             }
         })
 
@@ -111,7 +112,7 @@ export const updateUserAddress = async (req: express.Request | any, res: express
     }
 }
 
-export const deleteUserAddress = async (req: express.Request | any, res: express.Response) => { 
+export const deleteUserAddress = async (req: RequestWithUser, res: express.Response) => { 
     try {
         const id = String(req?.params?.id)
         if (!await prisma.addresses.findUnique({ where: { id: id } })) {
