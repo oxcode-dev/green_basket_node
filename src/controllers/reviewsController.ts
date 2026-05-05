@@ -1,33 +1,27 @@
 import express, { type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
+import type { PaginationType, RequestWithUser } from '../types/index.ts';
+import { countUserReviews, fetchReview, fetchUserReviewsWithPagination, storeReview } from '../services/reviewServices.ts';
+import { fetchProduct } from '../services/productServices.ts';
 
-export const getReviews = async(req: any, res: express.Response) => {
+export const getReviews = async(req: RequestWithUser & PaginationType, res: express.Response) => {
     try {
-        const auth: {id: string, email: string} = req?.user;
+        const auth = req?.user;
 
-        const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
-        const pageNum = typeof page === 'string' ? parseInt(page) : page;
-        const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
-        const skip = (pageNum - 1) * limitNum;
+        const { page, limit, skip } = req as PaginationType;
         
-        const totalCount = await prisma.reviews.count();
+        const totalCount = await countUserReviews(String(auth?.id))
 
-        const reviews = await prisma.reviews.findMany({
-            skip: Number(skip),
-            take: Number(limit),
-            where: { user_id: auth?.id},
-            include: { product: true },
-            orderBy: { created_at: 'desc' }
-        });
+        const reviews = await fetchUserReviewsWithPagination(String(auth?.id), skip, limit);
 
         return res.status(200).json({
             message: "Reviews retrieved successfully!!!",
             reviews,
             metadata: {
-                page: pageNum,
-                limit: limitNum,
+                page: page,
+                limit: limit,
                 totalCount,
-                totalPages: Math.ceil(totalCount / limitNum),
+                totalPages: Math.ceil(totalCount / limit),
             }
         })
         
@@ -40,12 +34,7 @@ export const getReview = async(req: express.Request, res: express.Response) => {
     try {
         const id = String(req?.params?.id);
         
-        const review = await prisma.reviews.findFirst({
-            where: { 
-                id: Array.isArray(id) ? id[0] : id
-            },
-            include: { product: true }
-        });
+        const review = await fetchReview(id);
 
         return res.status(200).json({
             message: "User review retrieved successfully!!!",
@@ -57,23 +46,21 @@ export const getReview = async(req: express.Request, res: express.Response) => {
     }
 }
 
-export const storeReview = async (req: any, res: express.Response) => {
+export const createReview = async (req: RequestWithUser, res: express.Response) => {
     try {
-        const auth: {id: string, email: string} = req?.user;
+        const auth = req?.user;
 
         const {rating, product_id, comment} = req.body;
 
-        if (!await prisma.products.findUnique({ where: { id: product_id } })) {
+        if (!await fetchProduct(product_id)) {
             return res.status(404).json({ error: 'Product not found' })
         }
 
-        const review = await prisma.reviews.create({
-            data: {
-                product_id,
-                rating: Number(rating),
-                comment,
-                user_id: auth?.id
-            }
+        const review = await storeReview({
+            product_id,
+            rating: Number(rating),
+            comment,
+            user_id: String(auth?.id)
         })
 
         return res.status(200).json({

@@ -10,11 +10,6 @@ export const fetchUserReviews = async (userId: string) => {
         where: { user_id: userId},
         include: { 
             product: true,
-            // user: {
-            //     include: {
-            //         first_name: true,
-            //     }
-            // }
         },
         orderBy: { created_at: 'desc' },
     });
