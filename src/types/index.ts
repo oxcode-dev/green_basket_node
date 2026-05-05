@@ -66,3 +66,14 @@ export type OrderItemsType = {
     quantity: number;
     unit_price: number;
 }
+
+export type AddressType = {
+    id: string;
+    user_id: string;
+    street: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postal_code?: string;
+    is_default: boolean;
+}

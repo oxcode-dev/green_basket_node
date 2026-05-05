@@ -1,5 +1,6 @@
 import { slugify } from "../helpers/index.ts"
 import { prisma } from "../lib/prisma.ts"
+import { AddressType } from "../types/index.ts";
 
 export const fetchAddresses = async () => {
     return await prisma.addresses.findMany();
@@ -21,33 +22,21 @@ export const fetchAddress = async (id: string) => {
     });
 }
 
-export const storeAddress = async (name: string, description?: string) => {
-    let data = {
-        name: name,
-        slug: slugify(name),
-        description: description || '',
-    };
-
-    const category = await prisma.categories.create({
+export const storeProduct = async (data: Omit<AddressType, "id">) => {
+    const product = await prisma.addresses.create({
         data: data,
     })
 
-    return category;
+    return product;
 } 
 
-export const updateCategory = async (id: string, name: string, description?: string) => {
-    let data = {
-        name: name,
-        slug: slugify(name),
-        description: description || '',
-    };
-
-    const category = await prisma.categories.update({
+export const updateProduct = async (id: string, data: Partial<AddressType>) => {
+    const product = await prisma.addresses.update({
         where: { id: id },
         data: data,
     })
 
-    return category;
+    return product;
 } 
 
 export const destroyCategory = async(id: string) => {
