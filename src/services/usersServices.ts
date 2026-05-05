@@ -57,6 +57,15 @@ export const updateUser = async (id: string, userData: Omit<UserType, 'password'
     return user;
 } 
 
+export const updateUserPassword = async (id: string, userData: Pick<UserType, 'password'>) => {
+    const user = await prisma.users.update({
+        where: { id: id },
+        data: userData,
+    })
+
+    return user;
+} 
+
 export const destroyUser = async(id: string) => {
     await prisma.users.delete({
         where: { id: id },

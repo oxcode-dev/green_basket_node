@@ -1,8 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../lib/prisma.ts';
-import { RequestWithUser } from '../types/index.ts';
-import { fetchUser } from '../services/usersServices.ts';
+import type { RequestWithUser } from '../types/index.ts';
+import { fetchUser, updateUser, updateUserPassword } from '../services/usersServices.ts';
 
 export const getUserDetails = async (req: RequestWithUser, res: express.Response) => {
     try {
@@ -25,6 +25,10 @@ export const getUserDetails = async (req: RequestWithUser, res: express.Response
                 last_name: user?.last_name,
                 avatar: user?.avatar,
                 phone: user?.phone,
+                orders: user?.orders,
+                reviews: user?.reviews,
+                addresses: user?.addresses,
+                wishlists: user?.wishlists,
             },
         }
 
@@ -40,23 +44,13 @@ export const updateUserDetails = async (req: RequestWithUser, res: express.Respo
 
         const { first_name, last_name, email, phone } = req.body;
 
-        if(
-            !first_name || !last_name || !email
-        ) {
-            return res.status(400).json({
-                message: "Required fields are missing!",
-            })
-        }
-
-        const updatedUser = await prisma.users.update({
-            where: { id: String(auth?.id) },
-            data: { 
-                first_name,
-                last_name,
-                email, 
-                phone,
-            },
-        });
+        const updatedUser = await updateUser(String(auth?.id), {
+            email,
+            first_name,
+            last_name,
+            role: 'CUSTOMER',
+            phone,
+        })
 
         let data = {
             status: "success",
@@ -92,10 +86,9 @@ export const changePassword = async (req: RequestWithUser, res: express.Response
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        
-        await prisma.users.update({
-            where: { id: String(auth?.id) },
-            data: { password: hashedPassword },
+
+        await updateUserPassword(String(auth?.id), {
+            password: hashedPassword,
         });
 
         let data = {
@@ -135,6 +128,7 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
+        
         const auth = req.user;
 
         // Construct the full URL to the uploaded image
@@ -163,8 +157,6 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         };
         res.status(201).json(data);
 
-        // Here you can add additional validation for file type and size if needed
-        // return res.status(200).json({ message: 'File uploaded successfully', file: req.file });
     } catch (error) {
         return res.status(500).json({ message: 'server error'})
     }
