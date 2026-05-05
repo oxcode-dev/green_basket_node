@@ -1,21 +1,27 @@
 import { prisma } from "../lib/prisma.ts"
-import type { WishlistType } from "../types/index.ts";
+import type { ReviewType } from "../types/index.ts";
 
-export const fetchWishlists = async () => {
-    return await prisma.wishlists.findMany();
+export const fetchReviews = async () => {
+    return await prisma.reviews.findMany();
 }
 
-export const fetchUserWishlists = async (userId: string) => {
-    return await prisma.wishlists.findMany({
+export const fetchUserReviews = async (userId: string) => {
+    return await prisma.reviews.findMany({
         where: { user_id: userId},
-        include: { product: true },
-        // omit: ["user.password"],
+        include: { 
+            product: true,
+            // user: {
+            //     include: {
+            //         first_name: true,
+            //     }
+            // }
+        },
         orderBy: { created_at: 'desc' },
     });
 }
 
-export const fetchUserWishlistsWithPagination = async(userId: string, skip: number, limit: number) => {
-    return await prisma.wishlists.findMany({
+export const fetchUserReviewsWithPagination = async(userId: string, skip: number, limit: number) => {
+    return await prisma.reviews.findMany({
         skip: skip,
         take: limit,
         include: { product: true },
@@ -24,29 +30,29 @@ export const fetchUserWishlistsWithPagination = async(userId: string, skip: numb
     });
 }
 
-export const countUserWishlists = async (userId: string) => {
-    return await prisma.wishlists.count({
+export const countUserReviews = async (userId: string) => {
+    return await prisma.reviews.count({
         where: { user_id: userId},
     });
 }
 
-export const fetchWishlist = async (id: string) => {
-    return await prisma.wishlists.findFirst({
+export const fetchReview = async (id: string) => {
+    return await prisma.reviews.findFirst({
         where: { id: id },
         include: { product: true }
     });
 }
 
-export const storeWishlist = async (data: Omit<WishlistType, "id">) => {
-    const wishlist = await prisma.wishlists.create({
+export const storeReview = async (data: Omit<ReviewType, "id">) => {
+    const review = await prisma.reviews.create({
         data: data,
     })
 
-    return wishlist;
+    return review;
 } 
 
-export const destroyWishlist = async(id: string) => {
-    await prisma.wishlists.delete({
+export const destroyReview = async(id: string) => {
+    await prisma.reviews.delete({
         where: { id: id },
     })
 }
