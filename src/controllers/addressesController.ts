@@ -1,7 +1,7 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { RequestWithUser } from '../types/index.ts';
-import { fetchAddress, fetchUserAddresses, storeAddress } from '../services/addressServices.ts';
+import { fetchAddress, fetchUserAddresses, storeAddress, updateAddress } from '../services/addressServices.ts';
 import { string } from 'zod';
 
 
@@ -54,7 +54,7 @@ export const storeUserAddress = async (req: RequestWithUser, res: express.Respon
 
         const address = await storeAddress({
             street: street,
-            city: city,
+            city: city || '',
             state: state, 
             postal_code: postal_code,
             country: country,
@@ -76,23 +76,25 @@ export const storeUserAddress = async (req: RequestWithUser, res: express.Respon
 export const updateUserAddress = async (req: RequestWithUser, res: express.Response) => { 
     try {
         const id = String(req?.params?.id)
-        if (!await prisma.addresses.findUnique({ where: { id: id } })) {
+
+        const userAddress = await fetchAddress(id)
+
+        if (!userAddress) {
             return res.status(404).json({ error: 'Address not found' })
         }
 
         const auth = req.user;
-        const { street, city, postal_code, state, country } = req.body;
 
-        const address = await prisma.addresses.update({
-            where: { id: id },
-            data: {
-                street,
-                city,
-                state, 
-                postal_code,
-                country,
-                user_id: String(auth?.id)
-            }
+        const { street, city, postal_code, state, country, is_default } = req.body  as { street: string, city: string, postal_code: string, state: string, country: string, is_default: boolean };
+
+        const address = await updateAddress(id, {
+            street: street,
+            city: city,
+            state: state, 
+            postal_code: postal_code,
+            country: country,
+            user_id: String(auth?.id),
+            is_default: is_default
         })
 
         return res.status(201).json({
