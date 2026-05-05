@@ -77,3 +77,9 @@ export type AddressType = {
     postal_code?: string;
     is_default: boolean;
 }
+
+export type WishlistType = {
+    id: string;
+    user_id: string;
+    product_id: string;
+}

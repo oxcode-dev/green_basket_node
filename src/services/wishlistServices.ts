@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts"
-import type { AddressType } from "../types/index.ts";
+import type { WishlistType } from "../types/index.ts";
 
 export const fetchWishlists = async () => {
     return await prisma.wishlists.findMany();
@@ -37,17 +37,8 @@ export const fetchWishlist = async (id: string) => {
     });
 }
 
-export const storeWishlist = async (data: Omit<AddressType, "id">) => {
+export const storeWishlist = async (data: Omit<WishlistType, "id">) => {
     const wishlist = await prisma.wishlists.create({
-        data: data,
-    })
-
-    return wishlist;
-} 
-
-export const updateWishlist = async (id: string, data: Partial<AddressType>) => {
-    const wishlist = await prisma.wishlists.update({
-        where: { id: id },
         data: data,
     })
 
