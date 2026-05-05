@@ -7,7 +7,10 @@ export const fetchAddresses = async () => {
 
 export const fetchUserAddresses = async (userId: string) => {
     return await prisma.addresses.findMany({
-        where: { user_id: userId}
+        where: { user_id: userId},
+        include: { user: false },
+        // omit: ["user.password"],
+        orderBy: { created_at: 'desc' },
     });
 }
 

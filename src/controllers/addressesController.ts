@@ -1,17 +1,14 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { RequestWithUser } from '../types/index.ts';
+import { fetchAddress, fetchUserAddresses } from '../services/addressServices.ts';
 
 
 export const getUserAddresses = async (req: RequestWithUser, res: express.Response) => {
     try {
         const auth = req.user
 
-        const addresses = await prisma.addresses.findMany({
-            include: { user: true },
-            orderBy: { created_at: 'desc' },
-            where: { user_id: String(auth?.id)}
-        });
+        const addresses = await fetchUserAddresses(String(auth?.id))
 
         let data = {
             status: "success",
@@ -30,14 +27,11 @@ export const getUserAddress = async (req: RequestWithUser, res: express.Response
         const auth = req.user;
         const id = String(req?.params?.id || '');
 
-        if (!await prisma.addresses.findUnique({ where: { id: id } })) {
+        const address = await fetchAddress(id)
+
+        if (!address) {
             return res.status(404).json({ error: 'Address not found' })
         }
-        
-        const address = await prisma.addresses.findMany({
-            include: { user: false },
-            where: { user_id: auth?.id || '', id: id}
-        });
 
         let data = {
             status: "success",
