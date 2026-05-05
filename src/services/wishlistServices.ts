@@ -8,9 +8,19 @@ export const fetchWishlists = async () => {
 export const fetchUserWishlists = async (userId: string) => {
     return await prisma.wishlists.findMany({
         where: { user_id: userId},
-        include: { user: false },
+        include: { product: true },
         // omit: ["user.password"],
         orderBy: { created_at: 'desc' },
+    });
+}
+
+export const fetchUserWishlistsWithPagination = async(userId: string, skip: number, limit: number) => {
+    return await prisma.wishlists.findMany({
+        skip: skip,
+        take: limit,
+        include: { product: true },
+        where: { user_id: userId},
+        orderBy: { created_at: 'desc' }
     });
 }
 
