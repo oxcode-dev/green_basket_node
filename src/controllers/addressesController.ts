@@ -1,7 +1,8 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { RequestWithUser } from '../types/index.ts';
-import { fetchAddress, fetchUserAddresses } from '../services/addressServices.ts';
+import { fetchAddress, fetchUserAddresses, storeAddress } from '../services/addressServices.ts';
+import { string } from 'zod';
 
 
 export const getUserAddresses = async (req: RequestWithUser, res: express.Response) => {
@@ -49,17 +50,16 @@ export const getUserAddress = async (req: RequestWithUser, res: express.Response
 export const storeUserAddress = async (req: RequestWithUser, res: express.Response) => { 
     try {
         const auth = req.user;
-        const { street, city, postal_code, state, country } = req.body;
+        const { street, city, postal_code, state, country, is_default } = req.body  as { street: string, city: string, postal_code: string, state: string, country: string, is_default: boolean };
 
-        const address = await prisma.addresses.create({
-            data: {
-                street,
-                city,
-                state, 
-                postal_code,
-                country,
-                user_id: String(auth?.id)
-            }
+        const address = await storeAddress({
+            street: street,
+            city: city,
+            state: state, 
+            postal_code: postal_code,
+            country: country,
+            user_id: String(auth?.id),
+            is_default: is_default
         })
 
         return res.status(201).json({

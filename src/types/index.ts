@@ -70,7 +70,7 @@ export type OrderItemsType = {
 export type AddressType = {
     id: string;
     user_id: string;
-    street: string;
+    street?: string;
     city?: string;
     state?: string;
     country?: string;
