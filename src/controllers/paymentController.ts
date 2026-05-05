@@ -3,33 +3,27 @@ import { prisma } from '../lib/prisma.ts';
 import { deleteCart, fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
 import axios from 'axios';
-import { storeOrder, storeOrderItem, updateOrder } from '../services/OrderServices.ts';
+import { fetchOrderByPaymentReference, storeOrder, storeOrderItem, updateOrder } from '../services/OrderServices.ts';
 import crypto from "crypto"
 import dotenv from 'dotenv'
+import type { RequestWithUser } from '../types/index.ts';
 
 dotenv.config();
-interface RequestWithUser extends express.Request {
-    user: {
-        id: string;
-    } | null;
-}
 
-export const checkout = async (req: any, res: express.Response) => {
+export const checkout = async (req: RequestWithUser, res: express.Response) => {
     try {
         const key = getCartKey(req)
 
-        const userId = req.user.id;
+        const userId = req?.user?.id || '';
 
         const { address_id  } = req.body
 
-        // 1. Get user cart
         const cart = await fetchCart(key)
 
         if (!cart || cart.items.length === 0) {
             return res.status(400).json({ message: "Cart is empty" });
         }
 
-        // 2. Calculate total
         const totalAmount = cart?.total || 0
         // const totalAmount = cart.items.reduce((acc, item) => {
         //     return acc + item.product.price * item.quantity;
@@ -55,11 +49,10 @@ export const checkout = async (req: any, res: express.Response) => {
             })
         })
 
-        // 4. Initialize Paystack payment
         const paystackRes = await axios.post(
             "https://api.paystack.co/transaction/initialize",
             {
-                email: req.user.email,
+                email: req?.user?.email,
                 amount: totalAmount * 100,
                 callback_url: `${process.env.BASE_URL}/api/payment/verify`,
                 metadata: {
@@ -73,12 +66,10 @@ export const checkout = async (req: any, res: express.Response) => {
             }
         );
 
-        // 5. Save reference
         await updateOrder(order.id, {
             payment_reference: paystackRes.data.data.reference,
         });
 
-        // 6. Return payment link
         res.status(201).json({
             paymentUrl: paystackRes.data.data.authorization_url,
             orderId: order.id
@@ -106,9 +97,7 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
         const data = response.data.data;
 
         if (data.status === "success") {
-            const order = await prisma.orders.findFirst({
-                where: { payment_reference: reference },
-            });
+            const order = await fetchOrderByPaymentReference(reference)
             
             if (!order) return res.status(404).json({ message: "Order not found" });
 
@@ -145,13 +134,10 @@ export const paystackWebhook = async (req: express.Request, res: express.Respons
     if (event.event === "charge.success") {
         const payment = event.data;
 
-        const order = await prisma.orders.findFirst({
-            where: { payment_reference: payment.reference },
-        });
+        const order = await fetchOrderByPaymentReference(payment.reference)
 
         if (!order) return res.sendStatus(200);
 
-        // Prevent double processing
         if (order.payment_status === "paid") return res.sendStatus(200);
 
         await updateOrder(order.id, {
@@ -159,7 +145,6 @@ export const paystackWebhook = async (req: express.Request, res: express.Respons
             status: "paid",
         });
 
-        // OPTIONAL: clear cart
         await deleteCart(key)
 
         console.log("✅ Order paid:", order.id);
