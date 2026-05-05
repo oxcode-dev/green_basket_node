@@ -1,7 +1,7 @@
 import express, { type Request} from 'express';
 import { prisma } from '../lib/prisma.ts';
 import type { PaginationType, RequestWithUser } from '../types/index.ts';
-import { countUserReviews, fetchReview, fetchUserReviewsWithPagination, storeReview } from '../services/reviewServices.ts';
+import { countUserReviews, destroyReview, fetchReview, fetchUserReviewsWithPagination, storeReview } from '../services/reviewServices.ts';
 import { fetchProduct } from '../services/productServices.ts';
 
 export const getReviews = async(req: RequestWithUser & PaginationType, res: express.Response) => {
@@ -76,13 +76,12 @@ export const createReview = async (req: RequestWithUser, res: express.Response) 
 export const deleteReview = async (req: express.Request, res: express.Response) => {
     try {
         const id = String(req?.params?.id)
-        if (!await prisma.reviews.findUnique({ where: { id: id } })) {
+
+        if (!await fetchReview(id)) {
             return res.status(404).json({ error: 'Review not found' })
         }
 
-        await prisma.reviews.delete({
-            where: { id: id }
-        })
+        await destroyReview(id)
 
         return res.status(201).json({
             message: 'Review Deleted successfully', 
