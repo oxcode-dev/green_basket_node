@@ -33,7 +33,7 @@ export const countUserWishlists = async (userId: string) => {
 export const fetchWishlist = async (id: string) => {
     return await prisma.wishlists.findFirst({
         where: { id: id },
-        include: { user: true }
+        include: { product: true }
     });
 }
 
