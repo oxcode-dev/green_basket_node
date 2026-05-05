@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import jwt from 'jsonwebtoken'
 import { prisma } from "../lib/prisma.ts";
+import { RequestWithUser } from "../types/index.ts";
 // import { AuthUserType, DataStoredInToken } from "../types/index.ts";
 
 config();
@@ -13,7 +14,7 @@ export interface DataStoredInToken {
   email: string;
 }
 
-const auth = async (req: any, res: express.Response, next: express.NextFunction)  => {
+const auth = async (req: RequestWithUser, res: express.Response, next: express.NextFunction)  => {
     const authHeader = req.headers['authorization'];
 
     if(!authHeader || !authHeader.startsWith('Bearer ')) {

@@ -139,7 +139,7 @@ export const userLogout = async (req: express.Request, res: express.Response) =>
 
         // Sending success response
         res.status(201).json({ message: "Logged out successfully" });
-    } catch (error: any) {
+    } catch (error) {
         // Handling errors
         res.status(500).json({ error: "Internal Server Error " + error });
     }

@@ -23,6 +23,7 @@ export interface RequestWithUser extends express.Request {
     user: {
         id: string;
         email?: string;
+        role?: string;
     } | null;
 }
 
