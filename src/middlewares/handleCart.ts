@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import jwt from 'jsonwebtoken'
 import { prisma } from "../lib/prisma.ts";
+import type { RequestWithUser } from "../types/index.ts";
 // import { AuthUserType, DataStoredInToken } from "../types/index.ts";
 
 config();
@@ -13,14 +14,13 @@ export interface DataStoredInToken {
   email: string;
 }
 
-const checkAuthForCart = async (req: any, res: express.Response, next: express.NextFunction)  => {
+const checkAuthForCart = async (req: RequestWithUser, res: express.Response, next: express.NextFunction)  => {
 
     try {
         const authHeader = req.headers['authorization'];
 
         if(!authHeader || !authHeader.startsWith('Bearer ')) {
             return next()
-            // return res.status(401).json({ message: 'Kindly login to access this resource' });
         }
 
         const token : string = authHeader.split(' ')[1] || '';

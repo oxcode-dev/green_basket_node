@@ -2,8 +2,7 @@ import { config } from "dotenv";
 import express from "express";
 import jwt from 'jsonwebtoken'
 import { prisma } from "../lib/prisma.ts";
-import { RequestWithUser } from "../types/index.ts";
-// import { AuthUserType, DataStoredInToken } from "../types/index.ts";
+import type { RequestWithUser } from "../types/index.ts";
 
 config();
 

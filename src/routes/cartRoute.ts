@@ -6,13 +6,13 @@ import { checkAuthForCart } from '../middlewares/handleCart.ts';
 const router = express.Router();
 
 router.route('/')
-    .post(checkAuthForCart, addToCart)
-    .get(checkAuthForCart, getCart)
-    .delete(checkAuthForCart, clearCart);
+    .post(checkAuthForCart as any, addToCart)
+    .get(checkAuthForCart as any, getCart)
+    .delete(checkAuthForCart as any, clearCart);
 
 router.route('/:productId')
-    .put(checkAuthForCart, updateCartItem)
-    .delete(checkAuthForCart, removeCartItem)
+    .put(checkAuthForCart as any, updateCartItem)
+    .delete(checkAuthForCart as any, removeCartItem)
 
 
 export { router as cartRoute };
