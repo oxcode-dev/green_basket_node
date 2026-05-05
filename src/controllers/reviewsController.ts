@@ -1,5 +1,4 @@
-import express, { type Request} from 'express';
-import { prisma } from '../lib/prisma.ts';
+import express from 'express';
 import type { PaginationType, RequestWithUser } from '../types/index.ts';
 import { countUserReviews, destroyReview, fetchReview, fetchUserReviewsWithPagination, storeReview } from '../services/reviewServices.ts';
 import { fetchProduct } from '../services/productServices.ts';
