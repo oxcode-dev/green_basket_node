@@ -2,26 +2,14 @@ import express, { type Application } from "express";
 import dotenv from 'dotenv'
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import { authRoute } from "./routes/authRoute.ts";
-import { passwordResetRoute } from "./routes/passwordResetRoute.ts";
 // import runSeed from "./db_temp.ts";
-import { categoriesRoute } from "./routes/categoriesRoute.ts";
 import cors from "cors"
 import helmet from "helmet";
 import morgan from 'morgan'
-import { ProductsRoute } from "./routes/productsRoute.ts";
-import { profileRoute } from "./routes/profileRoute .ts";
-import { ordersRoute } from "./routes/ordersRoute.ts";
-import { addressesRoute } from "./routes/addressesRoute.ts";
-import { wishlistsRoute } from "./routes/wishlistsRoute.ts";
-import { reviewsRoute } from "./routes/reviewsRoute.ts";
 import sessionMiddleware from "./lib/session.ts";
-
 import fs from 'fs'
 import path from 'path'
-import { adminRoute } from "./routes/adminRoute.ts";
 import session from "express-session";
-import { cartRoute } from "./routes/cartRoute.ts";
 import swaggerDocs from "./lib/swagger.ts";
 import routes from "./routes/index.ts";
 
