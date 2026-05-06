@@ -8,12 +8,12 @@ import { handleCustomer } from '../middlewares/handleUserRole.ts';
 const router = express.Router();
 
 router.route('/')
-    .get(auth, handleCustomer, getUserAddresses)
-    .post(auth, handleCustomer, validateInputData(userAddressSchema), storeUserAddress);
+    .get(auth as any, handleCustomer, getUserAddresses as any)
+    .post(auth as any, handleCustomer, validateInputData(userAddressSchema), storeUserAddress as any);
 
 router.route('/:id')
-    .get(auth, handleCustomer, getUserAddress)
-    .put(auth, handleCustomer, validateInputData(userAddressSchema), updateUserAddress)
-    .delete(auth, handleCustomer, deleteUserAddress);
+    .get(auth as any, handleCustomer, getUserAddress as any)
+    .put(auth as any, handleCustomer, validateInputData(userAddressSchema), updateUserAddress as any)
+    .delete(auth as any, handleCustomer, deleteUserAddress as any);
 
 export { router as addressesRoute };

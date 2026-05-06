@@ -6,9 +6,9 @@ import { handleCustomer } from '../middlewares/handleUserRole.ts';
 
 const router = express.Router();
 
-router.get('/', auth, getUserWishlists as any)
-router.post('/:product_id', auth, handleCustomer, createWishlist as any)
-router.get('/:id', auth, getUserWishlist)
-router.delete('/:id', auth, handleCustomer, deleteWishlist)
+router.get('/', auth as any, getUserWishlists as any)
+router.post('/:product_id', auth as any, handleCustomer, createWishlist as any)
+router.get('/:id', auth as any, getUserWishlist)
+router.delete('/:id', auth as any, handleCustomer, deleteWishlist)
 
 export { router as wishlistsRoute };
