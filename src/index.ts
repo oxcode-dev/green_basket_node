@@ -12,6 +12,7 @@ import path from 'path'
 import session from "express-session";
 import swaggerDocs from "./lib/swagger.ts";
 import routes from "./routes/index.ts";
+import rateLimiter from 'express-rate-limit';
 
 dotenv.config();
 
@@ -47,6 +48,12 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(rateLimiter({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+}));
 
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
