@@ -43,7 +43,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
 // Middleware to parse JSON data
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded

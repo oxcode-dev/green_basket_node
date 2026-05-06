@@ -28,7 +28,17 @@ const options: swaggerJSDoc.Options = {
             {
                 bearerAuth: [],
             }
-        ]
+        ],
+        servers: [
+            {
+                url: "http://localhost:2000",
+                description: "Local dev",
+            },
+            {
+                url: "https://api.yourdomain.com",
+                description: "Production",
+            },
+        ],
     },
     apis: ['./src/routes/*.ts', './src/controllers/*.ts'], // Path to the API docs
 };

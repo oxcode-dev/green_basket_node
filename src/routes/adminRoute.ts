@@ -18,16 +18,16 @@ router.post('/login', validateInputData(loginSchema), userLogin);
 router.delete('/logout', auth, userLogout);
 
 // Category Routes
-router.post('/categories', auth, handleAdmin, validateInputData(categoryValidation), createCategory);
+router.post('/categories', auth, handleAdmin, validateInputData(categoryValidation), createCategory as any);
 router.route('/categories/:id')
-    .put(auth, handleAdmin, validateInputData(categoryValidation), editCategory)
-    .delete(auth, handleAdmin, deleteCategory);
+    .put(auth, handleAdmin, validateInputData(categoryValidation), editCategory as any)
+    .delete(auth, handleAdmin, deleteCategory as any);
 
 // Product Routes
-router.post('/products', auth, handleAdmin, validateInputData(productValidation), createProduct);
+router.post('/products', auth, handleAdmin, validateInputData(productValidation), createProduct as any);
 router.route('/products/:id')
-    .put(auth, handleAdmin, validateInputData(productValidation), editProduct)
-    .delete(auth, handleAdmin, deleteProduct);
+    .put(auth, handleAdmin, validateInputData(productValidation), editProduct as any)
+    .delete(auth, handleAdmin, deleteProduct as any);
 
 // Order Routes
 router.route('/orders')
