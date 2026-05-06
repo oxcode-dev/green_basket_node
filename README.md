@@ -10,7 +10,7 @@ A REST API for an online e-commerce system built with Node.js, Express, PostgreS
 - Product Listing and Management
 - Order Placement and Management
 - Email Notifications
-- Payment Integration
+- Payment Integration (Paystack)
 - File Upload (Avatars)
 - Custom Error Handling
 - Full-Text Search
