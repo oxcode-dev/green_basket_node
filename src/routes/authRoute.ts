@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.post('/register', validateInputData(registerSchema), userRegistration);
 router.post('/login', validateInputData(loginSchema), userLogin);
-router.delete('/logout', auth, userLogout);
+router.delete('/logout', auth as any, userLogout);
 
 export { router as authRoute };

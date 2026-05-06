@@ -8,9 +8,9 @@ import { handleCustomer } from '../middlewares/handleUserRole.ts';
 
 const router = express.Router();
 
-router.get('/', auth, getReviews as any)
-router.post('/', auth, handleCustomer, validateInputData(productReviewSchema), createReview as any)
-router.get('/:id', auth, getReview as any)
-router.delete('/:id', auth, handleCustomer, deleteReview as any)
+router.get('/', auth as any, getReviews as any)
+router.post('/', auth as any, handleCustomer, validateInputData(productReviewSchema), createReview as any)
+router.get('/:id', auth as any, getReview as any)
+router.delete('/:id', auth as any, handleCustomer, deleteReview as any)
 
 export { router as reviewsRoute };
