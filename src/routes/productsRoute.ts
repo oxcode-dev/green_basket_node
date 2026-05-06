@@ -29,13 +29,38 @@ router.get('/', handlePagination as any, getProducts);
  *   get:
  *     summary: Get products by category with pagination
  *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Category ID
  *     responses:
  *       200:
  *         description: List of products and pagination metadata queried by category
  */
 router.get('/category/:category', getProductsByCategory);
 
-
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   get:
+ *     summary: Get a single product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Product details
+ *       404:
+ *         description: Product not found
+ */
 router.get('/:id', getProduct);
 
 export { router as ProductsRoute };
