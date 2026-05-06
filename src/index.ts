@@ -23,6 +23,7 @@ import { adminRoute } from "./routes/adminRoute.ts";
 import session from "express-session";
 import { cartRoute } from "./routes/cartRoute.ts";
 import swaggerDocs from "./lib/swagger.ts";
+import routes from "./routes/index.ts";
 
 dotenv.config();
 
@@ -84,18 +85,6 @@ app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
     })
 })
 
-app.use('/api/auth', authRoute)
-app.use('/api/password', passwordResetRoute)
-app.use('/api/categories', categoriesRoute)
-app.use('/api/products', ProductsRoute)
-app.use('/api/profile', profileRoute)
-app.use('/api/orders', ordersRoute)
-app.use('/api/addresses', addressesRoute)
-app.use('/api/wishlists', wishlistsRoute)
-app.use('/api/reviews', reviewsRoute)
-app.use('/api/admin', adminRoute)
-app.use('/api/cart', cartRoute)
-
 
 app.listen(PORT, () => {
     console.log(
@@ -103,6 +92,8 @@ app.listen(PORT, () => {
     );
 
     swaggerDocs(app, PORT);
+
+    routes(app)
 });
 
 // runSeed()
