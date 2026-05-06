@@ -22,6 +22,7 @@ import path from 'path'
 import { adminRoute } from "./routes/adminRoute.ts";
 import session from "express-session";
 import { cartRoute } from "./routes/cartRoute.ts";
+import swaggerDocs from "./lib/swagger.ts";
 
 dotenv.config();
 
@@ -96,11 +97,13 @@ app.use('/api/admin', adminRoute)
 app.use('/api/cart', cartRoute)
 
 
-app.listen(PORT, () =>
+app.listen(PORT, () => {
     console.log(
         `🟢 Server running in development mode on port ${PORT}`
-    )
-);
+    );
+
+    swaggerDocs(app, PORT);
+});
 
 // runSeed()
 //     .then(() => {
