@@ -1,6 +1,6 @@
 import express from 'express';
 import { prisma } from '../lib/prisma.ts';
-import { countAllProducts, destroyProduct, fetchProduct, fetchProductsWithPagination, storeProduct, updateProduct } from '../services/productServices.ts';
+import { countAllProducts, countProductsWithCategory, destroyProduct, fetchProduct, fetchProductsWithCategoryPagination, fetchProductsWithPagination, storeProduct, updateProduct } from '../services/productServices.ts';
 import { slugify } from '../helpers/index.ts';
 import type { PaginationType } from '../types/index.ts';
 
@@ -49,38 +49,24 @@ export const getProduct = async(req: express.Request, res: express.Response) => 
     }
 }
 
-export const getProductsByCategory = async(req: express.Request, res: express.Response) => {
+export const getProductsByCategory = async(req: express.Request & PaginationType, res: express.Response) => {
     try {
-        const { category } = req.params;
-        const { page = 1, limit = 1 } = req.query as {page?: string | number, limit?: string | number};
-        const pageNum = typeof page === 'string' ? parseInt(page) : page;
-        const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;
-        const skip = (pageNum - 1) * limitNum;
-        
-        const totalCount = await prisma.products.count({
-            where: {
-                category_id: String(category),
-            }
-        });
+        const { category } = req.params as { category: string };
+        const { page, limit, skip } = req as PaginationType;
 
-        const products = await prisma.products.findMany({
-            skip: Number(skip),
-            take: Number(limitNum),
-            where: {
-                category_id: String(category),
-            },
-            include: { category: true },
-            orderBy: { created_at: 'desc' }
-        });
+        
+        const totalCount = await countProductsWithCategory(category);
+
+        const products = await fetchProductsWithCategoryPagination(category, skip, limit);
 
         return res.status(200).json({
             message: "Products retrieved successfully!!!",
             products,
             metadata: {
-                page: pageNum,
-                limit: limitNum,
+                page: page,
+                limit: limit,
                 totalCount,
-                totalPages: Math.ceil(totalCount / limitNum),
+                totalPages: Math.ceil(totalCount / limit),
             }
         })
         

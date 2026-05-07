@@ -27,6 +27,22 @@ export const countAllProducts = async () => {
     return await Product.count();
 }
 
+export const fetchProductsWithCategoryPagination = async(categoryID: string, skip: number, limit: number) => {
+    return await Product.findMany({
+        where: { category_id: categoryID },
+        skip: skip,
+        take: limit,
+        include: { category: true },
+        orderBy: { created_at: 'desc' }
+    });
+}
+
+export const countProductsWithCategory = async (categoryID: string) => {
+    return await Product.count({
+        where: { category_id: categoryID },
+    });
+}
+
 export const storeProduct = async (productData: Omit<ProductType, "id">) => {
     const product = await Product.create({
         data: productData,

@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 router.get('/', handlePagination as any, getProducts);
-router.get('/category/:category', getProductsByCategory);
+router.get('/category/:category', handlePagination as any, getProductsByCategory as any);
 router.get('/:id', getProduct);
 
 export { router as ProductsRoute };
