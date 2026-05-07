@@ -7,7 +7,7 @@ export const fetchAddresses = async () => {
 }
 
 export const fetchUserAddresses = async (userId: string) => {
-    return await prisma.addresses.findMany({
+    return await Address.findMany({
         where: { user_id: userId},
         include: { user: false },
         // omit: ["user.password"],
@@ -16,14 +16,14 @@ export const fetchUserAddresses = async (userId: string) => {
 }
 
 export const fetchAddress = async (id: string) => {
-    return await prisma.addresses.findFirst({
+    return await Address.findFirst({
         where: { id: id },
         include: { user: true }
     });
 }
 
 export const storeAddress = async (data: Omit<AddressType, "id">) => {
-    const address = await prisma.addresses.create({
+    const address = await Address.create({
         data: data,
     })
 
@@ -31,7 +31,7 @@ export const storeAddress = async (data: Omit<AddressType, "id">) => {
 } 
 
 export const updateAddress = async (id: string, data: Partial<AddressType>) => {
-    const address = await prisma.addresses.update({
+    const address = await Address.update({
         where: { id: id },
         data: data,
     })
@@ -40,7 +40,7 @@ export const updateAddress = async (id: string, data: Partial<AddressType>) => {
 } 
 
 export const destroyAddress = async(id: string) => {
-    await prisma.addresses.delete({
+    await Address.delete({
         where: { id: id },
     })
 }
