@@ -4,13 +4,14 @@ import bcrypt from 'bcryptjs';
 import { generatePin } from '../helpers/index.ts';
 import { prisma } from '../lib/prisma.ts';
 import { fetchUserByEmail } from '../services/usersServices.ts';
+import { destroyOtpCode, destroyOtpCodeByEmail } from '../services/otpCodeServices.ts';
 
 const EMAIL_SMTP_USERNAME = process.env.EMAIL_SMTP_USERNAME as string;
 const CLIENT_URL = process.env.CLIENT_URL as string
 
 export const forgotPassword = async (req: express.Request, res: express.Response) => {
     try {
-        const { email } = req.body;
+        const { email } = req.body as { email: string };
 
         const user = await fetchUserByEmail(email);
 
@@ -18,7 +19,7 @@ export const forgotPassword = async (req: express.Request, res: express.Response
             return res.status(400).json({ message: 'User not found!' });
         }
 
-        await prisma.otp_codes.deleteMany({ where: {email} });
+        await destroyOtpCodeByEmail(email)
 
         const newOtpCodeDetails = {
             code: generatePin(4),

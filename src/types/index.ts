@@ -91,3 +91,10 @@ export type ReviewType = {
     rating: number;
     comment?: string;
 }
+
+export type OtpCodeType = {
+    id: string;
+    email: string;
+    code: string;
+    expires_at: Date;
+}
