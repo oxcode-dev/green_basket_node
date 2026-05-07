@@ -1,5 +1,4 @@
 import express from 'express';
-import { prisma } from '../lib/prisma.ts';
 import { deleteCart, fetchCart } from '../services/cartServices.ts';
 import { getCartKey } from '../utils/index.ts';
 import axios from 'axios';

@@ -3,7 +3,6 @@ import express from "express";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // console.log({ req })
         cb(null, 'src/uploads/avatars/')
     },
     filename: (req, file, cb) => {
