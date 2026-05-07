@@ -1,8 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { prisma } from '../lib/prisma.ts';
 import type { RequestWithUser } from '../types/index.ts';
 import { fetchUser, updateUser, updateUserPassword } from '../services/usersServices.ts';
+import { User } from '../models/index.ts';
 
 export const getUserDetails = async (req: RequestWithUser, res: express.Response) => {
     try {
@@ -103,9 +103,9 @@ export const changePassword = async (req: RequestWithUser, res: express.Response
 
 export const deleteProfile = async (req: RequestWithUser, res: express.Response) => {
 
-    const user = await prisma.users.findUnique({ where: {id: String(req.user?.id)} });
+    const user = await User.findUnique({ where: {id: String(req.user?.id)} });
     
-    await prisma.users.delete({ where: {id: String(req.user?.id)} });
+    await User.delete({ where: {id: String(req.user?.id)} });
 
     // const userId = user?.id;
 
@@ -134,7 +134,7 @@ export const uploadAvatar = async (req: RequestWithUser, res: express.Response) 
         // Construct the full URL to the uploaded image
         const imageUrl = `${req.protocol}://${req.get('host')}/avatars/${req.file.filename}`;
 
-        const updatedUser = await prisma.users.update({
+        const updatedUser = await User.update({
             where: { id: String(auth?.id) },
             data: { 
                 avatar: imageUrl,

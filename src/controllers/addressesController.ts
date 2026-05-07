@@ -1,8 +1,6 @@
 import express from 'express';
-import { prisma } from '../lib/prisma.ts';
 import type { RequestWithUser } from '../types/index.ts';
 import { destroyAddress, fetchAddress, fetchUserAddresses, storeAddress, updateAddress } from '../services/addressServices.ts';
-import { string } from 'zod';
 
 
 export const getUserAddresses = async (req: RequestWithUser, res: express.Response) => {
