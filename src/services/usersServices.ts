@@ -40,6 +40,20 @@ export const fetchUser = async (id: string) => {
     });
 }
 
+export const fetchUserByEmail = async (email: string) => {
+    return await User.findFirst({
+        where: { 
+            email: email,
+        },
+        include: { 
+            orders: true,
+            reviews: true,
+            addresses: true,
+            wishlists: true,
+        }
+    });
+}
+
 export const storeUser = async (userData: UserType) => {
     const user = await User.create({
         data: userData,

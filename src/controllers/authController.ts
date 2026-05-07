@@ -1,12 +1,12 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { prisma } from '../lib/prisma.ts';
 import * as cookie from 'cookie';
 import { mergeGuestCart } from '../services/cartMergeServices.ts';
+import { fetchUserByEmail, storeUser } from '../services/usersServices.ts';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
-const MONTH = 30 * 24 * 60 * 60; // in seconds
+const MONTH = 30 * 24 * 60 * 60 * 1000; // in seconds
 
 // Router for user registration
 export const userRegistration = async (req: express.Request, res: express.Response) => {
@@ -18,7 +18,7 @@ export const userRegistration = async (req: express.Request, res: express.Respon
                 message: "Required fields are missing!",
             })
         }
-        const userExists = await prisma.users.findUnique({ where: {email} });
+        const userExists = await fetchUserByEmail(email);
 
         if(userExists) {
             return res.status(400).json({ message: 'User already exists' });
@@ -26,13 +26,13 @@ export const userRegistration = async (req: express.Request, res: express.Respon
 
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const newUser = await prisma.users.create({
-            data: {
-                email,
-                password: hashedPassword,
-                first_name,
-                last_name,
-            }
+        const newUser = await storeUser({
+            email,
+            password: hashedPassword,
+            first_name,
+            last_name,
+            role: 'CUSTOMER',
+            phone: '',
         });
 
         const payload = { 
@@ -48,7 +48,8 @@ export const userRegistration = async (req: express.Request, res: express.Respon
             path: "/api/token",
             // path: "/api/refresh_token",
             sameSite: 'lax',
-            maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
+            maxAge: MONTH, //validity of 30 days
+            // maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
         });
 
         // merge carts
@@ -73,11 +74,11 @@ export const userRegistration = async (req: express.Request, res: express.Respon
 
 // Router for user login
 export const userLogin = async (req: express.Request, res: express.Response) => {
-    // return res.status(500).json({ message: 'server error', req: JSON.stringify(req.body) })
 
     try {
         const { email, password } = req.body;
-        const user = await prisma.users.findUnique({ where: {email} });
+
+        const user = await fetchUserByEmail(email);
 
         if(!user) {
             return res.status(400).json({ message: 'User not found' });
@@ -101,7 +102,8 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
             httpOnly: true,
             path: "/api/refresh_token",
             sameSite: 'lax',
-            maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
+            maxAge: MONTH, //validity of 30 days
+            // maxAge: 30 * 24 * 60 * 60 * 1000, //validity of 30 days
         });
 
         // merge carts
