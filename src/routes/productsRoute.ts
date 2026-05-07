@@ -4,6 +4,14 @@ import { handlePagination } from '../middlewares/handlePagination.ts';
 
 const router = express.Router();
 
+
+router.get('/', handlePagination as any, getProducts);
+router.get('/category/:category', getProductsByCategory);
+router.get('/:id', getProduct);
+
+export { router as ProductsRoute };
+
+
 /**
  * @swagger
  * tags:
@@ -21,26 +29,6 @@ const router = express.Router();
  *       200:
  *         description: List of products and pagination metadata
  */
-router.get('/', handlePagination as any, getProducts);
-
-/**
- * @swagger
- * /api/products/category/{category}:
- *   get:
- *     summary: Get products by category with pagination
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: category
- *         required: true
- *         schema:
- *           type: string
- *         description: Category ID
- *     responses:
- *       200:
- *         description: List of products and pagination metadata queried by category
- */
-router.get('/category/:category', getProductsByCategory);
 
 /**
  * @swagger
@@ -61,6 +49,21 @@ router.get('/category/:category', getProductsByCategory);
  *       404:
  *         description: Product not found
  */
-router.get('/:id', getProduct);
 
-export { router as ProductsRoute };
+/**
+ * @swagger
+ * /api/products/category/{category}:
+ *   get:
+ *     summary: Get products by category with pagination
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Category ID
+ *     responses:
+ *       200:
+ *         description: List of products and pagination metadata queried by category
+ */
