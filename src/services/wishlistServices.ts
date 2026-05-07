@@ -1,12 +1,12 @@
-import { prisma } from "../lib/prisma.ts"
+import { Wishlist } from "../models/index.ts";
 import type { WishlistType } from "../types/index.ts";
 
 export const fetchWishlists = async () => {
-    return await prisma.wishlists.findMany();
+    return await Wishlist.findMany();
 }
 
 export const fetchUserWishlists = async (userId: string) => {
-    return await prisma.wishlists.findMany({
+    return await Wishlist.findMany({
         where: { user_id: userId},
         include: { product: true },
         // omit: ["user.password"],
@@ -15,7 +15,7 @@ export const fetchUserWishlists = async (userId: string) => {
 }
 
 export const fetchUserWishlistsWithPagination = async(userId: string, skip: number, limit: number) => {
-    return await prisma.wishlists.findMany({
+    return await Wishlist.findMany({
         skip: skip,
         take: limit,
         include: { product: true },
@@ -25,20 +25,20 @@ export const fetchUserWishlistsWithPagination = async(userId: string, skip: numb
 }
 
 export const countUserWishlists = async (userId: string) => {
-    return await prisma.wishlists.count({
+    return await Wishlist.count({
         where: { user_id: userId},
     });
 }
 
 export const fetchWishlist = async (id: string) => {
-    return await prisma.wishlists.findFirst({
+    return await Wishlist.findFirst({
         where: { id: id },
         include: { product: true }
     });
 }
 
 export const storeWishlist = async (data: Omit<WishlistType, "id">) => {
-    const wishlist = await prisma.wishlists.create({
+    const wishlist = await Wishlist.create({
         data: data,
     })
 
@@ -46,7 +46,7 @@ export const storeWishlist = async (data: Omit<WishlistType, "id">) => {
 } 
 
 export const destroyWishlist = async(id: string) => {
-    await prisma.wishlists.delete({
+    await Wishlist.delete({
         where: { id: id },
     })
 }

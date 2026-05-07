@@ -1,8 +1,8 @@
 import { config } from "dotenv";
 import express from "express";
 import jwt from 'jsonwebtoken'
-import { prisma } from "../lib/prisma.ts";
 import type { RequestWithUser } from "../types/index.ts";
+import { User } from "../models/index.ts";
 // import { AuthUserType, DataStoredInToken } from "../types/index.ts";
 
 config();
@@ -30,7 +30,7 @@ const checkAuthForCart = async (req: RequestWithUser, res: express.Response, nex
             JWT_SECRET
         ) as DataStoredInToken;
 
-        const user = await prisma.users.findFirst({
+        const user = await User.findFirst({
             where: {id: decoded?.id},
         })
 
