@@ -3,6 +3,12 @@ import { getCategories, getCategory } from '../controllers/categoriesController.
 
 const router = express.Router();
 
+
+router.get('/', getCategories);
+router.get('/:id', getCategory);
+
+export { router as categoriesRoute };
+
 /**
  * @swagger
  * tags:
@@ -20,7 +26,7 @@ const router = express.Router();
  *       200:
  *         description: List of categories and pagination metadata
  */
-router.get('/', getCategories);
+
 /**
  * @swagger
  * /api/categories/{id}:
@@ -40,6 +46,3 @@ router.get('/', getCategories);
  *       404:
  *         description: Category not found
  */
-router.get('/:id', getCategory);
-
-export { router as categoriesRoute };
