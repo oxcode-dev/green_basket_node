@@ -10,6 +10,18 @@ import { localUpload } from '../middlewares/handleUpload.ts';
 
 const router = express.Router();
 
+router.get('/', auth as any, getUserDetails as any);
+
+router.put('/', auth as any, validateInputData(userDetailsSchema), updateUserDetails as any);
+    
+router.post('/upload-avatar', auth as any, localUpload, uploadAvatar as any);
+// router.post('/upload-avatar', auth, validateInputData(imageSchema), localUpload, uploadAvatar as any);
+
+router.post('/change-password', auth as any, validateInputData(changePasswordSchema), changePassword as any);
+router.delete('/delete-account', auth as any, deleteProfile as any);
+
+export { router as profileRoute };
+
 /**
  * @swagger
  * tags:
@@ -17,7 +29,6 @@ const router = express.Router();
  *   description: User Profiles and Details
  */
 
-// router.route('/')
 
 /**
  * @swagger
@@ -33,7 +44,6 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.get('/', auth as any, getUserDetails as any);
 
 /**
  * @swagger
@@ -72,8 +82,7 @@ router.get('/', auth as any, getUserDetails as any);
  *       401:
  *         description: Unauthorized
  */
-router.put('/', auth as any, validateInputData(userDetailsSchema), updateUserDetails as any);
-    
+
 /**
  * @swagger
  * /api/profile/upload-avatar:
@@ -100,8 +109,7 @@ router.put('/', auth as any, validateInputData(userDetailsSchema), updateUserDet
  *       401:
  *         description: Unauthorized
  */
-router.post('/upload-avatar', auth as any, localUpload, uploadAvatar as any);
-// router.post('/upload-avatar', auth, validateInputData(imageSchema), localUpload, uploadAvatar as any);
+
 
 /**
  * @swagger
@@ -136,7 +144,7 @@ router.post('/upload-avatar', auth as any, localUpload, uploadAvatar as any);
  *       401:
  *         description: Unauthorized
  */
-router.post('/change-password', auth as any, validateInputData(changePasswordSchema), changePassword as any);
+
 
 /**
  * @swagger
@@ -152,6 +160,3 @@ router.post('/change-password', auth as any, validateInputData(changePasswordSch
  *       401:
  *         description: Unauthorized
  */
-router.delete('/delete-account', auth as any, deleteProfile as any);
-
-export { router as profileRoute };
