@@ -1,12 +1,12 @@
 import { slugify } from "../helpers/index.ts"
-import { prisma } from "../lib/prisma.ts"
+import { Category } from "../models/index.ts";
 
 export const fetchCategories = async () => {
-    return await prisma.categories.findMany();
+    return await Category.findMany();
 }
 
 export const fetchCategory = async (id: string) => {
-    return await prisma.categories.findFirst({
+    return await Category.findFirst({
         where: { 
             id: String(Array.isArray(id) ? id[0] : id)
         },
@@ -21,7 +21,7 @@ export const storeCategory = async (name: string, description?: string) => {
         description: description || '',
     };
 
-    const category = await prisma.categories.create({
+    const category = await Category.create({
         data: data,
     })
 
@@ -35,7 +35,7 @@ export const updateCategory = async (id: string, name: string, description?: str
         description: description || '',
     };
 
-    const category = await prisma.categories.update({
+    const category = await Category.update({
         where: { id: id },
         data: data,
     })
@@ -44,7 +44,7 @@ export const updateCategory = async (id: string, name: string, description?: str
 } 
 
 export const destroyCategory = async(id: string) => {
-    await prisma.categories.delete({
+    await Category.delete({
         where: { id: id },
     })
 }

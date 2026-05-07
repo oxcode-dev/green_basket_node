@@ -1,4 +1,3 @@
-import { prisma } from "../lib/prisma.ts"
 import { Address } from "../models/index.ts";
 import type { AddressType } from "../types/index.ts";
 
