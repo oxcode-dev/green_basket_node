@@ -1,12 +1,10 @@
 import { prisma } from "../lib/prisma.ts"
 
-export default {
-    User: prisma.users,
-    Category: prisma.categories,
-    Product: prisma.products,
-    Order: prisma.orders,
-    OrderItem: prisma.order_items,
-    Review: prisma.reviews,
-    Wishlist: prisma.wishlists,
-    Address: prisma.addresses,
-};
+export const User = prisma.users
+export const Category = prisma.categories
+export const Product = prisma.products
+export const Order = prisma.orders
+export const OrderItem = prisma.order_items
+export const Review = prisma.reviews
+export const Wishlist = prisma.wishlists
+export const Address = prisma.addresses

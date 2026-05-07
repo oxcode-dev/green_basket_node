@@ -1,8 +1,9 @@
 import { prisma } from "../lib/prisma.ts"
+import { Address } from "../models/index.ts";
 import type { AddressType } from "../types/index.ts";
 
 export const fetchAddresses = async () => {
-    return await prisma.addresses.findMany();
+    return await Address.findMany();
 }
 
 export const fetchUserAddresses = async (userId: string) => {
