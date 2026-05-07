@@ -1,21 +1,21 @@
-import { prisma } from "../lib/prisma.ts"
+import { Product } from "../models/index.ts";
 import type { ProductType } from "../types/index.ts";
 
 export const fetchAllProducts = async () => {
-    return await prisma.products.findMany();
+    return await Product.findMany();
 }
 
 export const fetchProduct = async (id: string) => {
-    return await prisma.products.findFirst({
+    return await Product.findFirst({
         where: { 
-            id: String(Array.isArray(id) ? id[0] : id)
+            id: id,
         },
         include: { category: true }
     });
 }
 
 export const fetchProductsWithPagination = async(skip: number, limit: number) => {
-    return await prisma.products.findMany({
+    return await Product.findMany({
         skip: skip,
         take: limit,
         include: { category: true },
@@ -24,11 +24,11 @@ export const fetchProductsWithPagination = async(skip: number, limit: number) =>
 }
 
 export const countAllProducts = async () => {
-    return await prisma.products.count();
+    return await Product.count();
 }
 
 export const storeProduct = async (productData: Omit<ProductType, "id">) => {
-    const product = await prisma.products.create({
+    const product = await Product.create({
         data: productData,
     })
 
@@ -36,7 +36,7 @@ export const storeProduct = async (productData: Omit<ProductType, "id">) => {
 } 
 
 export const updateProduct = async (id: string, productData: Omit<ProductType, "id">) => {
-    const product = await prisma.products.update({
+    const product = await Product.update({
         where: { id: id },
         data: productData,
     })
@@ -45,7 +45,7 @@ export const updateProduct = async (id: string, productData: Omit<ProductType, "
 } 
 
 export const destroyProduct = async(id: string) => {
-    await prisma.products.delete({
+    await Product.delete({
         where: { id: id },
     })
 }

@@ -1,12 +1,12 @@
-import { prisma } from "../lib/prisma.ts"
+import { Order, OrderItem } from "../models/index.ts";
 import type { OrderItemsType, OrderType } from "../types/index.ts";
 
 export const fetchAllOrders = async () => {
-    return await prisma.orders.findMany();
+    return await Order.findMany();
 }
 
 export const fetchOrder = async (id: string) => {
-    return await prisma.orders.findFirst({
+    return await Order.findFirst({
         where: { 
             id: String(Array.isArray(id) ? id[0] : id)
         },
@@ -15,7 +15,7 @@ export const fetchOrder = async (id: string) => {
 }
 
 export const fetchOrderByPaymentReference = async (value: string) => {
-    return await prisma.orders.findFirst({
+    return await Order.findFirst({
         where: { 
             payment_reference: value,
         },
@@ -24,7 +24,7 @@ export const fetchOrderByPaymentReference = async (value: string) => {
 }
 
 export const fetchOrdersWithPagination = async(skip: number, limit: number) => {
-    return await prisma.orders.findMany({
+    return await Order.findMany({
         skip: skip,
         take: limit,
         include: { order_items: true },
@@ -33,7 +33,7 @@ export const fetchOrdersWithPagination = async(skip: number, limit: number) => {
 }
 
 export const fetchCustomerOrdersWithPagination = async(user_id: string, skip: number, limit: number) => {
-    return await prisma.orders.findMany({
+    return await Order.findMany({
         skip: skip,
         take: limit,
         include: { order_items: true },
@@ -43,17 +43,17 @@ export const fetchCustomerOrdersWithPagination = async(user_id: string, skip: nu
 }
 
 export const countAllCustomerOrders = async (user_id: string) => {
-    return await prisma.orders.count({
+    return await Order.count({
         where: { user_id: user_id }
     });
 }
 
 export const countAllOrders = async () => {
-    return await prisma.orders.count();
+    return await Order.count();
 }
 
 export const storeOrder = async (orderData: Omit<OrderType, "id">) => {
-    const order = await prisma.orders.create({
+    const order = await Order.create({
         data: orderData,
     })
 
@@ -61,7 +61,7 @@ export const storeOrder = async (orderData: Omit<OrderType, "id">) => {
 } 
 
 export const updateOrder = async (id: string, orderData: Partial<OrderType>) => {
-    const order = await prisma.orders.update({
+    const order = await Order.update({
         where: { id: id },
         data: orderData,
     })
@@ -70,13 +70,13 @@ export const updateOrder = async (id: string, orderData: Partial<OrderType>) => 
 } 
 
 export const destroyOrder = async(id: string) => {
-    await prisma.orders.delete({
+    await Order.delete({
         where: { id: id },
     })
 }
 
 export const storeOrderItem = async (orderData: Omit<OrderItemsType, "id">) => {
-    const order = await prisma.order_items.create({
+    const order = await OrderItem.create({
         data: orderData,
     })
 
@@ -84,7 +84,7 @@ export const storeOrderItem = async (orderData: Omit<OrderItemsType, "id">) => {
 } 
 
 export const destroyOrderItem = async(id: string) => {
-    await prisma.order_items.delete({
+    await OrderItem.delete({
         where: { id: id },
     })
 }
