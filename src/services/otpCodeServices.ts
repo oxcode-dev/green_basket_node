@@ -1,5 +1,5 @@
 import { OtpCode } from "../models/index.ts"
-import { OtpCodeType } from "../types/index.ts";
+import type { OtpCodeType } from "../types/index.ts";
 
 export const fetchOtpCodeByEmail = async (email: string) => {
     return OtpCode.findFirst({
