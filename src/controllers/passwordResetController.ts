@@ -3,6 +3,7 @@ import { sendMail } from '../helpers/mailer.ts';
 import bcrypt from 'bcryptjs';
 import { generatePin } from '../helpers/index.ts';
 import { prisma } from '../lib/prisma.ts';
+import { fetchUserByEmail } from '../services/usersServices.ts';
 
 const EMAIL_SMTP_USERNAME = process.env.EMAIL_SMTP_USERNAME as string;
 const CLIENT_URL = process.env.CLIENT_URL as string
@@ -11,7 +12,7 @@ export const forgotPassword = async (req: express.Request, res: express.Response
     try {
         const { email } = req.body;
 
-        const user = await prisma.users.findUnique({ where: {email} });
+        const user = await fetchUserByEmail(email);
 
         if(!user) {
             return res.status(400).json({ message: 'User not found!' });
