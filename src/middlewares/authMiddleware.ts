@@ -1,8 +1,8 @@
 import { config } from "dotenv";
 import express from "express";
 import jwt from 'jsonwebtoken'
-import { prisma } from "../lib/prisma.ts";
 import type { RequestWithUser } from "../types/index.ts";
+import { User } from "../models/index.ts";
 
 config();
 
@@ -29,7 +29,7 @@ const auth = async (req: RequestWithUser, res: express.Response, next: express.N
             JWT_SECRET
         ) as DataStoredInToken;
 
-        const user = await prisma.users.findFirst({
+        const user = await User.findFirst({
             where: {id: decoded?.id},
         })
 

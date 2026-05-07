@@ -1,5 +1,4 @@
 import express from 'express';
-import { prisma } from '../lib/prisma.ts';
 import type { PaginationType, RequestWithUser } from '../types/index.ts';
 import { countUserWishlists, destroyWishlist, fetchUserWishlistsWithPagination, fetchWishlist, storeWishlist } from '../services/wishlistServices.ts';
 import { fetchProduct } from '../services/productServices.ts';
