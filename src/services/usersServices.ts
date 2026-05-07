@@ -1,16 +1,16 @@
-import { prisma } from "../lib/prisma.ts";
+import { User } from "../models/index.ts";
 import type { UserType } from "../types/index.ts";
 
 export const countAllUsers = async () => {
-    return await prisma.users.count();
+    return await User.count();
 };
 
 export const fetchAllUsers = async () => {
-    return await prisma.users.findMany();
+    return await User.findMany();
 };
 
 export const countUsersByRole = async (role: 'ADMIN' | 'CUSTOMER') => {
-    return await prisma.users.count({
+    return await User.count({
         where: {
             role: role,
         }
@@ -18,7 +18,7 @@ export const countUsersByRole = async (role: 'ADMIN' | 'CUSTOMER') => {
 };
 
 export const fetchUsersByRoleWithPagination = async(skip: number, limit: number, role: 'ADMIN' | 'CUSTOMER') => {
-    return await prisma.users.findMany({
+    return await User.findMany({
         skip: skip,
         take: limit,
         where: { role: role },
@@ -27,7 +27,7 @@ export const fetchUsersByRoleWithPagination = async(skip: number, limit: number,
 }
 
 export const fetchUser = async (id: string) => {
-    return await prisma.users.findFirst({
+    return await User.findFirst({
         where: { 
             id: id,
         },
@@ -41,7 +41,7 @@ export const fetchUser = async (id: string) => {
 }
 
 export const storeUser = async (userData: UserType) => {
-    const user = await prisma.users.create({
+    const user = await User.create({
         data: userData,
     })
 
@@ -49,7 +49,7 @@ export const storeUser = async (userData: UserType) => {
 } 
 
 export const updateUser = async (id: string, userData: Omit<UserType, 'password'>) => {
-    const user = await prisma.users.update({
+    const user = await User.update({
         where: { id: id },
         data: userData,
     })
@@ -58,7 +58,7 @@ export const updateUser = async (id: string, userData: Omit<UserType, 'password'
 } 
 
 export const updateUserPassword = async (id: string, userData: Pick<UserType, 'password'>) => {
-    const user = await prisma.users.update({
+    const user = await User.update({
         where: { id: id },
         data: userData,
     })
@@ -67,7 +67,7 @@ export const updateUserPassword = async (id: string, userData: Pick<UserType, 'p
 } 
 
 export const destroyUser = async(id: string) => {
-    await prisma.users.delete({
+    await User.delete({
         where: { id: id },
     })
 }

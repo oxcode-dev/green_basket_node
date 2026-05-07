@@ -1,12 +1,12 @@
-import { prisma } from "../lib/prisma.ts"
+import { Review } from "../models/index.ts";
 import type { ReviewType } from "../types/index.ts";
 
 export const fetchReviews = async () => {
-    return await prisma.reviews.findMany();
+    return await Review.findMany();
 }
 
 export const fetchUserReviews = async (userId: string) => {
-    return await prisma.reviews.findMany({
+    return await Review.findMany({
         where: { user_id: userId},
         include: { 
             product: true,
@@ -16,7 +16,7 @@ export const fetchUserReviews = async (userId: string) => {
 }
 
 export const fetchUserReviewsWithPagination = async(userId: string, skip: number, limit: number) => {
-    return await prisma.reviews.findMany({
+    return await Review.findMany({
         skip: skip,
         take: limit,
         include: { product: true },
@@ -26,20 +26,20 @@ export const fetchUserReviewsWithPagination = async(userId: string, skip: number
 }
 
 export const countUserReviews = async (userId: string) => {
-    return await prisma.reviews.count({
+    return await Review.count({
         where: { user_id: userId},
     });
 }
 
 export const fetchReview = async (id: string) => {
-    return await prisma.reviews.findFirst({
+    return await Review.findFirst({
         where: { id: id },
         include: { product: true }
     });
 }
 
 export const storeReview = async (data: Omit<ReviewType, "id">) => {
-    const review = await prisma.reviews.create({
+    const review = await Review.create({
         data: data,
     })
 
@@ -47,7 +47,7 @@ export const storeReview = async (data: Omit<ReviewType, "id">) => {
 } 
 
 export const destroyReview = async(id: string) => {
-    await prisma.reviews.delete({
+    await Review.delete({
         where: { id: id },
     })
 }
