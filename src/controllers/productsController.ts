@@ -1,5 +1,4 @@
 import express from 'express';
-import { prisma } from '../lib/prisma.ts';
 import { countAllProducts, countProductsWithCategory, destroyProduct, fetchProduct, fetchProductsWithCategoryPagination, fetchProductsWithPagination, storeProduct, updateProduct } from '../services/productServices.ts';
 import { slugify } from '../helpers/index.ts';
 import type { PaginationType } from '../types/index.ts';
