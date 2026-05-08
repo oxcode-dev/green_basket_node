@@ -7,13 +7,11 @@ import cors from "cors"
 import helmet from "helmet";
 import morgan from 'morgan'
 import sessionMiddleware from "./lib/session.ts";
-import fs from 'fs'
-import path from 'path'
 import session from "express-session";
 import swaggerDocs from "./lib/swagger.ts";
 import routes from "./routes/index.ts";
 import rateLimiter from 'express-rate-limit';
-import { fetchAllUsers } from "./services/usersServices.ts";
+import testRoutes from "./routes/testRoute.ts";
 
 dotenv.config();
 
@@ -67,23 +65,6 @@ app.use(sessionMiddleware);
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
 
-app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
-
-    const filePath = path.join(__dirname, '/../../uploads/avatars', req.params.filename);
-
-    fs.unlink(filePath, (err) => {
-        if (err) {
-            // console.error(err);
-            return res.status(500).send(`Error deleting file: ${err}`);
-        }
-        res.status(200).send('File deleted successfully');
-    })
-})
-
-app.get('/test', async (req: any, res: express.Response) => {
-    res.status(200).json({ message: 'Users fetched successfully', users: await fetchAllUsers() });
-})
-
 
 app.listen(PORT, () => {
     console.log(
@@ -93,6 +74,8 @@ app.listen(PORT, () => {
     swaggerDocs(app, PORT);
 
     routes(app)
+
+    testRoutes(app)
 });
 
 // runSeed()
