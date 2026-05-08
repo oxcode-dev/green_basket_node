@@ -13,6 +13,7 @@ import session from "express-session";
 import swaggerDocs from "./lib/swagger.ts";
 import routes from "./routes/index.ts";
 import rateLimiter from 'express-rate-limit';
+import { fetchAllUsers } from "./services/usersServices.ts";
 
 dotenv.config();
 
@@ -77,6 +78,10 @@ app.get('/api/delete-image/:filename', (req: any, res: express.Response) => {
         }
         res.status(200).send('File deleted successfully');
     })
+})
+
+app.get('/test', async (req: any, res: express.Response) => {
+    res.status(200).json({ message: 'Users fetched successfully', users: await fetchAllUsers() });
 })
 
 

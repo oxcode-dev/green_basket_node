@@ -8,8 +8,7 @@ export const fetchWishlists = async () => {
 export const fetchUserWishlists = async (userId: string) => {
     return await Wishlist.findMany({
         where: { user_id: userId},
-        include: { product: true },
-        // omit: ["user.password"],
+        include: { product: true, user: true },
         orderBy: { created_at: 'desc' },
     });
 }
