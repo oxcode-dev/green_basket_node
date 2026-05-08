@@ -54,6 +54,23 @@ export const fetchUserByEmail = async (email: string) => {
     });
 }
 
+export const fetchUserByEmailForAuth = async (email: string) => {
+    return await User.findFirst({
+        where: { 
+            email: email,
+        },
+        select: {
+            id: true,
+            email: true, 
+            password: true,
+            first_name: true,
+            last_name: true,
+            role: true,
+            phone: true,
+        }
+    });
+}
+
 export const storeUser = async (userData: UserType) => {
     const user = await User.create({
         data: userData,

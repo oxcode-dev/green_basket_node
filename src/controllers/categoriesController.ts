@@ -2,7 +2,7 @@ import express, {type Request} from 'express';
 import { destroyCategory, fetchCategories, fetchCategory, storeCategory, updateCategory } from '../services/categoryServices.ts';
 
 export const getCategories = async(req: express.Request, res: express.Response) => {
-    try {
+    // try {
         const categories = await fetchCategories();
 
         return res.status(200).json({
@@ -10,9 +10,9 @@ export const getCategories = async(req: express.Request, res: express.Response) 
             categories
         })
         
-    } catch (error) {
-        return res.status(500).json({ message: `Server error: ${error}` });
-    }
+    // } catch (error) {
+    //     return res.status(500).json({ message: `Server error: ${error}` });
+    // }
 }
 
 export const getCategory = async(req: Request, res: express.Response) => {
