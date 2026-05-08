@@ -76,5 +76,4 @@ export const deleteWishlist = async (req: express.Request, res: express.Response
         message: 'Wishlist Deleted successfully', 
         status: 'success'
     });
-
 }
