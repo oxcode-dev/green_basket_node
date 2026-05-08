@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import * as cookie from 'cookie';
 import { mergeGuestCart } from '../services/cartMergeServices.ts';
-import { fetchUserByEmail, fetchUserByEmailForAuth, storeUser } from '../services/usersServices.ts';
+import { fetchUser, fetchUserByEmail, fetchUserByEmailForAuth, storeUser } from '../services/usersServices.ts';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 const MONTH = 30 * 24 * 60 * 60 * 1000; // in seconds
@@ -36,6 +36,7 @@ export const userRegistration = async (req: express.Request, res: express.Respon
     const payload = { 
         id: newUser.id,
         email: newUser.email,
+        role: newUser.role,
     }
 
     const token = createToken(payload);
@@ -86,6 +87,7 @@ export const userLogin = async (req: express.Request, res: express.Response) => 
     const payload = { 
         id: user.id,
         email: user.email,
+        role: user.role,
     }
 
     const token = createToken(payload);
@@ -134,9 +136,37 @@ export const userLogout = async (req: express.Request, res: express.Response) =>
    
 };
 
+export const refreshToken = async (req: express.Request, res: express.Response) => {
+    const refresh_token = req.cookies['refreshtoken']
+    
+    if (!refresh_token) {
+        return res.status(400).json({ msg: "Please login again." });
+    }
+
+    const result = jwt.verify(refresh_token, JWT_SECRET) as PayloadType;
+
+    const user = await fetchUser(result?.id);
+
+    if (!user) {
+        return res.status(400).json({ msg: "User does not exist." });
+    }
+
+    const payload = { 
+        id: user?.id,
+        email: user?.email,
+        role: user?.role,
+    }
+
+    const access_token = createToken(payload);
+
+    res.json({ access_token });
+
+}
+
 type PayloadType = {
     id: string;
     email: string;
+    role: string; //"CUSTOMER" | "ADMIN";
 }
 
 const createToken = (payload: PayloadType, expiresIn: number = 3600*15) => {
