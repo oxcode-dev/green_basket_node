@@ -20,9 +20,14 @@ const app: Application = express();
 app.use(cookieParser());
 
 app.use(session({
-    secret: '2b502d83205b4fe68b1577a92239d4ab58e520e1b56969d1bcd7c048e95afbdf', //'secret',
-    resave: true,
-    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET || 'fallback-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: 'strict'
+    }
 }));
 
 app.use(express.json());
@@ -31,14 +36,9 @@ app.use(express.static('src/uploads'))
 
 const corsOptions = {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'], 
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true,
-    origin: [process.env.CLIENT_URL || 'http://localhost:2000', 'http://localhost:3000', 'https://nigerian-states-councils-admin.vercel.app/'],
-    headers: [
-        { key: "Access-Control-Allow-Credentials", value: "true" },
-        { key: "Access-Control-Allow-Origin", value: "*" },
-    ],
-    optionsSuccessStatus: 200,
+    origin: (process.env.CLIENT_URL || 'http://localhost:3000').split(','),
 };
 
 app.use(cors(corsOptions));
@@ -50,12 +50,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(rateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests from this IP, please try again after 15 minutes'
+    max: 50, // Reduce to 50 requests
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.path === '/health' // Skip health checks
 }));
 
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+app.use(helmet({
+    contentSecurityPolicy: true,
+    crossOriginEmbedderPolicy: true,
+    strictTransportSecurity: { maxAge: 31536000 }
+}));
 app.use(morgan("common"));
 
 const PORT: number | string = 2000;
@@ -66,10 +73,10 @@ app.use(sessionMiddleware);
 // console.log(crypto.randomBytes(32).toString('hex'))
 
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 app.listen(PORT, () => {
-    console.log(
-        `🟢 Server running in development mode on port ${PORT}`
-    );
+    console.log(`🟢 Server running in ${isDev ? 'development' : 'production'} mode on port ${PORT}`);
 
     swaggerDocs(app, PORT);
 
@@ -84,4 +91,13 @@ app.listen(PORT, () => {
 //     })
 //     .catch((error) => {
 //         console.error('Error during seeding:', error);
-//     });   
+//     });
+
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        error: process.env.NODE_ENV === 'production' 
+            ? 'Internal Server Error' 
+            : err.message
+    });
+});
