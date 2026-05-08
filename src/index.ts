@@ -12,6 +12,7 @@ import swaggerDocs from "./lib/swagger.ts";
 import routes from "./routes/index.ts";
 import rateLimiter from 'express-rate-limit';
 import testRoutes from "./routes/testRoute.ts";
+import { handleError, handleUnknownRoute } from "./middlewares/handleError.ts";
 
 dotenv.config();
 
@@ -72,7 +73,6 @@ app.use(sessionMiddleware);
 // import crypto from 'crypto';
 // console.log(crypto.randomBytes(32).toString('hex'))
 
-
 const isDev = process.env.NODE_ENV !== 'production';
 
 app.listen(PORT, () => {
@@ -83,6 +83,9 @@ app.listen(PORT, () => {
     routes(app)
 
     testRoutes(app)
+
+    app.use(handleUnknownRoute);
+    app.use(handleError);
 });
 
 // runSeed()
@@ -92,12 +95,3 @@ app.listen(PORT, () => {
 //     .catch((error) => {
 //         console.error('Error during seeding:', error);
 //     });
-
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error(err.stack);
-    res.status(err.status || 500).json({
-        error: process.env.NODE_ENV === 'production' 
-            ? 'Internal Server Error' 
-            : err.message
-    });
-});
