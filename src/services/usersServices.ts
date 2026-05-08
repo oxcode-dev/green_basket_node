@@ -85,3 +85,7 @@ export const destroyUser = async(id: string) => {
         where: { id: id },
     })
 }
+
+export const destroyAllUsers = async () => {
+    await User.deleteMany();
+}

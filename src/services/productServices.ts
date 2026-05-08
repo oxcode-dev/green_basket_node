@@ -65,3 +65,7 @@ export const destroyProduct = async(id: string) => {
         where: { id: id },
     })
 }
+
+export const destroyAllProducts = async () => {
+    await Product.deleteMany();
+}

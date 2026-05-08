@@ -48,3 +48,7 @@ export const destroyCategory = async(id: string) => {
         where: { id: id },
     })
 }
+
+export const destroyAllCategories = async () => {
+    await Category.deleteMany();
+}
